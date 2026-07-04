@@ -950,15 +950,16 @@
                 <!-- Form Komentar Premium -->
                 <div class="form-komentar" id="formKomentarSection">
                     <h5 class="mb-3"><i class="fas fa-pencil-alt me-2" style="color: var(--orange);"></i>Tulis Komentar</h5>
+                    <?php if(isset($user_data) && $user_data && $user_data['logged_in']): ?>
                     <form id="formKomentar">
                         <input type="hidden" name="berita_id" value="<?= $berita['id'] ?>">
                         
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
-                                <input type="text" class="form-control form-control-custom" name="nama" placeholder="Nama Lengkap *" required>
+                                <input type="text" class="form-control form-control-custom" name="nama" value="<?= htmlspecialchars($user_data['nama'] ?? '') ?>" placeholder="Nama Lengkap *" required>
                             </div>
                             <div class="col-md-6">
-                                <input type="email" class="form-control form-control-custom" name="email" placeholder="Email (opsional)">
+                                <input type="email" class="form-control form-control-custom" name="email" value="<?= htmlspecialchars($user_data['email'] ?? '') ?>" placeholder="Email (opsional)">
                             </div>
                         </div>
                         
@@ -973,6 +974,14 @@
                             <span class="loading-spinner"></span> Mengirim...
                         </span>
                     </form>
+                    <?php else: ?>
+                    <div class="text-center py-4">
+                        <p class="text-muted mb-3">Anda harus login terlebih dahulu untuk dapat memberikan komentar.</p>
+                        <a href="<?= base_url('login') ?>" class="btn-custom">
+                            <i class="fas fa-sign-in-alt me-2"></i> Login Sekarang
+                        </a>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
