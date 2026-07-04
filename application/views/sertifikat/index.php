@@ -108,12 +108,12 @@
 
         /* ========== HEADER GLASS ========== */
         .header-glass {
-            position: absolute;
-            top: 24px;
+            position: fixed;
+            top: 16px;
             left: 0;
             right: 0;
-            z-index: 50;
-            transition: all 0.3s ease;
+            z-index: 1000;
+            transition: top 0.3s ease;
         }
 
         .navbar-glass {
@@ -130,7 +130,7 @@
         }
 
         .navbar-glass.scrolled {
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.88);
             backdrop-filter: blur(25px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
@@ -302,10 +302,21 @@
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
+            flex-shrink: 0;
         }
 
         .mobile-toggle:hover {
             background: rgba(255,255,255,0.25);
+        }
+
+        .navbar-right-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-close-btn {
+            display: none;
         }
 
         /* ========== BACK BUTTON ========== */
@@ -1073,26 +1084,46 @@
         }
 
         @media (max-width: 768px) {
-            .header-glass {
-                top: 12px;
-            }
             .navbar-glass {
-                padding: 12px 20px;
-                border-radius: 40px;
+                padding: 10px 14px;
+                border-radius: 60px;
+                flex-wrap: wrap;
+                align-items: center;
+            }
+            .navbar-glass.scrolled {
+                border-radius: 60px;
+            }
+            .logo-area { order: 1; }
+            .navbar-right-group {
+                order: 2;
+                gap: 8px;
             }
             .nav-links {
+                order: 3;
                 display: none;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 16px;
-                gap: 16px;
                 width: 100%;
+                flex-direction: column;
+                margin-top: 12px;
+                gap: 16px;
+                align-items: flex-start;
             }
             .nav-links.open {
                 display: flex !important;
             }
+            .nav-links a {
+                font-size: 1rem;
+                color: white;
+            }
+            .nav-close-btn {
+                display: none !important;
+            }
             .mobile-toggle {
                 display: block;
+            }
+            .btn-mytelu-custom {
+                padding: 7px 12px;
+                font-size: 0.78rem;
+                gap: 6px;
             }
             .dropdown-menu-custom {
                 position: static;
@@ -1193,26 +1224,28 @@
                 <a href="#">Forum Alumni</a>
             </div>
             
-            <?php 
-            // Safe user data check
-            $is_logged_in = isset($user_data) && is_array($user_data) && isset($user_data['logged_in']) && $user_data['logged_in'] === true;
-            if($is_logged_in): 
-            ?>
-                <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
-                    <?php if(!empty($user_data['foto'])): ?>
-                        <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small">
-                    <?php else: ?>
-                        <i class="fas fa-user-circle"></i>
-                    <?php endif; ?>
-                    <?= isset($user_data['nama']) ? htmlspecialchars($user_data['nama']) : 'User' ?>
-                </a>
-            <?php else: ?>
-                <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
-                    <i class="fas fa-sign-in-alt"></i> MyTeLU
-                </a>
-            <?php endif; ?>
-            
-            <button class="mobile-toggle" id="mobileNavBtn"><i class="fas fa-bars"></i></button>
+            <div class="navbar-right-group">
+                <?php 
+                // Safe user data check
+                $is_logged_in = isset($user_data) && is_array($user_data) && isset($user_data['logged_in']) && $user_data['logged_in'] === true;
+                if($is_logged_in): 
+                ?>
+                    <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
+                        <?php if(!empty($user_data['foto'])): ?>
+                            <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+                        <?php else: ?>
+                            <i class="fas fa-user-circle"></i>
+                        <?php endif; ?>
+                        <?= isset($user_data['nama']) ? htmlspecialchars($user_data['nama']) : 'User' ?>
+                    </a>
+                <?php else: ?>
+                    <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
+                        <i class="fas fa-sign-in-alt"></i> MyTeLU
+                    </a>
+                <?php endif; ?>
+                
+                <button class="mobile-toggle" id="mobileNavBtn"><i class="fas fa-bars"></i></button>
+            </div>
         </div>
     </div>
 </header>
@@ -1509,35 +1542,40 @@
     // Initialize AOS
     AOS.init({ duration: 800, once: true, offset: 50 });
 
-    // Mobile toggle
     const mobileBtn = document.getElementById('mobileNavBtn');
     const navLinksDiv = document.getElementById('navLinks');
+    
     if (mobileBtn) {
-        mobileBtn.addEventListener('click', () => {
-            navLinksDiv.classList.toggle('open');
-            
-            // Handle mobile dropdown
-            if(navLinksDiv.classList.contains('open')) {
-                const dropdown = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
-                if(dropdown) dropdown.classList.add('show-mobile');
-            } else {
-                const dropdown = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
-                if(dropdown) dropdown.classList.remove('show-mobile');
-            }
+      mobileBtn.addEventListener('click', () => {
+        navLinksDiv.classList.toggle('open');
+      });
+    }
+
+    // Tutup menu saat klik link (kecuali dropdown toggle)
+    if (navLinksDiv) {
+        navLinksDiv.querySelectorAll('a:not(.dropdown-toggle)').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    navLinksDiv.classList.remove('open');
+                }
+            });
         });
     }
 
     // Mobile dropdown toggle
-    if(window.innerWidth <= 768) {
+    document.addEventListener('DOMContentLoaded', function() {
         const dropdownToggle = document.querySelector('.nav-item-dropdown > a');
-        if(dropdownToggle) {
+        const dropdownMenu = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
+        
+        if (dropdownToggle && dropdownMenu) {
             dropdownToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                const dropdownMenu = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
-                if(dropdownMenu) dropdownMenu.classList.toggle('show-mobile');
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    dropdownMenu.classList.toggle('show-mobile');
+                }
             });
         }
-    }
+    });
 
     // Navbar scroll effect
     window.addEventListener('scroll', () => {

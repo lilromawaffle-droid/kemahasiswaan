@@ -616,16 +616,10 @@
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <?php
-                $total = count($komentar);
-                $pending = 0;
-                $approved = 0;
-                $spam = 0;
-                
-                foreach($komentar as $k) {
-                    if($k['status'] == 'pending') $pending++;
-                    elseif($k['status'] == 'approved') $approved++;
-                    elseif($k['status'] == 'spam') $spam++;
-                }
+                $total = $stats['total'];
+                $pending = $stats['pending'];
+                $approved = $stats['approved'];
+                $spam = $stats['spam'];
                 ?>
                 
                 <div class="stat-card total">
@@ -662,16 +656,24 @@
             </div>
 
             <!-- Filter Tabs -->
-            <div class="filter-tabs">
-                <a href="?status=pending" class="filter-tab pending <?= $status_filter == 'pending' ? 'active' : '' ?>">
-                    <i class="fas fa-clock me-2"></i>Pending (<?= $pending ?>)
-                </a>
-                <a href="?status=approved" class="filter-tab approved <?= $status_filter == 'approved' ? 'active' : '' ?>">
-                    <i class="fas fa-check-circle me-2"></i>Approved (<?= $approved ?>)
-                </a>
-                <a href="?status=spam" class="filter-tab <?= $status_filter == 'spam' ? 'active' : '' ?>">
-                    <i class="fas fa-ban me-2"></i>Spam (<?= $spam ?>)
-                </a>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="filter-tabs mb-0">
+                    <a href="?status=pending" class="filter-tab pending <?= $status_filter == 'pending' ? 'active' : '' ?>">
+                        <i class="fas fa-clock me-2"></i>Pending (<?= $pending ?>)
+                    </a>
+                    <a href="?status=approved" class="filter-tab approved <?= $status_filter == 'approved' ? 'active' : '' ?>">
+                        <i class="fas fa-check-circle me-2"></i>Approved (<?= $approved ?>)
+                    </a>
+                    <a href="?status=spam" class="filter-tab <?= $status_filter == 'spam' ? 'active' : '' ?>">
+                        <i class="fas fa-ban me-2"></i>Spam (<?= $spam ?>)
+                    </a>
+                </div>
+                <div class="search-box">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 rounded-start-pill"><i class="fas fa-search text-muted"></i></span>
+                        <input type="text" id="searchInput" class="form-control border-start-0 rounded-end-pill ps-0" placeholder="Cari komentar..." style="box-shadow: none;">
+                    </div>
+                </div>
             </div>
 
             <!-- Comments List -->
@@ -711,9 +713,13 @@
                             <div class="berita-info">
                                 <i class="fas fa-newspaper"></i>
                                 Pada berita: 
-                                <a href="<?= base_url('berita/detail/') ?>" target="_blank">
+                                <?php if($k['berita_slug']): ?>
+                                <a href="<?= base_url('berita/detail/' . $k['berita_slug']) ?>" target="_blank">
                                     <?= htmlspecialchars($k['berita_judul']) ?>
                                 </a>
+                                <?php else: ?>
+                                <span class="text-danger"><em>Berita telah dihapus</em></span>
+                                <?php endif; ?>
                             </div>
 
                             <div class="comment-actions">
@@ -739,7 +745,7 @@
                                     <i class="fas fa-trash"></i> Hapus
                                 </a>
                                 
-                                <a href="<?= base_url('berita/detail/' .  '#komentar-' . $k['id']) ?>" target="_blank" class="btn-action btn-view">
+                                <a href="<?= base_url('berita/detail/' . $k['berita_slug'] . '#komentar-' . $k['id']) ?>" target="_blank" class="btn-action btn-view">
                                     <i class="fas fa-eye"></i> Lihat
                                 </a>
                             </div>

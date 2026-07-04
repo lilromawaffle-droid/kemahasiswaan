@@ -19,19 +19,232 @@
     .container-custom { width: min(100% - 3rem, 1280px); margin-inline: auto; }
 
     /* HEADER */
-    .header-glass { position: absolute; top: 24px; left: 0; right: 0; z-index: 50; }
-    .navbar-glass { background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(20px); border-radius: 60px; padding: 12px 32px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-    .logo-area { display: flex; align-items: center; gap: 16px; }
-    .logo-icon { width: 48px; height: 48px; background: #2d3e50; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.3rem; }
-    .logo-text h5 { font-size: 0.9rem; font-weight: 800; color: white; margin: 0; }
-    .logo-text span { font-size: 0.7rem; color: rgba(255,255,255,0.85); }
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a { color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; border-bottom: 2px solid transparent; padding-bottom: 4px; transition: all 0.3s ease; }
-    .nav-links a.active, .nav-links a:hover { border-bottom-color: #f97316; }
-    .btn-mytelu-custom { background: #f97316; padding: 8px 28px; border-radius: 40px; font-weight: 700; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-    .btn-mytelu-custom:hover { background: #ea580c; transform: translateY(-2px); }
-    .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: white; }
-    .mobile-toggle { display: none; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 14px; font-size: 1.4rem; color: white; cursor: pointer; }
+    .header-glass {
+      position: fixed;
+      top: 16px;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: top 0.3s ease;
+    }
+
+    .navbar-glass {
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(20px);
+      border-radius: 60px;
+      padding: 10px 32px;
+      border: 1px solid rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-glass.scrolled {
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(25px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(145deg, var(--orange), var(--orange-dark));
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.4rem;
+      box-shadow: 0 6px 12px rgba(249,115,22,0.3);
+    }
+
+    .logo-text h5 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      color: white;
+      margin: 0;
+    }
+
+    .logo-text span {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.85);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      position: relative;
+      padding-bottom: 4px;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--orange);
+      transition: 0.3s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    /* Dropdown Layanan */
+    .dropdown-menu-custom {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 15px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 0.8rem 0;
+      min-width: 240px;
+      border: 1px solid rgba(255,255,255,0.15);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+
+    .nav-item-dropdown {
+      position: relative;
+    }
+
+    .nav-item-dropdown:hover .dropdown-menu-custom {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu-custom a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      border-bottom: none !important;
+    }
+
+    .dropdown-menu-custom a::after {
+      display: none;
+    }
+
+    .dropdown-menu-custom a:hover {
+      background: rgba(249,115,22,0.3);
+      color: var(--orange);
+      padding-left: 28px;
+    }
+
+    .dropdown-menu-custom i {
+      width: 24px;
+      font-size: 1.1rem;
+      color: var(--orange);
+    }
+
+    .dropdown-toggle-icon {
+      margin-left: 6px;
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-item-dropdown:hover .dropdown-toggle-icon {
+      transform: rotate(180deg);
+    }
+
+    /* Mobile Dropdown Override */
+    @media (max-width: 768px) {
+      .dropdown-menu-custom {
+        position: static;
+        background: transparent;
+        backdrop-filter: none;
+        padding-left: 20px;
+        min-width: auto;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        display: none;
+        border: none;
+        margin-top: 5px;
+      }
+      
+      .dropdown-menu-custom.show-mobile {
+        display: block;
+      }
+      
+      .dropdown-menu-custom a {
+        padding: 10px 0 10px 20px;
+        color: rgba(255,255,255,0.8);
+      }
+      
+      .dropdown-menu-custom a:hover {
+        background: transparent;
+        color: var(--orange);
+        padding-left: 28px;
+      }
+    }
+
+    .btn-mytelu-custom {
+      background: linear-gradient(105deg, var(--orange), var(--orange-dark));
+      padding: 8px 28px;
+      border-radius: 40px;
+      font-weight: 700;
+      color: white;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-mytelu-custom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px rgba(249, 115, 22, 0.4);
+      color: white;
+    }
+
+    .mobile-toggle {
+      display: none;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 16px;
+      padding: 8px 16px;
+      font-size: 1.3rem;
+      color: white;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .navbar-right-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
     /* HERO */
     .hero-berita { background: linear-gradient(135deg, #f97316 0%, #fdba74 100%); padding: 160px 0 80px; text-align: center; color: white; position: relative; }
@@ -87,13 +300,55 @@
     .footer-bottom { text-align: center; padding-top: 30px; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
 
     @media (max-width: 768px) {
-      .navbar-glass { flex-direction: column; align-items: stretch; }
-      .nav-links { display: none; flex-direction: column; margin-top: 12px; gap: 16px; }
+      .navbar-glass { border-radius: 60px; padding: 10px 14px; flex-wrap: wrap; align-items: center; flex-direction: row; }
+      .navbar-glass.scrolled { border-radius: 60px; }
+      .logo-area { order: 1; }
+      .navbar-right-group { order: 2; gap: 8px; }
+      
+      .nav-links { order: 3; display: none; width: 100%; flex-direction: column; margin-top: 12px; gap: 16px; align-items: flex-start; }
       .nav-links.open { display: flex !important; }
+      .nav-links a { font-size: 1rem; color: white; border-bottom: none; }
+      .nav-close-btn { display: none !important; }
+      
       .mobile-toggle { display: block; }
+      .btn-mytelu-custom { padding: 7px 12px; font-size: 0.78rem; gap: 6px; }
       .hero-berita { padding: 120px 0 60px; }
       .hero-berita h1 { font-size: 2rem; }
       .kategori-tabs { justify-content: center; }
+      
+      .dropdown-menu-custom {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        background: rgba(255,255,255,0.08) !important;
+        border-radius: 14px !important;
+        padding: 8px !important;
+        box-shadow: none !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.3s, max-height 0.4s !important;
+        visibility: visible !important;
+      }
+      .dropdown-menu-custom.show-mobile {
+        opacity: 1 !important;
+        max-height: 400px;
+        display: block !important;
+      }
+      .dropdown-menu-custom a {
+        padding: 10px 16px;
+        color: rgba(255,255,255,0.85);
+      }
+    }
+    
+    @media (max-width: 420px) {
+      .navbar-glass { padding: 8px 10px; }
+      .logo-text h5 { font-size: 0.78rem; }
+      .logo-text span { font-size: 0.62rem; }
+      .logo-icon { width: 38px; height: 38px; font-size: 1rem; }
+      .btn-mytelu-custom { padding: 6px 10px; font-size: 0.75rem; gap: 4px; }
+      .user-avatar-small { width: 24px !important; height: 24px !important; }
     }
   </style>
 </head>
@@ -113,26 +368,52 @@
       <div class="nav-links" id="navLinks">
         <a href="<?= base_url('dashboard') ?>">Dashboard</a>
         <a href="<?= base_url('berita') ?>" class="active">Informasi</a>
-        <a href="#">Layanan</a>
-        <a href="#">Forum Alumni</a>
+        
+        <!-- Dropdown Layanan -->
+        <div class="nav-item-dropdown">
+            <a href="#" class="dropdown-toggle">
+                Layanan <i class="fas fa-chevron-down dropdown-toggle-icon"></i>
+            </a>
+            <div class="dropdown-menu-custom" id="layananDropdown">
+                <a href="<?= base_url('beasiswa') ?>">
+                    <i class="fas fa-graduation-cap"></i> Pengajuan Beasiswa
+                </a>
+                <a href="<?= base_url('sertifikat') ?>">
+                    <i class="fas fa-certificate"></i> Pengajuan Sertifikat
+                </a>
+                <a href="<?= base_url('proposal') ?>">
+                    <i class="fas fa-file-alt"></i> Pengajuan Proposal
+                </a>
+                <a href="<?= base_url('tak') ?>">
+                    <i class="fas fa-clipboard-list"></i> Pengajuan TAK
+                </a>
+                <a href="<?= base_url('forum_alumni') ?>">
+                    <i class="fas fa-users"></i> Layanan Alumni
+                </a>
+            </div>
+        </div>
+        
+        <a href="<?= base_url('forum_alumni') ?>">Forum Alumni</a>
       </div>
       
-      <?php if(isset($user_data) && $user_data && $user_data['logged_in']): ?>
-        <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
-          <?php if(!empty($user_data['foto'])): ?>
-            <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small">
-          <?php else: ?>
-            <i class="fas fa-user-circle"></i>
-          <?php endif; ?>
-          <?= htmlspecialchars($user_data['nama']) ?>
-        </a>
-      <?php else: ?>
-        <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
-          <i class="fas fa-sign-in-alt"></i> MyTeLU
-        </a>
-      <?php endif; ?>
-      
-      <button class="mobile-toggle" id="mobileNavBtn"><i class="fas fa-bars"></i></button>
+      <div class="navbar-right-group">
+        <?php if(isset($user_data) && $user_data && $user_data['logged_in']): ?>
+          <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
+            <?php if(!empty($user_data['foto'])): ?>
+              <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+            <?php else: ?>
+              <i class="fas fa-user-circle"></i>
+            <?php endif; ?>
+            <?= htmlspecialchars($user_data['nama']) ?>
+          </a>
+        <?php else: ?>
+          <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
+            <i class="fas fa-sign-in-alt"></i> MyTeLU
+          </a>
+        <?php endif; ?>
+        
+        <button class="mobile-toggle" id="mobileNavBtn"><i class="fas fa-bars"></i></button>
+      </div>
     </div>
   </div>
 </header>
@@ -290,11 +571,51 @@
 </footer>
 
 <script>
+  // Mobile toggle
   const mobileBtn = document.getElementById('mobileNavBtn');
-  const navLinks = document.getElementById('navLinks');
-  if(mobileBtn) {
-    mobileBtn.addEventListener('click', () => { navLinks.classList.toggle('open'); });
+  const navLinksDiv = document.getElementById('navLinks');
+  
+  if (mobileBtn) {
+    mobileBtn.addEventListener('click', () => {
+      navLinksDiv.classList.toggle('open');
+    });
   }
+
+  // Tutup menu saat klik link (kecuali dropdown toggle)
+  if (navLinksDiv) {
+    navLinksDiv.querySelectorAll('a:not(.dropdown-toggle)').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          navLinksDiv.classList.remove('open');
+        }
+      });
+    });
+  }
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.navbar-glass');
+    if (navbar && window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else if (navbar) {
+      navbar.classList.remove('scrolled');
+    }
+  });
+
+  // Dropdown Mobile Logic
+  document.addEventListener('DOMContentLoaded', function() {
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu-custom');
+    
+    if (dropdownToggle && dropdownMenu) {
+      dropdownToggle.addEventListener('click', function(e) {
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          dropdownMenu.classList.toggle('show-mobile');
+        }
+      });
+    }
+  });
 </script>
 </body>
 </html>

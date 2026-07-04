@@ -52,11 +52,12 @@
 
     /* HEADER */
     .header-glass {
-      position: absolute;
-      top: 24px;
+      position: fixed;
+      top: 16px;
       left: 0;
       right: 0;
-      z-index: 50;
+      z-index: 1000;
+      transition: top 0.3s ease;
     }
 
     .navbar-glass {
@@ -69,6 +70,13 @@
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-glass.scrolled {
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(25px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     }
 
     .logo-area {
@@ -107,7 +115,6 @@
       display: flex;
       gap: 2rem;
       align-items: center;
-      position: relative;
     }
 
     .nav-links a {
@@ -115,230 +122,127 @@
       text-decoration: none;
       font-weight: 600;
       font-size: 0.9rem;
-      border-bottom: 2px solid transparent;
+      position: relative;
       padding-bottom: 4px;
-      cursor: pointer;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0%;
+      height: 2px;
+      background: var(--orange, #f97316);
+      transition: 0.3s ease;
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+      width: 100%;
+    }
+
+    /* Dropdown Layanan */
+    .dropdown-menu-custom {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 15px;
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 0.8rem 0;
+      min-width: 240px;
+      border: 1px solid rgba(255,255,255,0.15);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
       transition: all 0.3s ease;
+      z-index: 1000;
     }
 
-    .nav-links a.active, .nav-links a:hover {
-      border-bottom-color: #f97316;
-    }
-
-    /* DROPDOWN LAYANAN */
-    .dropdown-wrapper {
+    .nav-item-dropdown {
       position: relative;
     }
 
-    .dropdown-wrapper > a {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 0;
+    .nav-item-dropdown:hover .dropdown-menu-custom {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
     }
 
-    .dropdown-wrapper > a i {
+    .dropdown-menu-custom a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      font-weight: 500;
+      border-bottom: none !important;
+    }
+
+    .dropdown-menu-custom a::after {
+      display: none;
+    }
+
+    .dropdown-menu-custom a:hover {
+      background: rgba(249,115,22,0.3);
+      color: var(--orange, #f97316);
+      padding-left: 28px;
+    }
+
+    .dropdown-menu-custom i {
+      width: 24px;
+      font-size: 1.1rem;
+      color: var(--orange, #f97316);
+    }
+
+    .dropdown-toggle-icon {
+      margin-left: 6px;
       font-size: 0.7rem;
       transition: transform 0.3s ease;
     }
 
-    .dropdown-wrapper.open > a i {
+    .nav-item-dropdown:hover .dropdown-toggle-icon {
       transform: rotate(180deg);
     }
 
-    .dropdown-menu-custom {
-      position: absolute;
-      top: calc(100% + 16px);
-      left: 50%;
-      transform: translateX(-50%) translateY(-12px);
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(30px);
-      border-radius: 24px;
-      padding: 16px 20px;
-      min-width: 820px;
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 100;
-    }
-
-    .dropdown-wrapper.open .dropdown-menu-custom {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .dropdown-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-    }
-
-    .dropdown-item {
-      padding: 24px 16px;
-      text-align: center;
-      border-radius: 16px;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      text-decoration: none;
-      color: #1f2937;
-      background: rgba(249, 115, 22, 0.02);
-      position: relative;
-      overflow: hidden;
-      min-height: 160px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .dropdown-item::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(249, 115, 22, 0.02) 100%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      border-radius: 16px;
-    }
-
-    .dropdown-item:hover::before {
-      opacity: 1;
-    }
-
-    .dropdown-item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(249, 115, 22, 0.15);
-    }
-
-    .dropdown-item .d-icon-wrapper {
-      width: 56px;
-      height: 56px;
-      margin: 0 auto 12px;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-      background: #f8fafc;
-      position: relative;
-      z-index: 1;
-    }
-
-    .dropdown-item:hover .d-icon-wrapper {
-      background: #fff7ed;
-      transform: scale(1.05);
-    }
-
-    .dropdown-item .d-icon-wrapper i {
-      font-size: 1.6rem;
-      transition: all 0.3s ease;
-    }
-
-    .dropdown-item:nth-child(1) .d-icon-wrapper i { color: #f97316; }
-    .dropdown-item:nth-child(2) .d-icon-wrapper i { color: #8b5cf6; }
-    .dropdown-item:nth-child(3) .d-icon-wrapper i { color: #3b82f6; }
-    .dropdown-item:nth-child(4) .d-icon-wrapper i { color: #ef4444; }
-    .dropdown-item:nth-child(5) .d-icon-wrapper i { color: #10b981; }
-
-    .dropdown-item:hover .d-icon-wrapper i {
-      transform: scale(1.15);
-    }
-
-    .dropdown-item .d-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      margin-bottom: 6px;
-      color: #1f2937;
-      position: relative;
-      z-index: 1;
-      white-space: nowrap;
-    }
-
-    .dropdown-item .d-desc {
-      font-size: 0.75rem;
-      color: #6b7280;
-      line-height: 1.5;
-      font-weight: 400;
-      position: relative;
-      z-index: 1;
-      max-width: 140px;
-      margin: 0 auto;
-    }
-
-    @media (max-width: 1024px) {
-      .dropdown-menu-custom {
-        min-width: unset;
-        width: 90vw;
-        max-width: 600px;
-        left: 50%;
-        transform: translateX(-50%) translateY(-12px);
-        padding: 12px;
-      }
-      .dropdown-wrapper.open .dropdown-menu-custom {
-        transform: translateX(-50%) translateY(0);
-      }
-      .dropdown-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 6px;
-      }
-      .dropdown-item {
-        padding: 16px 12px;
-        min-height: 130px;
-      }
-      .dropdown-item .d-icon-wrapper {
-        width: 44px;
-        height: 44px;
-        margin-bottom: 8px;
-      }
-      .dropdown-item .d-icon-wrapper i {
-        font-size: 1.2rem;
-      }
-      .dropdown-item .d-title {
-        font-size: 0.8rem;
-        white-space: normal;
-      }
-      .dropdown-item .d-desc {
-        font-size: 0.65rem;
-        max-width: 100px;
-      }
-    }
-
+    /* Mobile Dropdown Override */
     @media (max-width: 768px) {
       .dropdown-menu-custom {
-        width: 95vw;
-        max-width: 380px;
-        left: 50%;
-        padding: 10px;
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        background: rgba(255,255,255,0.08) !important;
+        border-radius: 14px !important;
+        padding: 8px !important;
+        box-shadow: none !important;
+        border: 1px solid rgba(255,255,255,0.15) !important;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.3s, max-height 0.4s !important;
+        visibility: visible !important;
+        margin-top: 5px;
       }
-      .dropdown-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 4px;
+      
+      .dropdown-menu-custom.show-mobile {
+        opacity: 1 !important;
+        max-height: 400px;
+        display: block !important;
       }
-      .dropdown-item {
-        padding: 12px 8px;
-        min-height: 100px;
+      
+      .dropdown-menu-custom a {
+        padding: 10px 16px;
+        color: rgba(255,255,255,0.85);
       }
-      .dropdown-item .d-icon-wrapper {
-        width: 36px;
-        height: 36px;
-        margin-bottom: 6px;
-      }
-      .dropdown-item .d-icon-wrapper i {
-        font-size: 1rem;
-      }
-      .dropdown-item .d-title {
-        font-size: 0.7rem;
-        white-space: normal;
-      }
-      .dropdown-item .d-desc {
-        font-size: 0.6rem;
-        max-width: unset;
+      
+      .dropdown-menu-custom a:hover {
+        background: transparent;
+        color: var(--orange, #f97316);
+        padding-left: 28px;
       }
     }
 
@@ -369,10 +273,22 @@
       color: white;
       cursor: pointer;
       transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .mobile-toggle:hover {
       background: rgba(255,255,255,0.25);
+    }
+
+    .navbar-right-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Tombol tutup overlay - hanya tampil di mobile melalui position:absolute di dalam overlay */
+    .nav-close-btn {
+      display: none;
     }
 
     /* HERO SECTION */
@@ -381,6 +297,9 @@
       padding-top: 160px;
       padding-bottom: 0;
     }
+
+    /* Tambahan: pastikan body tidak overflow-x */
+    body { overflow-x: hidden; }
 
     .hero-flex {
       display: flex;
@@ -1268,39 +1187,178 @@
     }
 
     @media (max-width: 768px) {
-      .navbar-glass { flex-direction: column; align-items: stretch; }
-      .nav-links { display: none; flex-direction: column; align-items: center; margin-top: 12px; gap: 16px; }
+      /* ===== NAVBAR MOBILE ===== */
+      .navbar-glass {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 12px 20px;
+      }
+      .navbar-glass.scrolled {
+        border-radius: 60px;
+      }
+      .logo-area { order: 1; }
+      .navbar-right-group {
+        order: 2;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-links {
+        order: 3;
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        margin-top: 12px;
+        gap: 16px;
+        align-items: flex-start;
+      }
       .nav-links.open { display: flex !important; }
+      .nav-links a {
+        font-size: 1rem;
+        color: white;
+      }
+      .nav-close-btn { display: none !important; }
       .mobile-toggle { display: block; }
-      .hero-image-area { width: 100%; margin-top: 20px; min-height: 280px; }
-      .berita-card { position: relative; width: 100%; margin-bottom: 20px; transform: none !important; opacity: 1 !important; filter: none !important; }
-      .berita-card.active, .berita-card.right, .berita-card.left { transform: none !important; width: 100%; }
-      .carousel-nav { display: none; }
-      .carousel-dots { display: none; }
-      .achievement-master { margin-top: 30px; padding: 32px 24px; }
-      .hero-title h1 { font-weight: 500; }
-      .org-grid-one { gap: 14px; }
-      .org-section-title { font-size: 1.6rem; }
-      .org-col-left, .org-col-right { height: 400px; }
+      .btn-mytelu-custom {
+        padding: 7px 14px;
+        font-size: 0.8rem;
+        gap: 6px;
+      }
+      /* ===== HERO SECTION MOBILE ===== */
+      .hero-wrap { padding-top: 120px; }
+      .hero-flex { flex-direction: column; text-align: center; gap: 20px; }
+      .hero-title h1 { font-weight: 500; text-align: center; margin: 0 auto; font-size: clamp(2rem, 9vw, 3.5rem); }
+      .hero-image-area { width: 100%; margin-top: 10px; min-height: 220px; }
+      /* ===== ACHIEVEMENT SECTION ===== */
+      .achievement-master { margin-top: 0; padding: 28px 18px; }
+      .stats-three-col { grid-template-columns: 1fr; gap: 24px; }
+      .big-number { font-size: 2rem; }
+      .achievement-title { font-size: 1.4rem; margin-bottom: 24px; }
+      .d-flex.gap-5 { gap: 1.5rem !important; }
+      /* ===== BERITA CAROUSEL MOBILE: tampil list scroll ===== */
+      .berita-carousel-container {
+        padding: 20px 0;
+        overflow: visible;
+      }
+      .berita-carousel {
+        display: flex;
+        flex-direction: row;
+        min-height: unset;
+        gap: 20px;
+        align-items: stretch;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 16px 12px;
+        scrollbar-width: none;
+      }
+      .berita-carousel::-webkit-scrollbar { display: none; }
+      .berita-card {
+        position: relative !important;
+        width: calc(85vw) !important;
+        min-width: calc(85vw);
+        margin-bottom: 0;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+        z-index: 1 !important;
+        scroll-snap-align: start;
+        flex-shrink: 0;
+      }
+      .berita-card.active, .berita-card.left, .berita-card.right,
+      .berita-card.left-far, .berita-card.right-far {
+        position: relative !important;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+        width: calc(85vw) !important;
+      }
+      .carousel-nav { display: none !important; }
+      .carousel-dots { display: none !important; }
+      /* ===== DIREKTORAT CARD ===== */
+      .direktorat-card { grid-template-columns: 1fr; margin: 30px auto; }
+      .direktorat-img-area img { min-height: 200px; }
+      /* ===== ORG SECTION ===== */
+      .org-layout { flex-direction: column; gap: 24px; }
+      .org-left { flex: auto; position: static; text-align: center; }
+      .org-section-title { font-size: 1.6rem; text-align: center; }
+      .org-right { flex-direction: column; gap: 20px; }
+      .org-col-left, .org-col-right { height: 350px; }
       .org-card { padding: 12px 14px; }
       .org-logo { width: 42px; height: 42px; min-width: 42px; }
       .org-info h3 { font-size: 0.85rem; }
       .org-info p { font-size: 0.68rem; }
+      /* ===== RECOGNITION SECTION ===== */
       .recognition-title { font-size: 1.6rem; }
       .recognition-subtitle { font-size: 0.9rem; }
-      .recognition-item { padding: 12px 15px; min-width: 110px; }
+      .recognition-logos { gap: 15px; }
+      .recognition-item { padding: 12px 15px; min-width: 90px; }
       .recognition-item img { max-height: 35px; }
       .recognition-item span { font-size: 0.7rem; }
+      /* ===== ALUMNI QUOTE ===== */
       .alumni-quote-section { padding: 60px 0; }
-      .alumni-quote-section h2 { font-size: 2rem; }
-      .alumni-quote-section p { font-size: 1rem; }
+      .alumni-quote-section h2 { font-size: 1.8rem; }
+      .alumni-quote-section p { font-size: 0.95rem; }
+      .alumni-quote-section .container-custom { padding: 0 1.5rem; }
       .quote-icon { font-size: 2rem; }
+      /* ===== PARTNER SECTION ===== */
       .partner-section { padding: 50px 0; }
-      .partner-logos-grid { gap: 15px; }
+      .partner-layout { flex-direction: column; text-align: center; gap: 30px; }
+      .partner-content { text-align: center; }
+      .partner-content h2 { font-size: 1.8rem; text-align: center; }
+      .partner-content p { font-size: 0.9rem; }
+      .partner-logos-grid { gap: 12px; }
       .partner-logo-item { padding: 15px; min-height: 80px; }
       .partner-logo-item img { max-height: 50px; }
-      .partner-content h2 { font-size: 1.8rem; }
-      .partner-content p { font-size: 0.9rem; }
+      /* ===== DROPDOWN MOBILE: list sederhana ===== */
+      .dropdown-menu-custom {
+        position: static !important;
+        transform: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        left: auto !important;
+        background: rgba(255,255,255,0.08) !important;
+        border-radius: 16px !important;
+        padding: 8px !important;
+        box-shadow: none !important;
+        border: 1px solid rgba(255,255,255,0.1) !important;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transition: opacity 0.3s ease, max-height 0.4s ease !important;
+        visibility: visible !important;
+      }
+      .dropdown-wrapper.open .dropdown-menu-custom {
+        opacity: 1 !important;
+        max-height: 600px;
+        animation: none !important;
+      }
+      .dropdown-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 6px !important;
+      }
+      .dropdown-item {
+        padding: 14px 8px !important;
+        min-height: 100px !important;
+        background: rgba(255,255,255,0.06) !important;
+        color: white !important;
+      }
+      .dropdown-item .d-title { color: white !important; font-size: 0.75rem; }
+      .dropdown-item .d-desc { color: rgba(255,255,255,0.65) !important; font-size: 0.62rem; }
+      .dropdown-item .d-icon-wrapper { background: rgba(255,255,255,0.1) !important; width: 40px; height: 40px; }
+    }
+
+    @media (max-width: 420px) {
+      .navbar-glass { padding: 8px 10px; }
+      .logo-text h5 { font-size: 0.78rem; }
+      .logo-text span { font-size: 0.62rem; }
+      .logo-icon { width: 38px; height: 38px; font-size: 1rem; }
+      .btn-mytelu-custom { padding: 6px 10px; font-size: 0.75rem; gap: 4px; }
+      .user-avatar-small { width: 24px !important; height: 24px !important; }
+      .berita-card { width: calc(92vw) !important; min-width: calc(92vw); }
+      .berita-card.active, .berita-card.left, .berita-card.right,
+      .berita-card.left-far, .berita-card.right-far { width: calc(92vw) !important; }
+      .recognition-item { min-width: 80px; }
     }
 
     @keyframes slideDown {
@@ -1582,115 +1640,146 @@
 
 @media (max-width: 768px) {
     .berita-carousel-container {
-        padding: 20px 20px;
+        padding: 20px 0;
+        overflow: visible;
     }
-    
+
+    .berita-carousel {
+        display: flex;
+        flex-direction: row;
+        min-height: unset;
+        gap: 16px;
+        align-items: stretch;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding: 0 16px 12px;
+        scrollbar-width: none;
+    }
+
+    .berita-carousel::-webkit-scrollbar { display: none; }
+
     .berita-card {
-        position: relative;
-        width: 100%;
-        margin-bottom: 20px;
+        position: relative !important;
+        width: calc(85vw) !important;
+        min-width: calc(85vw);
+        margin-bottom: 0;
         transform: none !important;
         opacity: 1 !important;
         filter: none !important;
+        z-index: 1 !important;
+        scroll-snap-align: start;
+        flex-shrink: 0;
     }
     
     .berita-card.active,
     .berita-card.right,
-    .berita-card.left {
+    .berita-card.left,
+    .berita-card.left-far,
+    .berita-card.right-far {
+        position: relative !important;
         transform: none !important;
-        width: 100%;
+        opacity: 1 !important;
+        filter: none !important;
+        width: calc(85vw) !important;
     }
     
     .carousel-nav {
-        display: none;
+        display: none !important;
     }
     
     .carousel-dots {
-        display: none;
+        display: none !important;
     }
 }
   </style>
+<style>
+  /* ===== BERITA SECTION ===== */
+  .berita-section {
+    padding: 80px 0 60px;
+    background: #f8fafc;
+  }
+
+  @media (max-width: 768px) {
+    .berita-section {
+      padding: 50px 0 40px;
+    }
+    .direktorat-card .p-5 {
+      padding: 24px !important;
+    }
+    .direktorat-card h2 {
+      font-size: 1.4rem;
+    }
+    .direktorat-card p {
+      font-size: 0.88rem;
+    }
+  }
+</style>
 </head>
 <body>
-<header class="header-glass">
+<header class="header-glass" id="mainHeader">
   <div class="container-custom">
-    <div class="navbar-glass">
+    <div class="navbar-glass" id="navbar">
       <div class="logo-area">
-        <div class="logo-icon"><i class="fas fa-paintbrush-fine"></i></div>
+        <div class="logo-icon"><i class="fas fa-palette"></i></div>
         <div class="logo-text">
           <h5>Unit Kemahasiswaan</h5>
           <span>Fakultas Industri Kreatif</span>
         </div>
       </div>
       
+      <!-- Nav links -->
       <div class="nav-links" id="navLinks">
+
         <a href="<?= base_url() ?>" class="active">Dashboard</a>
         <a href="<?= base_url('berita') ?>">Informasi</a>
         
-        <!-- ===== DROPDOWN LAYANAN - WIDE ===== -->
-        <div class="dropdown-wrapper" id="layananDropdown">
-          <a href="#" id="layananToggle">
-            Layanan <i class="fas fa-chevron-down"></i>
-          </a>
-          <div class="dropdown-menu-custom">
-            <div class="dropdown-grid">
-              <a href="<?= base_url('beasiswa') ?>" class="dropdown-item">
-                <div class="d-icon-wrapper">
-                  <i class="fas fa-graduation-cap"></i>
-                </div>
-                <div class="d-title">Pengajuan Beasiswa</div>
-                <div class="d-desc">Ajukan beasiswa prestasi & bantuan pendidikan</div>
-              </a>
-              <a href="<?= base_url('sertifikat') ?>" class="dropdown-item">
-                <div class="d-icon-wrapper">
-                  <i class="fas fa-certificate"></i>
-                </div>
-                <div class="d-title">Pengajuan Sertifikat</div>
-                <div class="d-desc">Cetak sertifikat prestasi mahasiswa & kegiatan</div>
-              </a>
-              <a href="<?= base_url('proposal') ?>" class="dropdown-item">
-                <div class="d-icon-wrapper">
-                  <i class="fas fa-clipboard-list"></i>
-                </div>
-                <div class="d-title">Pengajuan Proposal</div>
-                <div class="d-desc">Ajukan proposal kegiatan, PKM, & penelitian</div>
-              </a>
-              <!-- ===== PERUBAHAN: Layanan PPKPT diganti menjadi Pengajuan TAK ===== -->
-              <a href="<?= base_url('tak') ?>" class="dropdown-item">
-                <div class="d-icon-wrapper">
-                  <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="d-title">Pengajuan TAK</div>
-                <div class="d-desc">Ajukan pengakuan kegiatan & kompetensi mahasiswa</div>
-              </a>
-              <a href="<?= base_url('alumni') ?>" class="dropdown-item">
-                <div class="d-icon-wrapper">
-                  <i class="fas fa-users"></i>
-                </div>
-                <div class="d-title">Layanan Alumni</div>
-                <div class="d-desc">Forum alumni, tracer study, & jejaring karir</div>
-              </a>
+        <!-- Dropdown Layanan -->
+        <div class="nav-item-dropdown">
+            <a href="#" class="dropdown-toggle">
+                Layanan <i class="fas fa-chevron-down dropdown-toggle-icon"></i>
+            </a>
+            <div class="dropdown-menu-custom" id="layananDropdown">
+                <a href="<?= base_url('beasiswa') ?>">
+                    <i class="fas fa-graduation-cap"></i> Pengajuan Beasiswa
+                </a>
+                <a href="<?= base_url('sertifikat') ?>">
+                    <i class="fas fa-certificate"></i> Pengajuan Sertifikat
+                </a>
+                <a href="<?= base_url('proposal') ?>">
+                    <i class="fas fa-file-alt"></i> Pengajuan Proposal
+                </a>
+                <a href="<?= base_url('tak') ?>">
+                    <i class="fas fa-clipboard-list"></i> Pengajuan TAK
+                </a>
+                <a href="<?= base_url('forum_alumni') ?>">
+                    <i class="fas fa-users"></i> Layanan Alumni
+                </a>
             </div>
-          </div>
         </div>
         
         <a href="<?= base_url('forum_alumni') ?>">Forum Alumni</a>
       </div>
       
-      <?php if (isset($user_data) && $user_data && $user_data['logged_in']): ?>
-  <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
-    <?php if (!empty($user_data['foto'])): ?>
-      <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small">
-    <?php else: ?>
-      <i class="fas fa-user-circle"></i>
-    <?php endif; ?>
-    <?= htmlspecialchars($user_data['nama']) ?>
-  </a>
-<?php else: ?>
-  <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
-    <i class="fas fa-sign-in-alt"></i> MyTeLU
-  </a>
-<?php endif; ?>
+      <?php if(isset($user_data) && $user_data && $user_data['logged_in']): ?>
+      <div class="navbar-right-group">
+        <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
+          <?php if(!empty($user_data['foto'])): ?>
+            <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+          <?php else: ?>
+            <i class="fas fa-user-circle"></i>
+          <?php endif; ?>
+          <?= htmlspecialchars($user_data['nama']) ?>
+        </a>
+      <?php else: ?>
+      <div class="navbar-right-group">
+        <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
+          <i class="fas fa-sign-in-alt"></i> MyTeLU
+        </a>
+      <?php endif; ?>
+      
+      <button class="mobile-toggle" id="mobileNavBtn"><i class="fas fa-bars"></i></button>
+      </div>
     </div>
   </div>
 </header>
@@ -2017,107 +2106,6 @@
     });
   }
 
-  // ==================== BERITA CAROUSEL ====================
-  const dummyBerita = [
-    { id:1, judul:"FIK Gelar Pameran Kreatif 2025", kategori:"berita", tgl:"2025-03-15", views:320, ringkasan:"Pameran tahunan yang menampilkan karya terbaik mahasiswa Fakultas Industri Kreatif dalam bidang desain, animasi, dan fotografi." },
-    { id:2, judul:"Pengumuman Pendaftaran Beasiswa FIK", kategori:"pengumuman", tgl:"2025-03-10", views:587, ringkasan:"Informasi lengkap mengenai jadwal, persyaratan, dan prosedur pendaftaran beasiswa bagi mahasiswa FIK tahun ajaran 2025/2026." },
-    { id:3, judul:"Webinar: Kreatif di Era AI", kategori:"artikel", tgl:"2025-03-08", views:210, ringkasan:"Webinar yang membahas tentang peran kecerdasan buatan dalam industri kreatif, dengan narasumber dari praktisi terkemuka." },
-    { id:4, judul:"Lomba Desain Poster Nasional", kategori:"berita", tgl:"2025-03-05", views:150, ringkasan:"FIK membuka pendaftaran lomba desain poster tingkat nasional dengan tema 'Keberlanjutan dan Lingkungan'." },
-    { id:5, judul:"Pengumuman Hasil Seleksi PKM", kategori:"pengumuman", tgl:"2025-03-01", views:425, ringkasan:"Daftar nama mahasiswa yang lolos seleksi Program Kreativitas Mahasiswa (PKM) gelombang pertama tahun 2025." }
-  ];
-
-  let activeNewsIdx = 0;
-  let newsCardsArray = [];
-
-  function updateCarouselPosition() {
-    const total = newsCardsArray.length;
-    if (total === 0) return;
-    newsCardsArray.forEach((card, i) => {
-      card.classList.remove('active', 'left', 'right', 'left-far', 'right-far');
-      if (i === activeNewsIdx) {
-        card.classList.add('active');
-      } else {
-        let diff = i - activeNewsIdx;
-        if (diff === -1 || (activeNewsIdx === 0 && i === total-1)) {
-          card.classList.add('left');
-        } else if (diff === 1 || (activeNewsIdx === total-1 && i === 0)) {
-          card.classList.add('right');
-        } else {
-          if ((i < activeNewsIdx && (activeNewsIdx - i) > 1) || (activeNewsIdx === 0 && i === total-1)) {
-            card.classList.add('left-far');
-          } else {
-            card.classList.add('right-far');
-          }
-        }
-      }
-    });
-    renderDotsNews();
-  }
-
-  function renderDotsNews() {
-    const dotsContainer = document.getElementById('beritaDots');
-    if (!dotsContainer) return;
-    dotsContainer.innerHTML = '';
-    for (let i = 0; i < dummyBerita.length; i++) {
-      const dotSpan = document.createElement('button');
-      dotSpan.classList.add('dot');
-      if (i === activeNewsIdx) dotSpan.classList.add('active');
-      dotSpan.addEventListener('click', () => {
-        activeNewsIdx = i;
-        updateCarouselPosition();
-      });
-      dotsContainer.appendChild(dotSpan);
-    }
-  }
-
-  function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('id-ID', options);
-  }
-
-  function getCategoryBadge(category) {
-    const badges = {
-      'berita': '<span class="berita-category berita">Berita</span>',
-      'pengumuman': '<span class="berita-category pengumuman">Pengumuman</span>',
-      'artikel': '<span class="berita-category artikel">Artikel</span>'
-    };
-    return badges[category] || '<span class="berita-category">Umum</span>';
-  }
-
-  function renderNewsCarousel() {
-    const container = document.getElementById('beritaCarouselContainer');
-    if (!container) return;
-    container.innerHTML = '';
-    newsCardsArray = [];
-    
-    dummyBerita.forEach((item) => {
-      const cardDiv = document.createElement('div');
-      cardDiv.className = 'berita-card';
-      
-      cardDiv.innerHTML = `
-        <div class="berita-card-inner">
-          <div class="berita-image"><i class="fas fa-newspaper fa-3x text-secondary"></i></div>
-          <div class="berita-content">
-            ${getCategoryBadge(item.kategori)}
-            <h3 class="berita-title">${item.judul}</h3>
-            <div class="berita-meta">
-              <span><i class="far fa-calendar-alt"></i> ${formatDate(item.tgl)}</span>
-              <span><i class="fas fa-eye"></i> ${item.views} views</span>
-            </div>
-            <p class="berita-excerpt">${item.ringkasan}</p>
-            <a href="#" class="berita-readmore">Selengkapnya <i class="fas fa-arrow-right"></i></a>
-          </div>
-        </div>
-      `;
-      
-      container.appendChild(cardDiv);
-      newsCardsArray.push(cardDiv);
-    });
-    
-    activeNewsIdx = 0;
-    updateCarouselPosition();
-  }
-
   // ==================== ANIMASI ANGKA ====================
   function animateNumber(element, finalValue, duration = 800) {
     if (!element) return;
@@ -2160,17 +2148,14 @@
 
   // ==================== DROPDOWN LAYANAN ====================
   function initDropdown() {
-    const dropdownToggle = document.getElementById('layananToggle');
-    const dropdownWrapper = document.getElementById('layananDropdown');
+    const dropdownToggle = document.querySelector('.dropdown-toggle');
+    const dropdownMenu = document.querySelector('.dropdown-menu-custom');
     
-    if (dropdownToggle && dropdownWrapper) {
+    if (dropdownToggle && dropdownMenu) {
       dropdownToggle.addEventListener('click', function(e) {
-        e.preventDefault();
-        dropdownWrapper.classList.toggle('open');
-      });
-      document.addEventListener('click', function(e) {
-        if (!dropdownWrapper.contains(e.target)) {
-          dropdownWrapper.classList.remove('open');
+        if (window.innerWidth <= 768) {
+          e.preventDefault();
+          dropdownMenu.classList.toggle('show-mobile');
         }
       });
     }
@@ -2180,15 +2165,37 @@
   function initMobileToggle() {
     const mobileBtn = document.getElementById('mobileNavBtn');
     const navLinksDiv = document.getElementById('navLinks');
-    if(mobileBtn) {
+    if (mobileBtn) {
       mobileBtn.addEventListener('click', () => {
         navLinksDiv.classList.toggle('open');
       });
     }
+    // Tutup jika klik link di mobile
+    navLinksDiv && navLinksDiv.querySelectorAll('a:not(.dropdown-toggle)').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth <= 768) {
+          navLinksDiv.classList.remove('open');
+        }
+      });
+    });
   }
+
+  // ==================== NAVBAR SCROLL EFFECT ====================
+  window.addEventListener('scroll', () => {
+    const navbar = document.getElementById('navbar');
+    if (!navbar) return;
+    if (window.scrollY > 60) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
 
   // ==================== CAROUSEL NAVIGATION ====================
   function initCarouselNav() {
+    // Di mobile, carousel adalah horizontal scroll - skip JS navigation
+    if (window.innerWidth <= 768) return;
+
     const prevBtn = document.getElementById('prevBerita');
     const nextBtn = document.getElementById('nextBerita');
     if (prevBtn) {
@@ -2232,11 +2239,9 @@
   document.addEventListener('DOMContentLoaded', function() {
     renderOrganizations();
     renderPartnerLogos();
-    renderRecognitionLogos();  // <-- TAMBAHAN: render logo International Recognitions
-    renderNewsCarousel();
+    renderRecognitionLogos();
     initDropdown();
     initMobileToggle();
-    initCarouselNav();
     
     window.addEventListener('scroll', checkAndAnimateNumbers);
     setTimeout(checkAndAnimateNumbers, 500);

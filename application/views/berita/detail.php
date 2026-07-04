@@ -49,13 +49,14 @@
             border-radius: 10px;
         }
 
-        /* Header Glass */
+        /* HEADER GLASS */
         .header-glass {
-            position: absolute;
-            top: 24px;
+            position: fixed;
+            top: 16px;
             left: 0;
             right: 0;
-            z-index: 100;
+            z-index: 1000;
+            transition: top 0.3s ease;
         }
 
         .navbar-glass {
@@ -72,7 +73,7 @@
         }
 
         .navbar-glass.scrolled {
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0.88);
             backdrop-filter: blur(25px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
@@ -277,6 +278,17 @@
             font-size: 1.3rem;
             color: white;
             cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .navbar-right-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-close-btn {
+            display: none;
         }
 
         /* Hero Section Premium */
@@ -421,8 +433,8 @@
         }
 
         /* Share Buttons Sticky */
-        .berita-share {
-            position: sticky;
+        .share-sticky {
+            position: static;
             top: 100px;
         }
 
@@ -731,28 +743,62 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .navbar-glass {
-                flex-direction: row;
-                flex-wrap: wrap;
-                padding: 12px 20px;
-            }
-            
-            .nav-links {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                margin-top: 16px;
-                gap: 14px;
-                align-items: flex-start;
-            }
-            
-            .nav-links.open {
-                display: flex;
-            }
-            
-            .mobile-toggle {
-                display: block;
-            }
+      /* ===== NAVBAR MOBILE ===== */
+      .navbar-glass {
+        border-radius: 60px;
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .navbar-glass.scrolled { border-radius: 60px; }
+      .logo-area { order: 1; }
+      .navbar-right-group { order: 2; gap: 8px; }
+      .nav-links {
+        order: 3;
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        margin-top: 12px;
+        gap: 16px;
+        align-items: flex-start;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        font-size: 1rem;
+        color: white;
+      }
+      .nav-close-btn { display: none !important; }
+      .mobile-toggle { display: block; }
+             .btn-mytelu-custom {
+                 padding: 7px 12px;
+                 font-size: 0.78rem;
+                 gap: 6px;
+             }
+             
+             .dropdown-menu-custom {
+                 position: static !important;
+                 transform: none !important;
+                 width: 100% !important;
+                 background: rgba(255,255,255,0.08) !important;
+                 border-radius: 14px !important;
+                 padding: 8px !important;
+                 box-shadow: none !important;
+                 border: 1px solid rgba(255,255,255,0.15) !important;
+                 opacity: 0;
+                 max-height: 0;
+                 overflow: hidden;
+                 transition: opacity 0.3s, max-height 0.4s !important;
+                 visibility: visible !important;
+             }
+             .dropdown-menu-custom.show-mobile {
+                 opacity: 1 !important;
+                 max-height: 400px;
+                 display: block !important;
+             }
+             .dropdown-menu-custom a {
+                 padding: 10px 16px;
+                 color: rgba(255,255,255,0.85);
+             }
             
             .berita-header h1 {
                 font-size: 2rem;
@@ -767,6 +813,15 @@
                 font-size: 0.8rem;
             }
         }
+    
+    @media (max-width: 420px) {
+      .navbar-glass { padding: 8px 10px; }
+      .logo-text h5 { font-size: 0.78rem; }
+      .logo-text span { font-size: 0.62rem; }
+      .logo-icon { width: 38px; height: 38px; font-size: 1rem; }
+      .btn-mytelu-custom { padding: 6px 10px; font-size: 0.75rem; gap: 4px; }
+      .user-avatar-small { width: 24px !important; height: 24px !important; }
+    }
     </style>
 </head>
 <body>
@@ -810,31 +865,33 @@
                         <a href="<?= base_url('tak') ?>">
                             <i class="fas fa-clipboard-list"></i> Pengajuan TAK
                         </a>
-                        <a href="<?= base_url('layanan/forum_alumni') ?>">
+                        <a href="<?= base_url('forum_alumni') ?>">
                             <i class="fas fa-users"></i> Layanan Alumni
                         </a>
                     </div>
                 </div>
                 
-                <a href="#">Forum Alumni</a>
+                <a href="<?= base_url('forum_alumni') ?>">Forum Alumni</a>
             </div>
             
-            <?php if(isset($user_data) && $user_data && $user_data['logged_in']): ?>
-                <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
-                    <?php if(!empty($user_data['foto'])): ?>
-                        <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small">
-                    <?php else: ?>
-                        <i class="fas fa-user-circle"></i>
-                    <?php endif; ?>
-                    <?= htmlspecialchars($user_data['nama']) ?>
-                </a>
-            <?php else: ?>
-                <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
-                    <i class="fas fa-sign-in-alt"></i> MyTeLU
-                </a>
-            <?php endif; ?>
-            
-            <button class="mobile-toggle" id="mobileNavBtn"><i class="fas fa-bars"></i></button>
+            <div class="navbar-right-group">
+                <?php if(isset($user_data) && $user_data && $user_data['logged_in']): ?>
+                    <a href="<?= base_url('dashboard/profile') ?>" class="btn-mytelu-custom">
+                        <?php if(!empty($user_data['foto'])): ?>
+                            <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" class="user-avatar-small" style="width:28px; height:28px; border-radius:50%; object-fit:cover;">
+                        <?php else: ?>
+                            <i class="fas fa-user-circle"></i>
+                        <?php endif; ?>
+                        <?= htmlspecialchars($user_data['nama']) ?>
+                    </a>
+                <?php else: ?>
+                    <a href="<?= base_url('login') ?>" class="btn-mytelu-custom">
+                        <i class="fas fa-sign-in-alt"></i> MyTeLU
+                    </a>
+                <?php endif; ?>
+                
+                <button class="mobile-toggle" id="mobileNavBtn"><i class="fas fa-bars"></i></button>
+            </div>
         </div>
     </div>
 </header>
@@ -1050,8 +1107,8 @@
                 <ul class="list-unstyled">
                     <li class="mb-2"><a href="<?= base_url('dashboard') ?>">Dashboard</a></li>
                     <li class="mb-2"><a href="<?= base_url('berita') ?>">Berita</a></li>
-                    <li class="mb-2"><a href="#">Layanan Mahasiswa</a></li>
-                    <li class="mb-2"><a href="#">Forum Alumni</a></li>
+                    <li class="mb-2"><a href="<?= base_url('beasiswa') ?>">Layanan Mahasiswa</a></li>
+                    <li class="mb-2"><a href="<?= base_url('forum_alumni') ?>">Forum Alumni</a></li>
                 </ul>
             </div>
             <div class="col-md-4 mb-4">
@@ -1092,42 +1149,45 @@
 
     // Mobile toggle
     const mobileBtn = document.getElementById('mobileNavBtn');
-    const navLinks = document.getElementById('navLinks');
-    if(mobileBtn) {
-        mobileBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
-            
-            // Untuk mobile, handle dropdown Layanan
-            if(navLinks.classList.contains('open')) {
-                const dropdown = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
-                const dropdownParent = document.querySelector('.nav-item-dropdown');
-                if(dropdown && dropdownParent) {
-                    setTimeout(() => {
-                        dropdown.classList.add('show-mobile');
-                    }, 100);
-                }
-            } else {
-                const dropdown = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
-                if(dropdown) {
-                    dropdown.classList.remove('show-mobile');
-                }
-            }
+    const navLinksDiv = document.getElementById('navLinks');
+    
+    if (mobileBtn) {
+      mobileBtn.addEventListener('click', () => {
+        navLinksDiv.classList.toggle('open');
+      });
+    }
+
+    function closeNav() {
+        if(navLinksDiv) navLinksDiv.classList.remove('open');
+        document.body.style.overflow = '';
+        const dropdown = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
+        if(dropdown) dropdown.classList.remove('show-mobile');
+    }
+
+
+    // Tutup menu saat klik link (kecuali dropdown toggle)
+    if (navLinksDiv) {
+        navLinksDiv.querySelectorAll('a:not(.dropdown-toggle)').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) closeNav();
+            });
         });
     }
     
-    // Mobile dropdown toggle untuk layanan
-    if(window.innerWidth <= 768) {
-        const dropdownToggle = document.querySelector('.nav-item-dropdown > a');
-        if(dropdownToggle) {
-            dropdownToggle.addEventListener('click', function(e) {
-                e.preventDefault();
-                const dropdownMenu = document.querySelector('.nav-item-dropdown .dropdown-menu-custom');
-                if(dropdownMenu) {
-                    dropdownMenu.classList.toggle('show-mobile');
-                }
-            });
-        }
-    }
+     // Dropdown Mobile Logic
+     document.addEventListener('DOMContentLoaded', function() {
+       const dropdownToggle = document.querySelector('.dropdown-toggle');
+       const dropdownMenu = document.querySelector('.dropdown-menu-custom');
+       
+       if (dropdownToggle && dropdownMenu) {
+         dropdownToggle.addEventListener('click', function(e) {
+           if (window.innerWidth <= 768) {
+             e.preventDefault();
+             dropdownMenu.classList.toggle('show-mobile');
+           }
+         });
+       }
+     });
 
     // Navbar scroll effect
     window.addEventListener('scroll', () => {

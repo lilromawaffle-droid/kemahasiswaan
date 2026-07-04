@@ -76,11 +76,15 @@ class Berita extends CI_Controller
     /**
      * Halaman kategori berita
      */
-    public function kategori($kategori)
+    public function kategori($kategori = null)
     {
+        if (!$kategori) {
+            $kategori = $this->input->get('kategori');
+        }
+
         // Validate kategori
         $allowed = ['berita', 'pengumuman', 'artikel'];
-        if (!in_array($kategori, $allowed)) {
+        if (!$kategori || !in_array($kategori, $allowed)) {
             show_404();
         }
         
@@ -285,7 +289,12 @@ class Berita extends CI_Controller
         
         $this->form_validation->set_rules('berita_id', 'ID Berita', 'required|numeric');
         $this->form_validation->set_rules('nama', 'Nama', 'required|min_length[3]|max_length[100]');
-        $this->form_validation->set_rules('email', 'Email', 'valid_email');
+        
+        $email = $this->input->post('email');
+        if (!empty($email)) {
+            $this->form_validation->set_rules('email', 'Email', 'valid_email');
+        }
+        
         $this->form_validation->set_rules('komentar', 'Komentar', 'required|min_length[5]');
         
         if ($this->form_validation->run() == FALSE) {
@@ -314,7 +323,7 @@ class Berita extends CI_Controller
             'nama' => htmlspecialchars($this->input->post('nama')),
             'email' => htmlspecialchars($this->input->post('email')),
             'komentar' => nl2br(htmlspecialchars($this->input->post('komentar'))),
-            'status' => 'approved', // Langsung approved agar tampil
+            'status' => 'pending', // Masuk antrean moderasi
             'created_at' => date('Y-m-d H:i:s')
         ];
         
@@ -638,7 +647,7 @@ class Berita extends CI_Controller
         
         $this->db->select('berita_komentar.*, berita.judul as berita_judul, berita.slug as berita_slug');
         $this->db->from('berita_komentar');
-        $this->db->join('berita', 'berita.id = berita_komentar.berita_id');
+        $this->db->join('berita', 'berita.id = berita_komentar.berita_id', 'left');
         
         if ($status != 'all') {
             $this->db->where('berita_komentar.status', $status);
@@ -676,7 +685,8 @@ class Berita extends CI_Controller
     public function update_komentar($id)
     {
         if (!$this->session->userdata('logged_in') || $this->session->userdata('role') != 'admin') {
-            redirect('login');
+            $this->output->set_content_type('application/json')->set_output(json_encode(['status' => 'error', 'message' => 'Unauthorized']));
+            return;
         }
         
         $status = $this->input->post('status');
@@ -684,10 +694,10 @@ class Berita extends CI_Controller
         if ($status && in_array($status, ['approved', 'pending', 'spam'])) {
             $this->db->where('id', $id);
             $this->db->update('berita_komentar', ['status' => $status]);
-            $this->session->set_flashdata('success', 'Status komentar berhasil diupdate.');
+            $this->output->set_content_type('application/json')->set_output(json_encode(['status' => 'success', 'message' => 'Status komentar berhasil diupdate.']));
+        } else {
+            $this->output->set_content_type('application/json')->set_output(json_encode(['status' => 'error', 'message' => 'Status tidak valid.']));
         }
-        
-        redirect('berita/komentar');
     }
 
     /**

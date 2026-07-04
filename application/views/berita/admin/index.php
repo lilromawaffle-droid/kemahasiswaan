@@ -348,7 +348,7 @@
                 </a>
                 
                 
-                <a href="<?= base_url('berita/kategori/berita') ?>" target="_blank">
+                <a href="<?= base_url('berita') ?>" target="_blank">
                     <i class="fas fa-eye"></i>
                     <span>Lihat Website</span>
                 </a>
