@@ -7,6 +7,7 @@ class Admin extends CI_Controller {
         parent::__construct();
         $this->load->model('Proposal_model');
         $this->load->model('Organisasi_model');
+        $this->load->model('Log_model');
         $this->load->library(['session', 'form_validation', 'upload']);
         $this->load->helper(['url', 'file']);
         $this->_cek_admin();
@@ -396,5 +397,19 @@ class Admin extends CI_Controller {
 
         $file = $this->upload->data();
         return ['status' => 'success', 'path' => 'assets/organisasi/' . $file['file_name']];
+    }
+    
+    // =========================================================================
+    // HISTORY LOGS
+    // =========================================================================
+    public function history_log() {
+        $data = [
+            'title' => 'History Log Aktivitas',
+            'logs' => $this->Log_model->get_all_logs(),
+            'nama_user' => $this->_nama(),
+            'role' => $this->_role()
+        ];
+        
+        $this->load->view('admin/logs', $data);
     }
 }

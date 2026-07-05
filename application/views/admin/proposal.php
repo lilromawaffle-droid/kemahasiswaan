@@ -572,6 +572,13 @@
                 
                 <div class="menu-divider"></div>
                 
+                <a href="<?= base_url('admin/history_log') ?>">
+                    <i class="fas fa-history"></i>
+                    <span>History Log</span>
+                </a>
+                
+                <div class="menu-divider"></div>
+                
                 <a href="<?= base_url('dashboard') ?>">
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali ke Dashboard</span>
