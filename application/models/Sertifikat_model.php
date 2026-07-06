@@ -15,9 +15,8 @@ class Sertifikat_model extends CI_Model
         $kode   = $this->_generate_kode();
         $insert = array_merge($data, [
             'kode_pengajuan' => $kode,
-            'status'         => 'approved',
+            'status'         => 'submitted',
             'submitted_at'   => date('Y-m-d H:i:s'),
-            'approved_at'    => date('Y-m-d H:i:s'),
             'created_at'     => date('Y-m-d H:i:s'),
             'updated_at'     => date('Y-m-d H:i:s'),
         ]);
@@ -26,7 +25,7 @@ class Sertifikat_model extends CI_Model
         $id = $this->db->insert_id();
 
         if ($id) {
-            $this->_log($id, null, 'approved', 'Pengajuan otomatis disetujui', $user_id, 'mahasiswa');
+            $this->_log($id, null, 'submitted', 'Pengajuan baru diajukan', $user_id, 'mahasiswa');
             
             // Generate file export (CSV/Excel sederhana)
             $this->_export_to_csv($id, $insert);

@@ -67,7 +67,7 @@ class Sertifikat extends CI_Controller
     $kode = $this->Sertifikat_model->insert($data, $user_id);
 
     if ($kode) {
-        $this->session->set_flashdata('success', 'Pengajuan berhasil! Sertifikat telah diterbitkan. Kode: <strong>' . $kode . '</strong>');
+        $this->session->set_flashdata('success', 'Pengajuan pengajuan sertifikat berhasil dikirim! Menunggu persetujuan admin. Kode Pengajuan: <strong>' . $kode . '</strong>');
     } else {
         $this->session->set_flashdata('error', 'Gagal menyimpan pengajuan. Silakan coba lagi.');
     }
