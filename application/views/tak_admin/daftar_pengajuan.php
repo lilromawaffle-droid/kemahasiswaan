@@ -678,6 +678,22 @@
             .filter-item {
                 width: 100%;
             }
+
+            .table-stackable thead { display: none; }
+            .table-stackable tr {
+                display: block; margin-bottom: 1rem; border: 1px solid #e2e8f0; border-radius: 12px;
+                padding: 0; background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+            .table-stackable td {
+                display: flex; justify-content: space-between; align-items: center;
+                border-bottom: 1px solid #f1f5f9; padding: 0.8rem 1rem; font-size: 0.85rem;
+                text-align: right; gap: 1rem; white-space: normal; min-width: 0; word-wrap: break-word;
+            }
+            .table-stackable td::before {
+                content: attr(data-label); font-weight: 700; text-transform: uppercase;
+                font-size: 0.72rem; color: #64748b; text-align: left; flex-shrink: 0;
+            }
+            .table-stackable td:last-child { border-bottom: 0; justify-content: flex-end; }
         }
 
         @media (max-width: 576px) {
@@ -943,7 +959,7 @@
                 </h5>
                 
                 <div class="table-responsive">
-                    <table class="table" id="pengajuanTable">
+                    <table class="table table-hover align-middle table-stackable" id="pengajuanTable">
                         <thead>
                             <tr>
                                 <th>No</th>
@@ -973,28 +989,28 @@
                             <?php else: ?>
                                 <?php $no = 1; foreach($pengajuan as $p): ?>
                                 <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= date('d/m/Y H:i', strtotime($p->created_at)) ?></td>
-                                    <td><?= $p->nim ?></td>
-                                    <td>
+                                    <td data-label="No"><?= $no++ ?></td>
+                                    <td data-label="Tanggal"><?= date('d/m/Y H:i', strtotime($p->created_at)) ?></td>
+                                    <td data-label="NIM"><?= $p->nim ?></td>
+                                    <td data-label="Mahasiswa">
                                         <?= $p->nama_mahasiswa ?><br>
                                         <small style="font-size:0.65rem;"><?= $p->nim ?></small>
                                     </td>
-                                    <td><?= $p->program_studi ?></td>
-                                    <td><?= $p->nama_pic ?></td>
-                                    <td>
+                                    <td data-label="Prodi"><?= $p->program_studi ?></td>
+                                    <td data-label="PIC"><?= $p->nama_pic ?></td>
+                                    <td data-label="Judul Kegiatan">
                                         <?= substr($p->judul_kegiatan, 0, 30) ?>
                                         <?= strlen($p->judul_kegiatan) > 30 ? '...' : '' ?>
                                     </td>
-                                    <td><?= date('d/m/Y', strtotime($p->tanggal_kegiatan)) ?></td>
-                                    <td>
+                                    <td data-label="Tgl Kegiatan"><?= date('d/m/Y', strtotime($p->tanggal_kegiatan)) ?></td>
+                                    <td data-label="No. TAK">
                                         <?php if($p->no_tak): ?>
                                             <span class="badge bg-success" style="font-size:0.65rem;"><?= $p->no_tak ?></span>
                                         <?php else: ?>
                                             <span class="text-muted">-</span>
                                         <?php endif; ?>
                                     </td>
-                                    <td>
+                                    <td data-label="Status">
                                         <?php
                                         $status_class = '';
                                         $status_icon = '';
@@ -1026,8 +1042,8 @@
                                             <?= $status_text ?>
                                         </span>
                                     </td>
-                                    <td>
-                                        <div class="d-flex gap-1">
+                                    <td data-label="Aksi">
+                                        <div class="d-flex gap-1 flex-wrap justify-content-end">
                                             <a href="<?= base_url('tak_admin/detail_pengajuan/' . $p->id) ?>" class="btn-action" title="Detail">
                                                 <i class="fas fa-eye"></i>
                                             </a>

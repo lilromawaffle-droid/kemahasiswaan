@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body {
             font-family: 'Montserrat', sans-serif;
@@ -29,9 +32,11 @@
             overflow-y: auto;
         }
 
+        
+
         .sidebar-header {
             padding: 2rem 1.5rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .sidebar-header h3 {
@@ -55,7 +60,7 @@
             align-items: center;
             gap: 1rem;
             padding: 0.8rem 1.5rem;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: all 0.3s ease;
             border-left: 3px solid transparent;
@@ -75,7 +80,7 @@
 
         .sidebar-menu .menu-divider {
             height: 1px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             margin: 1rem 0;
         }
 
@@ -144,7 +149,7 @@
             border-radius: 15px;
             padding: 1.5rem;
             margin-bottom: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
         .filter-bar .form-control,
@@ -202,7 +207,7 @@
             background: white;
             border-radius: 15px;
             padding: 1.5rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
             transition: all 0.3s ease;
             border-bottom: 3px solid transparent;
         }
@@ -252,7 +257,7 @@
             background: white;
             border-radius: 15px;
             padding: 2rem;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
         }
 
         .table-card h3 {
@@ -450,14 +455,16 @@
             margin-bottom: 0.5rem;
         }
 
-        .form-control, .form-select {
+        .form-control,
+        .form-select {
             border: 1px solid #e0e0e0;
             border-radius: 10px;
             padding: 0.7rem 1rem;
             transition: all 0.3s ease;
         }
 
-        .form-control:focus, .form-select:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: #E67E22;
             box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
         }
@@ -520,11 +527,11 @@
                 width: 0;
                 display: none;
             }
-            
+
             .admin-main {
                 margin-left: 0;
             }
-            
+
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -537,22 +544,291 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* === MOBILE RESPONSIVE === */
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        .mobile-topbar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1100;
+            background: linear-gradient(135deg, #2C3E50, #1a2632);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .topbar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 54px;
+            padding: 0 0.75rem;
+            gap: 0.5rem;
+        }
+
+        .hamburger-btn {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 38px;
+            height: 38px;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .hamburger-btn:hover {
+            background: rgba(230, 126, 34, 0.6);
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 0;
+            justify-content: flex-end;
+        }
+
+        .topbar-username {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.78rem;
+            font-weight: 500;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .topbar-username i {
+            color: #E67E22;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .topbar-username .name-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            min-width: 0;
+        }
+
+        .topbar-logout {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 0.38rem 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            white-space: nowrap;
+            transition: background 0.2s;
+            flex-shrink: 0;
+        }
+
+        .topbar-logout:hover {
+            background: #c0392b;
+            color: white;
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(2px);
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-topbar {
+                display: block;
+            }
+
+            .hamburger-btn {
+                display: flex;
+            }
+
+            .admin-sidebar {
+                position: fixed !important;
+                left: -280px !important;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                width: 280px !important;
+                display: block !important;
+            }
+
+            .admin-sidebar.open {
+                left: 0 !important;
+            }
+
+            .admin-main {
+                margin-left: 0 !important;
+                padding: 1rem !important;
+                padding-top: 4.5rem !important;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+
+            .admin-header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 0.75rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .admin-header h1 {
+                font-size: 1.3rem !important;
+                word-break: break-word;
+            }
+
+            .admin-header .user-info>span,
+            .admin-header .user-info .logout-btn {
+                display: none;
+            }
+
+            .admin-header .user-info {
+                width: 100%;
+                justify-content: stretch;
+            }
+
+            .admin-header .user-info .btn {
+                flex: 0 0 100%;
+                text-align: center;
+                padding: 0.65rem 1rem;
+                border-radius: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .filter-bar {
+                padding: 1rem;
+            }
+
+            .filter-bar .row>div {
+                width: 100%;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                max-width: 100%;
+            }
+
+            .table td,
+            .table th {
+                font-size: 0.78rem;
+                padding: 0.4rem 0.5rem;
+                white-space: nowrap;
+            }
+
+            .action-btns {
+                flex-wrap: wrap;
+            }
+
+            .modal-body {
+                padding: 1.2rem;
+            }
+
+            .modal-dialog {
+                margin: 0.5rem;
+            }
+
+            .modal-dialog.modal-lg {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
+
 <body>
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar" id="mobileTopbar">
+        <div class="topbar-inner">
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                <i class="fas fa-bars" id="hamburgerIcon"></i>
+            </button>
+            <div class="topbar-right">
+                <span class="topbar-username">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="name-text"><?= $this->session->userdata('nama') ?></span>
+                </span>
+                <a href="<?= base_url('login/logout') ?>" class="topbar-logout">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     <div class="admin-wrapper">
         <!-- Sidebar -->
-        <div class="admin-sidebar">
+        <div class="admin-sidebar" id="adminSidebar">
             <div class="sidebar-header">
                 <h3>Admin FIK</h3>
                 <p>Manajemen Proposal</p>
             </div>
-            
+            <div>
+            </div>
             <div class="sidebar-menu">
+                <a href="<?= base_url('admin/edit_hero') ?>" class="<?= ($this->uri->segment(2) == 'edit_hero') ? 'active' : '' ?>">
+                    <i class="fas fa-desktop"></i>
+                    <span>Dashboard</span>
+                </a>
+
                 <a href="<?= base_url('admin/proposal') ?>" class="active">
                     <i class="fas fa-file-alt"></i>
                     <span>Proposal</span>
                 </a>
+
+                <a href="<?= base_url('admin/beasiswa') ?>">
+                    <i class="fas fa-graduation-cap"></i><span>Beasiswa</span>
+                </a>
+
                 <a href="<?= base_url('sertifikat/admin') ?>">
                     <i class="fas fa-certificate"></i>
                     <span>Sertifikat</span>
@@ -569,16 +845,47 @@
                     <i class="fas fa-users"></i>
                     <span>Organisasi</span>
                 </a>
-                
+
+                <a href="<?= base_url('admin/direktorat') ?>">
+                    <i class="fas fa-building"></i>
+                    <span>Direktorat</span>
+                </a>
+
+                <a href="<?= base_url('admin/mitra') ?>">
+                    <i class="fas fa-handshake"></i>
+                    <span>Mitra & Recog</span>
+                </a>
+
+                <a href="<?= base_url('admin/testimoni') ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Testimoni Alumni</span>
+                </a>
+
+                <a href="<?= base_url('admin/tentang_kami') ?>">
+                    <i class="fas fa-info-circle"></i><span>Tentang Kami</span>
+                </a>
+
                 <div class="menu-divider"></div>
-                
+
+                <a href="<?= base_url('admin/forum_alumni') ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Forum Alumni</span>
+                    <?php 
+                    $CI =& get_instance();
+                    $pending_posts = $CI->db->where('status', 'pending')->count_all_results('forum_alumni_posts');
+                    if ($pending_posts > 0): 
+                    ?>
+                        <span class="badge bg-danger ms-auto"><?= $pending_posts ?></span>
+                    <?php endif; ?>
+                </a>
+
                 <a href="<?= base_url('admin/history_log') ?>">
                     <i class="fas fa-history"></i>
                     <span>History Log</span>
                 </a>
-                
+
                 <div class="menu-divider"></div>
-                
+
                 <a href="<?= base_url('dashboard') ?>">
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali ke Dashboard</span>
@@ -599,23 +906,23 @@
             </div>
 
             <!-- Flash Messages -->
-            <?php if($this->session->flashdata('success')): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i><?= $this->session->flashdata('success') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <?php if ($this->session->flashdata('success')): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i><?= $this->session->flashdata('success') ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             <?php endif; ?>
 
-            <?php if($this->session->flashdata('error')): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i><?= $this->session->flashdata('error') ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <?php if ($this->session->flashdata('error')): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i><?= $this->session->flashdata('error') ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             <?php endif; ?>
 
             <!-- Stats Cards -->
             <?php
-            $counts = $stat_counts ?? ['draft'=>0, 'submitted'=>0, 'disetujui'=>0, 'ditolak'=>0];
+            $counts = $stat_counts ?? ['draft' => 0, 'submitted' => 0, 'disetujui' => 0, 'ditolak' => 0];
             $total_all = array_sum($counts);
             $pending_count = $counts['submitted'] ?? 0;
             ?>
@@ -718,69 +1025,74 @@
                             <?php if (!empty($proposals)): ?>
                                 <?php $no = 1; ?>
                                 <?php foreach ($proposals as $p): ?>
-                                <tr onclick="openDetail(<?= $p->id ?>)" style="cursor: pointer;">
-                                    <td><?= $no++ ?></td>
-                                    <td>
-                                        <code style="font-size:0.8rem;"><?= htmlspecialchars($p->kode_proposal ?? '-') ?></code>
-                                    </td>
-                                    <td>
-                                        <strong><?= htmlspecialchars($p->nama_kegiatan ?? '-') ?></strong>
-                                    </td>
-                                    <td><?= htmlspecialchars($p->nama_pengaju ?? '-') ?></td>
-                                    <td><?= htmlspecialchars($p->nama_ormawa ?? '-') ?></td>
-                                    <td>
-                                        <?php if ($p->tipe_proposal == 'himpunan'): ?>
-                                            <span class="badge bg-info text-white">Ormawa</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-primary text-white">BEM/DPM</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td><?= date('d/m/Y', strtotime($p->created_at)) ?></td>
-                                    <td>
-                                        <?php if (!empty($p->tanggal_kegiatan) && $p->tanggal_kegiatan != '0000-00-00'): ?>
-                                            <?= date('d/m/Y', strtotime($p->tanggal_kegiatan)) ?>
-                                        <?php else: ?>
-                                            -
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <?php if ($p->status == 'submitted'): ?>
-                                            <span class="badge-status badge-submitted">Menunggu</span>
-                                        <?php elseif ($p->status == 'disetujui'): ?>
-                                            <span class="badge-status badge-approved">Disetujui</span>
-                                        <?php elseif ($p->status == 'ditolak'): ?>
-                                            <span class="badge-status badge-rejected">Ditolak</span>
-                                        <?php else: ?>
-                                            <span class="badge-status badge-draft">Draft</span>
-                                        <?php endif; ?>
-                                    </td>
-                                    <td onclick="event.stopPropagation()">
-                                        <div class="action-btns">
-                                            <!-- Detail -->
-                                            <button class="btn-action btn-view" title="Detail" onclick="openDetail(<?= $p->id ?>)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-
+                                    <tr onclick="openDetail(<?= $p->id ?>)" style="cursor: pointer;">
+                                        <td><?= $no++ ?></td>
+                                        <td>
+                                            <code style="font-size:0.8rem;"><?= htmlspecialchars($p->kode_proposal ?? '-') ?></code>
+                                        </td>
+                                        <td>
+                                            <strong><?= htmlspecialchars($p->nama_kegiatan ?? '-') ?></strong>
+                                        </td>
+                                        <td><?= htmlspecialchars($p->nama_pengaju ?? '-') ?></td>
+                                        <td><?= htmlspecialchars($p->nama_ormawa ?? '-') ?></td>
+                                        <td>
+                                            <?php if ($p->tipe_proposal == 'himpunan'): ?>
+                                                <span class="badge bg-info text-white">Ormawa</span>
+                                            <?php else: ?>
+                                                <span class="badge bg-primary text-white">BEM/DPM</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td><?= date('d/m/Y', strtotime($p->created_at)) ?></td>
+                                        <td>
+                                            <?php if (!empty($p->tanggal_kegiatan) && $p->tanggal_kegiatan != '0000-00-00'): ?>
+                                                <?= date('d/m/Y', strtotime($p->tanggal_kegiatan)) ?>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
                                             <?php if ($p->status == 'submitted'): ?>
-                                                <!-- Setujui -->
-                                                <button class="btn-action btn-approve" title="Setujui" onclick="openApprove(<?= $p->id ?>, '<?= htmlspecialchars(addslashes($p->nama_kegiatan)) ?>')">
-                                                    <i class="fas fa-check"></i>
-                                                </button>
-                                                <!-- Tolak -->
-                                                <button class="btn-action btn-reject" title="Tolak" onclick="openReject(<?= $p->id ?>, '<?= htmlspecialchars(addslashes($p->nama_kegiatan)) ?>')">
-                                                    <i class="fas fa-times"></i>
-                                                </button>
+                                                <span class="badge-status badge-submitted">Menunggu</span>
+                                            <?php elseif ($p->status == 'disetujui'): ?>
+                                                <span class="badge-status badge-approved">Disetujui</span>
+                                            <?php elseif ($p->status == 'ditolak'): ?>
+                                                <span class="badge-status badge-rejected">Ditolak</span>
+                                            <?php else: ?>
+                                                <span class="badge-status badge-draft">Draft</span>
                                             <?php endif; ?>
+                                        </td>
+                                        <td onclick="event.stopPropagation()">
+                                            <div class="action-btns">
+                                                <!-- Detail -->
+                                                <button class="btn-action btn-view" title="Detail" onclick="openDetail(<?= $p->id ?>)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
 
-                                            <?php if ($p->status == 'disetujui'): ?>
-                                                <!-- PDF -->
-                                                <a href="<?= base_url('proposal/pdf/'.$p->id) ?>" target="_blank" class="btn-action btn-pdf" title="Lihat PDF">
-                                                    <i class="fas fa-file-pdf"></i>
+                                                <?php if ($p->status == 'submitted'): ?>
+                                                    <!-- Setujui -->
+                                                    <button class="btn-action btn-approve" title="Setujui" onclick="openApprove(<?= $p->id ?>, '<?= htmlspecialchars(addslashes($p->nama_kegiatan)) ?>')">
+                                                        <i class="fas fa-check"></i>
+                                                    </button>
+                                                    <!-- Tolak -->
+                                                    <button class="btn-action btn-reject" title="Tolak" onclick="openReject(<?= $p->id ?>, '<?= htmlspecialchars(addslashes($p->nama_kegiatan)) ?>')">
+                                                        <i class="fas fa-times"></i>
+                                                    </button>
+                                                <?php endif; ?>
+
+                                                <?php if ($p->status == 'disetujui'): ?>
+                                                    <!-- PDF -->
+                                                    <a href="<?= base_url('proposal/pdf/' . $p->id) ?>" target="_blank" class="btn-action btn-pdf" title="Lihat PDF">
+                                                        <i class="fas fa-file-pdf"></i>
+                                                    </a>
+                                                <?php endif; ?>
+
+                                                <!-- Hapus -->
+                                                <a href="<?= base_url('admin/proposal/hapus/' . $p->id) ?>" class="btn-action btn-reject" title="Hapus" onclick="confirmDelete(event, '<?= base_url('admin/proposal/hapus/' . $p->id) ?>')">
+                                                    <i class="fas fa-trash"></i>
                                                 </a>
-                                            <?php endif; ?>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
@@ -868,8 +1180,86 @@
 
                     <div class="mb-3">
                         <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="catatanReject" rows="4" placeholder="Tuliskan alasan penolakan..."></textarea>
+                        <textarea class="form-control" id="catatanReject" rows="3" placeholder="Tuliskan alasan penolakan..."></textarea>
                         <div class="text-danger" id="rejectError" style="display: none;">Alasan penolakan wajib diisi</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block fw-bold mb-2">Tandai Bagian yang Salah:</label>
+                        <div class="d-flex flex-column gap-2 p-3 bg-light rounded" style="border: 1px solid #e0e0e0;">
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_ormawa" id="checkOrmawa">
+                                <label class="form-check-label" for="checkOrmawa">Nama Ormawa / Komunitas</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_tahun" id="checkTahun">
+                                <label class="form-check-label" for="checkTahun">Tahun Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_tema" id="checkTema">
+                                <label class="form-check-label" for="checkTema">Tema Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_jenis" id="checkJenis">
+                                <label class="form-check-label" for="checkJenis">Jenis Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_nama_kegiatan" id="checkNamaKeg">
+                                <label class="form-check-label" for="checkNamaKeg">Nama Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_balai" id="checkBalai">
+                                <label class="form-check-label" for="checkBalai">Balai / Divisi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_latar_belakang" id="checkLatar">
+                                <label class="form-check-label" for="checkLatar">Latar Belakang</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_tujuan" id="checkTujuan">
+                                <label class="form-check-label" for="checkTujuan">Tujuan & Manfaat</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_sasaran" id="checkSasaran">
+                                <label class="form-check-label" for="checkSasaran">Sasaran Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_tanggal" id="checkTanggal">
+                                <label class="form-check-label" for="checkTanggal">Tanggal Pelaksanaan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_waktu_mulai" id="checkWaktuMulai">
+                                <label class="form-check-label" for="checkWaktuMulai">Waktu Mulai</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_waktu_selesai" id="checkWaktuSelesai">
+                                <label class="form-check-label" for="checkWaktuSelesai">Waktu Selesai</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_lokasi" id="checkLokasi">
+                                <label class="form-check-label" for="checkLokasi">Tempat / Lokasi</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_peserta" id="checkPeserta">
+                                <label class="form-check-label" for="checkPeserta">Estimasi Peserta</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_panitia" id="checkPanitia">
+                                <label class="form-check-label" for="checkPanitia">Susunan Panitia</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_rundown" id="checkRundown">
+                                <label class="form-check-label" for="checkRundown">Susunan Acara (Rundown)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_sumber_dana" id="checkSumberDana">
+                                <label class="form-check-label" for="checkSumberDana">Sumber Dana</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="f_dana_ajukan" id="checkDanaAjukan">
+                                <label class="form-check-label" for="checkDanaAjukan">Dana yang Diajukan</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -884,18 +1274,18 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         let currentApproveId = null;
         let currentRejectId = null;
         let currentDetailId = null;
 
         // Open Detail Modal - Perbaiki
-function openDetail(id) {
-    currentDetailId = id;
-    
-    // Tampilkan loading
-    document.getElementById('detailBody').innerHTML = `
+        function openDetail(id) {
+            currentDetailId = id;
+
+            // Tampilkan loading
+            document.getElementById('detailBody').innerHTML = `
         <div class="text-center py-4">
             <div class="spinner-border text-warning" role="status">
                 <span class="visually-hidden">Loading...</span>
@@ -903,81 +1293,81 @@ function openDetail(id) {
             <p class="mt-2">Memuat data...</p>
         </div>
     `;
-    
-    // Sembunyikan tombol approve/reject dulu
-    document.getElementById('modalApproveBtn').style.display = 'none';
-    document.getElementById('modalRejectBtn').style.display = 'none';
-    
-    // Tampilkan modal
-    const modal = new bootstrap.Modal(document.getElementById('modalDetail'));
-    modal.show();
-    
-    // Fetch data
-    fetch('<?= base_url("admin/get_proposal_detail/") ?>' + id, {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.status === 'success') {
-            const p = data.data;
-            
-            // Format tanggal
-            const fmtDate = (d) => {
-                if (!d || d === '0000-00-00' || d === null) return '-';
-                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-                const date = new Date(d);
-                if (isNaN(date.getTime())) return '-';
-                return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
-            };
 
-            // Format rupiah
-            const fmtRp = (n) => {
-                if (!n && n !== 0) return 'Rp 0';
-                return 'Rp ' + Number(n).toLocaleString('id-ID');
-            };
+            // Sembunyikan tombol approve/reject dulu
+            document.getElementById('modalApproveBtn').style.display = 'none';
+            document.getElementById('modalRejectBtn').style.display = 'none';
 
-            // Status badge
-            let statusBadge = '';
-            if (p.status == 'submitted') statusBadge = '<span class="badge-status badge-submitted">Menunggu Review</span>';
-            else if (p.status == 'disetujui') statusBadge = '<span class="badge-status badge-approved">Disetujui</span>';
-            else if (p.status == 'ditolak') statusBadge = '<span class="badge-status badge-rejected">Ditolak</span>';
-            else statusBadge = '<span class="badge-status badge-draft">Draft</span>';
+            // Tampilkan modal
+            const modal = new bootstrap.Modal(document.getElementById('modalDetail'));
+            modal.show();
 
-            // Catatan admin
-            let catatanHtml = '';
-            if (p.catatan_admin && p.catatan_admin.trim() !== '') {
-                if (p.status == 'ditolak') {
-                    catatanHtml = `
+            // Fetch data
+            fetch('<?= base_url("admin/get_proposal_detail/") ?>' + id, {
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        const p = data.data;
+
+                        // Format tanggal
+                        const fmtDate = (d) => {
+                            if (!d || d === '0000-00-00' || d === null) return '-';
+                            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+                            const date = new Date(d);
+                            if (isNaN(date.getTime())) return '-';
+                            return date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+                        };
+
+                        // Format rupiah
+                        const fmtRp = (n) => {
+                            if (!n && n !== 0) return 'Rp 0';
+                            return 'Rp ' + Number(n).toLocaleString('id-ID');
+                        };
+
+                        // Status badge
+                        let statusBadge = '';
+                        if (p.status == 'submitted') statusBadge = '<span class="badge-status badge-submitted">Menunggu Review</span>';
+                        else if (p.status == 'disetujui') statusBadge = '<span class="badge-status badge-approved">Disetujui</span>';
+                        else if (p.status == 'ditolak') statusBadge = '<span class="badge-status badge-rejected">Ditolak</span>';
+                        else statusBadge = '<span class="badge-status badge-draft">Draft</span>';
+
+                        // Catatan admin
+                        let catatanHtml = '';
+                        if (p.catatan_admin && p.catatan_admin.trim() !== '') {
+                            if (p.status == 'ditolak') {
+                                catatanHtml = `
                         <div class="alert alert-danger mb-3">
                             <i class="fas fa-exclamation-circle me-2"></i>
                             <strong>Catatan Penolakan:</strong> ${p.catatan_admin}
                         </div>
                     `;
-                } else if (p.status == 'disetujui') {
-                    catatanHtml = `
+                            } else if (p.status == 'disetujui') {
+                                catatanHtml = `
                         <div class="alert alert-success mb-3">
                             <i class="fas fa-check-circle me-2"></i>
                             <strong>Catatan:</strong> ${p.catatan_admin}
                         </div>
                     `;
-                }
-            }
+                            }
+                        }
 
-            // Nama pengaju
-            const namaPengaju = p.nama_pengaju || '-';
-            const nim = p.nim || '-';
-            const jenisKegiatan = p.jenis_kegiatan || '-';
-            const tipeProposal = p.tipe_proposal == 'himpunan' ? 'Ormawa / Himpunan' : 'BEM / DPM';
+                        // Nama pengaju
+                        const namaPengaju = p.nama_pengaju || '-';
+                        const nim = p.nim || '-';
+                        const jenisKegiatan = p.jenis_kegiatan || '-';
+                        const tipeProposal = p.tipe_proposal == 'himpunan' ? 'Ormawa / Himpunan' : 'BEM / DPM';
 
-            document.getElementById('detailBody').innerHTML = `
+                        document.getElementById('detailBody').innerHTML = `
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
                         <h5 class="mb-1">${p.nama_kegiatan || '-'}</h5>
@@ -1067,164 +1457,176 @@ function openDetail(id) {
                 </div>
             `;
 
-            // Render HTML dari TinyMCE
-            (function() {
-                var el;
-                el = document.getElementById('admin-latar-belakang');
-                if (el) el.innerHTML = p.latar_belakang || '-';
-                el = document.getElementById('admin-tujuan');
-                if (el) el.innerHTML = p.tujuan_manfaat || '-';
-            })();
+                        // Render HTML dari TinyMCE
+                        (function() {
+                            var el;
+                            el = document.getElementById('admin-latar-belakang');
+                            if (el) el.innerHTML = p.latar_belakang || '-';
+                            el = document.getElementById('admin-tujuan');
+                            if (el) el.innerHTML = p.tujuan_manfaat || '-';
+                        })();
 
-            // Show/hide action buttons in modal footer
-            const approveBtn = document.getElementById('modalApproveBtn');
-            const rejectBtn = document.getElementById('modalRejectBtn');
-            
-            if (p.status === 'submitted') {
-                approveBtn.style.display = 'inline-block';
-                rejectBtn.style.display = 'inline-block';
-                
-                approveBtn.onclick = () => {
-                    bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
-                    openApprove(p.id, p.nama_kegiatan);
-                };
-                
-                rejectBtn.onclick = () => {
-                    bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
-                    openReject(p.id, p.nama_kegiatan);
-                };
-            } else {
-                approveBtn.style.display = 'none';
-                rejectBtn.style.display = 'none';
-            }
-        } else {
-            document.getElementById('detailBody').innerHTML = '<p class="text-danger">Gagal memuat data: ' + (data.message || 'Unknown error') + '</p>';
+                        // Show/hide action buttons in modal footer
+                        const approveBtn = document.getElementById('modalApproveBtn');
+                        const rejectBtn = document.getElementById('modalRejectBtn');
+
+                        if (p.status === 'submitted') {
+                            approveBtn.style.display = 'inline-block';
+                            rejectBtn.style.display = 'inline-block';
+
+                            approveBtn.onclick = () => {
+                                bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
+                                openApprove(p.id, p.nama_kegiatan);
+                            };
+
+                            rejectBtn.onclick = () => {
+                                bootstrap.Modal.getInstance(document.getElementById('modalDetail')).hide();
+                                openReject(p.id, p.nama_kegiatan);
+                            };
+                        } else {
+                            approveBtn.style.display = 'none';
+                            rejectBtn.style.display = 'none';
+                        }
+                    } else {
+                        document.getElementById('detailBody').innerHTML = '<p class="text-danger">Gagal memuat data: ' + (data.message || 'Unknown error') + '</p>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('detailBody').innerHTML = '<p class="text-danger">Terjadi kesalahan koneksi</p>';
+                });
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        document.getElementById('detailBody').innerHTML = '<p class="text-danger">Terjadi kesalahan koneksi</p>';
-    });
-}
 
         // Open Approve Modal
         function openApprove(id, nama) {
             currentApproveId = id;
             document.getElementById('approveNama').textContent = nama;
             document.getElementById('catatanApprove').value = '';
-            
+
             new bootstrap.Modal(document.getElementById('modalApprove')).show();
         }
 
         // Submit Approve - Perbaiki
-function submitApprove() {
-    if (!currentApproveId) return;
-    
-    const catatan = document.getElementById('catatanApprove').value.trim();
-    
-    // Show loading
-    const btn = event.target;
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
-    btn.disabled = true;
+        function submitApprove() {
+            if (!currentApproveId) return;
 
-    const formData = new URLSearchParams();
-    formData.append('catatan', catatan);
+            const catatan = document.getElementById('catatanApprove').value.trim();
 
-    fetch('<?= base_url("admin/setujui/") ?>' + currentApproveId, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: formData.toString()
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+            // Show loading
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
+            btn.disabled = true;
+
+            const formData = new URLSearchParams();
+            formData.append('catatan', catatan);
+
+            fetch('<?= base_url("admin/setujui/") ?>' + currentApproveId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData.toString()
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Tutup modal approve
+                        bootstrap.Modal.getInstance(document.getElementById('modalApprove')).hide();
+
+                        // Tampilkan pesan sukses
+                        alert('Proposal berhasil disetujui!');
+
+                        // Reload halaman
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan koneksi');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data.status === 'success') {
-            // Tutup modal approve
-            bootstrap.Modal.getInstance(document.getElementById('modalApprove')).hide();
-            
-            // Tampilkan pesan sukses
-            alert('Proposal berhasil disetujui!');
-            
-            // Reload halaman
-            location.reload();
-        } else {
-            alert('Error: ' + data.message);
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan koneksi');
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
-}
 
-// Submit Reject - Perbaiki
-function submitReject() {
-    if (!currentRejectId) return;
-    
-    const catatan = document.getElementById('catatanReject').value.trim();
-    if (!catatan) {
-        document.getElementById('rejectError').style.display = 'block';
-        return;
-    }
-    
-    // Show loading
-    const btn = event.target;
-    const originalText = btn.innerHTML;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
-    btn.disabled = true;
+        // Submit Reject - Perbaiki
+        function submitReject() {
+            if (!currentRejectId) return;
 
-    const formData = new URLSearchParams();
-    formData.append('catatan', catatan);
+            const catatanText = document.getElementById('catatanReject').value.trim();
+            if (!catatanText) {
+                document.getElementById('rejectError').style.display = 'block';
+                return;
+            }
 
-    fetch('<?= base_url("admin/tolak/") ?>' + currentRejectId, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: formData.toString()
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+            // Get checked wrong fields
+            const wrongFields = [];
+            document.querySelectorAll('.reject-field-check:checked').forEach(chk => {
+                wrongFields.push(chk.value);
+            });
+
+            // Package into a JSON envelope
+            const envelope = {
+                catatan: catatanText,
+                wrong_fields: wrongFields
+            };
+
+            // Show loading
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Memproses...';
+            btn.disabled = true;
+
+            const formData = new URLSearchParams();
+            formData.append('catatan', JSON.stringify(envelope));
+
+            fetch('<?= base_url("admin/tolak/") ?>' + currentRejectId, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData.toString()
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.status === 'success') {
+                        // Tutup modal reject
+                        bootstrap.Modal.getInstance(document.getElementById('modalReject')).hide();
+
+                        // Tampilkan pesan sukses
+                        alert('Proposal telah ditolak');
+
+                        // Reload halaman
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.message);
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan koneksi');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
         }
-        return response.json();
-    })
-    .then(data => {
-        if (data.status === 'success') {
-            // Tutup modal reject
-            bootstrap.Modal.getInstance(document.getElementById('modalReject')).hide();
-            
-            // Tampilkan pesan sukses
-            alert('Proposal telah ditolak');
-            
-            // Reload halaman
-            location.reload();
-        } else {
-            alert('Error: ' + data.message);
-            btn.innerHTML = originalText;
-            btn.disabled = false;
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan koneksi');
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-    });
-}
 
         // Open Reject Modal
         function openReject(id, nama) {
@@ -1232,9 +1634,54 @@ function submitReject() {
             document.getElementById('rejectNama').textContent = nama;
             document.getElementById('catatanReject').value = '';
             document.getElementById('rejectError').style.display = 'none';
-            
+
+            // Reset checkboxes
+            document.querySelectorAll('.reject-field-check').forEach(chk => chk.checked = false);
+
             new bootstrap.Modal(document.getElementById('modalReject')).show();
-                            }
+        }
+
+        // Mobile Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.getElementById('adminSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const icon = document.getElementById('hamburgerIcon');
+            const isOpen = sidebar.classList.toggle('open');
+            overlay.classList.toggle('active', isOpen);
+            icon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+        }
+        document.querySelectorAll('.sidebar-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 768) {
+                    const sidebar = document.getElementById('adminSidebar');
+                    const overlay = document.getElementById('sidebarOverlay');
+                    sidebar.classList.remove('open');
+                    overlay.classList.remove('active');
+                    document.getElementById('hamburgerIcon').className = 'fas fa-bars';
+                }
+            });
+        });
+
+        // Custom SweetAlert2 Delete Confirmation
+        function confirmDelete(event, url) {
+            event.preventDefault();
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Proposal ini akan dihapus permanen beserta seluruh berkas & log terkait!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#95a5a6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                borderRadius: '15px'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        }
     </script>
 </body>
+
 </html>

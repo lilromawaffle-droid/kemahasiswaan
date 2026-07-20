@@ -60,133 +60,6 @@
             transition: padding 0.3s ease;
         }
 
-        .header-glass.scrolled {
-            padding: 8px 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(20px);
-        }
-
-        .navbar-glass {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 10px 32px;
-            border: 1px solid rgba(255,255,255,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-glass.scrolled {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(25px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(145deg, var(--orange), var(--orange-dark));
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.4rem;
-            box-shadow: 0 6px 12px rgba(249,115,22,0.3);
-        }
-
-        .logo-text h5 {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-            letter-spacing: -0.3px;
-        }
-
-        .logo-text span {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.85);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            position: relative;
-            padding-bottom: 4px;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--orange);
-            transition: 0.3s ease;
-        }
-
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            width: 100%;
-        }
-
-
-        .btn-mytelu-custom {
-            background: linear-gradient(105deg, var(--orange), var(--orange-dark));
-            padding: 8px 28px;
-            border-radius: 40px;
-            font-weight: 700;
-            color: white;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-mytelu-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 20px rgba(249,115,22,0.4);
-            color: white;
-        }
-
-        .user-avatar-small {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 16px;
-            padding: 8px 16px;
-            font-size: 1.3rem;
-            color: white;
-            cursor: pointer;
-        }
-
         /* Hero Section Premium */
         .berita-header {
             position: relative;
@@ -330,7 +203,7 @@
 
         /* Share Buttons Sticky */
         .berita-share {
-            position: sticky;
+            position: static;
             top: 90px;
         }
 
@@ -639,29 +512,6 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .navbar-glass {
-                flex-direction: column;
-                align-items: stretch;
-                padding: 12px 20px;
-            }
-            
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 12px;
-                gap: 16px;
-            }
-            
-            .nav-links.open {
-                display: flex !important;
-            }
-            
-            .mobile-toggle {
-                display: block;
-                align-self: flex-end;
-            }
-
             .berita-header h1 {
                 font-size: 2rem;
             }
@@ -677,7 +527,8 @@
 
             /* Sticky share: disable on mobile, show inline */
             .berita-share {
-                position: static;
+                /* position: static; */
+                top: 70px;
             }
         }
     </style>

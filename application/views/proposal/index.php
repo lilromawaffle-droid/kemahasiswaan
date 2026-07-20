@@ -72,159 +72,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ========== HEADER GLASS ========== */
-        .header-glass {
-            position: absolute;
-            top: 24px;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-glass {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 12px 32px;
-            border: 1px solid rgba(255,255,255,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-glass.scrolled {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(25px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(145deg, var(--orange), var(--orange-dark));
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.4rem;
-            box-shadow: 0 6px 12px rgba(249,115,22,0.3);
-        }
-
-        .logo-text h5 {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-            letter-spacing: -0.3px;
-        }
-
-        .logo-text span {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.85);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            position: relative;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            position: relative;
-            padding-bottom: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--orange);
-            transition: 0.3s ease;
-        }
-
-        .nav-links a.active::after,
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Dropdown Layanan - Dashboard Style */
-        .dropdown-wrapper { position: relative; }
-        .dropdown-wrapper > a { display: flex; align-items: center; gap: 8px; padding: 6px 0; color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; border-bottom: 2px solid transparent; padding-bottom: 4px; transition: all 0.3s ease; }
-        .dropdown-wrapper > a i { font-size: 0.7rem; transition: transform 0.3s ease; }
-        .dropdown-wrapper.open > a i { transform: rotate(180deg); }
-        .dropdown-wrapper > a.active, .dropdown-wrapper > a:hover { border-bottom-color: #f97316; }
-        .dropdown-menu-custom { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(-12px); background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(30px); border-radius: 24px; padding: 16px 20px; min-width: 820px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; }
-        .dropdown-wrapper.open .dropdown-menu-custom { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-        .dropdown-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .dropdown-item { padding: 24px 16px; text-align: center; border-radius: 16px; transition: all 0.3s ease; cursor: pointer; text-decoration: none; color: #1f2937; background: rgba(249, 115, 22, 0.02); min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .dropdown-item:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(249, 115, 22, 0.15); background: #fff7ed; }
-        .dropdown-item .d-icon-wrapper { width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: #f8fafc; }
-        .dropdown-item .d-icon-wrapper i { font-size: 1.6rem; color: #f97316; }
-        .dropdown-item .d-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: #1f2937; }
-        .dropdown-item .d-desc { font-size: 0.75rem; color: #6b7280; line-height: 1.5; font-weight: 400; max-width: 140px; margin: 0 auto; }
-
-        .btn-mytelu-custom {
-            background: linear-gradient(105deg, var(--orange), var(--orange-dark));
-            padding: 8px 28px;
-            border-radius: 40px;
-            font-weight: 700;
-            color: white;
-            transition: 0.3s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-mytelu-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 20px rgba(249, 115, 22, 0.4);
-            color: white;
-        }
-
-        .user-avatar-small {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 8px 14px;
-            font-size: 1.4rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-toggle:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
         /* ========== HERO SECTION ========== */
         .hero-proposal {
             background: linear-gradient(135deg, #f97316 0%, #fdba74 100%);
@@ -1232,17 +1079,6 @@
         }
 
         @media (max-width: 768px) {
-            .navbar-glass { flex-direction: column; align-items: stretch; }
-            .nav-links { display: none; flex-direction: column; align-items: center; margin-top: 12px; gap: 16px; }
-            .nav-links.open { display: flex !important; }
-            .mobile-toggle { display: block; align-self: flex-end; }
-            .dropdown-menu-custom { min-width: unset; width: 95vw; max-width: 380px; left: 50%; padding: 10px; }
-            .dropdown-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
-            .dropdown-item { padding: 12px 8px; min-height: 100px; }
-            .dropdown-item .d-icon-wrapper { width: 36px; height: 36px; margin-bottom: 6px; }
-            .dropdown-item .d-icon-wrapper i { font-size: 1rem; }
-            .dropdown-item .d-title { font-size: 0.7rem; white-space: normal; }
-            .dropdown-item .d-desc { font-size: 0.6rem; max-width: unset; }
             .hero-proposal {
                 padding: 120px 0 60px;
             }
@@ -1300,10 +1136,32 @@
                 right: 16px;
                 left: 16px;
             }
-            .custom-toast {
-                min-width: auto;
-                width: calc(100% - 32px);
-            }
+        /* ========== VALIDATION HIGHLIGHT ========== */
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #ef4444 !important;
+            background-image: none !important;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1) !important;
+        }
+        .form-control.is-invalid:focus, .form-select.is-invalid:focus {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2) !important;
+        }
+
+        /* Locked and Wrong styling */
+        .field-wrong-js {
+            border: 2px solid #ef4444 !important;
+            background-color: #fff5f5 !important;
+        }
+        .locked-by-js {
+            background-color: #f1f5f9 !important;
+            cursor: not-allowed !important;
+            opacity: 0.75;
+        }
+        .wrong-feedback-js {
+            color: #ef4444;
+            font-size: 0.78rem;
+            margin-top: 4px;
+            font-weight: 500;
         }
     </style>
 
@@ -1866,6 +1724,24 @@
             loadProposalsFromServer();
         }
 
+        // JS Lock and Block Helpers for Proposal
+        function blockFocus(e) {
+            if (this.classList.contains('locked-by-js')) {
+                this.blur();
+            }
+        }
+        function blockKeydown(e) {
+            if (this.classList.contains('locked-by-js')) {
+                e.preventDefault();
+            }
+        }
+        function blockClick(e) {
+            if (this.classList.contains('locked-by-js')) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        }
+
         function editProposal(id, resubmit = false) {
             const p = proposals.find(x => x.id == id);
             if (!p) return;
@@ -1874,9 +1750,115 @@
             isResubmit = resubmit;
             fillFormData(p);
 
+            // Clean old wrong fields classes/messages
+            document.querySelectorAll('.wrong-feedback-js').forEach(el => el.remove());
+            const allFormElements = document.querySelectorAll('#view-form .form-control, #view-form .form-select');
+            allFormElements.forEach(el => {
+                el.classList.remove('field-wrong-js');
+                el.classList.remove('locked-by-js');
+                el.removeEventListener('focus', blockFocus);
+                el.removeEventListener('keydown', blockKeydown);
+                el.removeEventListener('click', blockClick);
+            });
+
+            // Clean TinyMCE borders
+            if (typeof tinymce !== 'undefined') {
+                ['f_latar_belakang', 'f_tujuan', 'f_sasaran'].forEach(tid => {
+                    const ed = tinymce.get(tid);
+                    if (ed) {
+                        const container = ed.getContainer();
+                        if (container) container.style.border = '';
+                    }
+                });
+            }
+
+            let firstWrongFieldId = null;
+
+            if (isResubmit && p.catatan_admin) {
+                let wrongFields = [];
+                try {
+                    const envelope = JSON.parse(p.catatan_admin);
+                    if (envelope && Array.isArray(envelope.wrong_fields)) {
+                        wrongFields = envelope.wrong_fields;
+                    }
+                } catch(e) {
+                    // fall through if not json
+                }
+
+                if (wrongFields.length > 0) {
+                    const formInputs = [
+                        'f_ormawa', 'f_tahun', 'f_tema', 'f_jenis', 'f_nama_kegiatan', 'f_balai',
+                        'f_latar_belakang', 'f_tujuan', 'f_sasaran', 'f_tanggal', 'f_waktu_mulai',
+                        'f_waktu_selesai', 'f_lokasi', 'f_peserta', 'f_panitia', 'f_rundown',
+                        'f_sumber_dana', 'f_dana_ajukan'
+                    ];
+
+                    formInputs.forEach(fid => {
+                        const el = document.getElementById(fid);
+                        const isTiny = (typeof tinymce !== 'undefined' && tinymce.get(fid));
+                        
+                        if (wrongFields.includes(fid)) {
+                            // Wrong field
+                            if (isTiny) {
+                                const container = tinymce.get(fid).getContainer();
+                                if (container) {
+                                    container.style.border = '2px solid #ef4444';
+                                    container.style.borderRadius = '14px';
+                                }
+                            } else if (el) {
+                                el.classList.add('field-wrong-js');
+                            }
+
+                            // Add warning label
+                            const targetEl = isTiny ? tinymce.get(fid).getContainer() : el;
+                            if (targetEl) {
+                                const feedback = document.createElement('div');
+                                feedback.className = 'wrong-feedback-js';
+                                feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Bagian ini ditandai salah oleh admin, mohon perbaiki.';
+                                targetEl.parentNode.appendChild(feedback);
+                            }
+
+                            if (!firstWrongFieldId) firstWrongFieldId = fid;
+                        } else {
+                            // Correct field - lock it
+                            if (isTiny) {
+                                // TinyMCE readonly mode toggle
+                                tinymce.get(fid).mode.set('readonly');
+                            } else if (el) {
+                                el.classList.add('locked-by-js');
+                                el.addEventListener('focus', blockFocus);
+                                el.addEventListener('keydown', blockKeydown);
+                                el.addEventListener('click', blockClick);
+                            }
+                        }
+                    });
+                }
+            } else {
+                // If normal edit (draft), make sure TinyMCEs are editable
+                if (typeof tinymce !== 'undefined') {
+                    ['f_latar_belakang', 'f_tujuan', 'f_sasaran'].forEach(tid => {
+                        const ed = tinymce.get(tid);
+                        if (ed) ed.mode.set('design');
+                    });
+                }
+            }
+
             document.getElementById('view-list').classList.add('d-none');
             document.getElementById('view-form').classList.remove('d-none');
-            goToStep(1);
+            
+            // Determine step to go to based on first wrong field
+            let stepToGo = 1;
+            if (firstWrongFieldId) {
+                const step1Fields = ['f_ormawa', 'f_tahun', 'f_tema', 'f_jenis', 'f_nama_kegiatan', 'f_balai'];
+                const step2Fields = ['f_latar_belakang', 'f_tujuan', 'f_sasaran'];
+                const step3Fields = ['f_tanggal', 'f_waktu_mulai', 'f_waktu_selesai', 'f_lokasi', 'f_peserta', 'f_panitia', 'f_rundown'];
+                const step4Fields = ['f_sumber_dana', 'f_dana_ajukan'];
+
+                if (step2Fields.includes(firstWrongFieldId)) stepToGo = 2;
+                else if (step3Fields.includes(firstWrongFieldId)) stepToGo = 3;
+                else if (step4Fields.includes(firstWrongFieldId)) stepToGo = 4;
+            }
+            goToStep(stepToGo);
 
             const btnSubmit = document.getElementById('btn-submit');
             if (btnSubmit) {
@@ -1885,6 +1867,20 @@
                 } else {
                     btnSubmit.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Submit Proposal';
                 }
+            }
+
+            // Smooth scroll to the wrong input element if any
+            if (firstWrongFieldId) {
+                setTimeout(() => {
+                    const el = document.getElementById(firstWrongFieldId);
+                    const isTiny = (typeof tinymce !== 'undefined' && tinymce.get(firstWrongFieldId));
+                    const targetEl = isTiny ? tinymce.get(firstWrongFieldId).getContainer() : el;
+                    
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        if (!isTiny) targetEl.focus();
+                    }
+                }, 800);
             }
         }
 
@@ -1939,7 +1935,6 @@
             if (n === totalSteps) populateReview();
 
             currentStep = n;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function nextStep() {
@@ -1974,21 +1969,56 @@
             };
             
             const fields = requiredFields[step] || [];
+            let isValid = true;
+            let firstInvalidEl = null;
+
             for (const fieldId of fields) {
-                var val = '';
-                var el = document.getElementById(fieldId);
-                if (typeof tinymce !== 'undefined' && tinymce.get(fieldId)) {
+                let val = '';
+                const el = document.getElementById(fieldId);
+                const isTiny = (typeof tinymce !== 'undefined' && tinymce.get(fieldId));
+                
+                if (isTiny) {
                     val = tinymce.get(fieldId).getContent({ format: 'text' }).trim();
                 } else if (el) {
                     val = el.value.trim();
                 }
+
                 if (!val) {
+                    isValid = false;
                     showToast(`${labels[fieldId] || 'Field'} wajib diisi`, 'error');
-                    if (el) el.focus();
-                    return false;
+                    
+                    if (isTiny) {
+                        const editorContainer = tinymce.get(fieldId).getContainer();
+                        if (editorContainer) {
+                            editorContainer.style.border = '2px solid #ef4444';
+                            editorContainer.style.borderRadius = '14px';
+                        }
+                    } else if (el) {
+                        el.classList.add('is-invalid');
+                    }
+
+                    if (!firstInvalidEl) {
+                        firstInvalidEl = isTiny ? tinymce.get(fieldId) : el;
+                    }
+                } else {
+                    if (isTiny) {
+                        const editorContainer = tinymce.get(fieldId).getContainer();
+                        if (editorContainer) {
+                            editorContainer.style.border = '';
+                        }
+                    } else if (el) {
+                        el.classList.remove('is-invalid');
+                    }
                 }
             }
-            return true;
+
+            if (!isValid && firstInvalidEl) {
+                if (typeof firstInvalidEl.focus === 'function') {
+                    firstInvalidEl.focus();
+                }
+            }
+
+            return isValid;
         }
 
         // ==================== REVIEW ====================
@@ -2070,7 +2100,48 @@
             setVal('f_panitia', p.panitia);
             setVal('f_rundown', p.rundown);
             setVal('f_sumber_dana', p.sumber_dana);
-            setVal('f_dana_ajukan', p.dana_diajukan);
+            
+            // Format dana diajukan properly
+            if (p.dana_diajukan) {
+                const num = parseFloat(p.dana_diajukan) || 0;
+                setVal('f_dana_ajukan', num.toLocaleString('id-ID'));
+            } else {
+                setVal('f_dana_ajukan', '0');
+            }
+
+            // Populate Budget (RAB) Table Rows
+            const budgetRows = document.getElementById('budget-rows');
+            if (budgetRows) {
+                budgetRows.innerHTML = '';
+                budgetRowCount = 0;
+                
+                if (p.rab_items && p.rab_items.length > 0) {
+                    p.rab_items.forEach(item => {
+                        budgetRowCount++;
+                        const row = document.createElement('tr');
+                        row.id = `brow-${budgetRowCount}`;
+                        
+                        // Parse harga satuan properly
+                        const hargaSatuan = parseFloat(item.harga_satuan) || 0;
+                        const formattedHarga = hargaSatuan.toLocaleString('id-ID');
+                        const totalJumlah = (parseFloat(item.volume) || 1) * hargaSatuan;
+                        
+                        row.innerHTML = `
+                            <td>${budgetRowCount}</td>
+                            <td><input type="text" class="form-control-sm w-100" placeholder="Uraian item..." style="border:none; background:transparent;" value="${escapeHtml(item.uraian || '')}"></td>
+                            <td><input type="number" class="form-control-sm w-100 budget-vol" placeholder="1" style="border:none; background:transparent;" onchange="calcRowTotal(this)" value="${item.volume || 1}"></td>
+                            <td><input type="text" class="form-control-sm w-100" placeholder="Unit" style="border:none; background:transparent;" value="${escapeHtml(item.satuan || 'Unit')}"></td>
+                            <td><input type="text" class="form-control-sm w-100 budget-harga" placeholder="0" style="border:none; background:transparent;" oninput="calcRowTotal(this); formatRupiah(this)" value="${formattedHarga}"></td>
+                            <td class="budget-total row-total" id="rtotal-${budgetRowCount}">Rp ${totalJumlah.toLocaleString('id-ID')}</td>
+                            <td><button type="button" class="btn-remove-row" onclick="removeBudgetRow(this)"><i class="fas fa-times"></i></button></td>
+                        `;
+                        budgetRows.appendChild(row);
+                    });
+                } else {
+                    addBudgetRow();
+                }
+                updateBudgetTotal();
+            }
         }
 
         function resetForm() {
@@ -2080,13 +2151,20 @@
                          'f_sumber_dana', 'f_dana_ajukan'];
             ids.forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.value = '';
+                if (el) {
+                    el.value = '';
+                    el.classList.remove('is-invalid');
+                }
             });
             // Clear TinyMCE
             if (typeof tinymce !== 'undefined') {
                 ['f_latar_belakang', 'f_tujuan', 'f_sasaran'].forEach(function (id) {
-                    var ed = tinymce.get(id);
-                    if (ed) ed.setContent('');
+                    const ed = tinymce.get(id);
+                    if (ed) {
+                        ed.setContent('');
+                        const container = ed.getContainer();
+                        if (container) container.style.border = '';
+                    }
                 });
             }
             const budgetRows = document.getElementById('budget-rows');
@@ -2305,6 +2383,7 @@
                         rundown: p.susunan_acara,
                         catatan_admin: p.catatan_admin,
                         status: p.status || 'draft',
+                        rab_items: p.rab_items || [],
                         type: p.tipe_proposal === 'himpunan' ? 'ormawa' : 'kompetisi'
                     }));
                     renderProposalList();

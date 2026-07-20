@@ -13,6 +13,8 @@ class Dashboard extends CI_Controller
          $this->load->model('Berita_model'); 
         $this->load->model('ChatML_model');    // Model untuk machine learning
         $this->load->model('Organisasi_model'); // Model organisasi kemahasiswaan
+        $this->load->model('Mitra_model'); // Model mitra kerjasama dan recognitions
+        $this->load->model('Testimoni_model');
 
         // Load library yang diperlukan
         $this->load->library('session');
@@ -43,68 +45,71 @@ class Dashboard extends CI_Controller
     /**
      * Halaman Utama Dashboard
      */
-    public function index()
-    {
-        // Cek apakah user sudah login
-        $is_logged_in = $this->session->userdata('logged_in');
-        $this->load->model('Berita_model');
-        // Data untuk dikirim ke view
-        $data['title'] = 'Dashboard Fakultas Industri Kreatif - Telkom University';
-// Ambil 5 berita terbaru untuk carousel
+public function index()
+{
+    $is_logged_in = $this->session->userdata('logged_in');
+    $this->load->model('Berita_model');
+    $data['title'] = 'Dashboard Fakultas Industri Kreatif - Telkom University';
     $data['berita_list'] = $this->Berita_model->get_latest_berita(5);
-        // Data user dari session (jika login)
-        if ($is_logged_in) {
-            $data['user_data'] = [
-                'user_id' => $this->session->userdata('user_id'),
-                'username' => $this->session->userdata('username'),
-                'nama' => $this->session->userdata('nama'),
-                'nim' => $this->session->userdata('nim'),
-                'nidn' => $this->session->userdata('nidn'),
-                'role' => $this->session->userdata('role'),
-                'prodi' => $this->session->userdata('prodi'),
-                'foto' => $this->session->userdata('foto'),
-                'logged_in' => true
-            ];
+    
 
-            // Format role untuk tampilan
-            $role_display = '';
-            switch ($data['user_data']['role']) {
-                case 'mahasiswa':
-                    $role_display = 'Mahasiswa';
-                    break;
-                case 'dosen':
-                case 'dosen_pembina':
-                    $role_display = 'Dosen';
-                    break;
-                case 'kemahasiswaan':
-                    $role_display = 'Staff Kemahasiswaan';
-                    break;
-                case 'kaprodi':
-                    $role_display = 'Kepala Program Studi';
-                    break;
-                case 'bemdpm':
-                    $role_display = 'BEM/DPM';
-                    break;
-                default:
-                    $role_display = ucfirst($data['user_data']['role']);
-            }
-            $data['user_data']['role_display'] = $role_display;
+    
+    $this->load->model('Direktorat_model');
+        $direktorat_all = $this->Direktorat_model->get_aktif();
+        $data['direktorat'] = !empty($direktorat_all) ? $direktorat_all[0] : null;
 
-            // Format waktu login
-            $data['user_data']['login_time'] = date('d F Y H:i:s');
-        } else {
-            $data['user_data'] = null;
-        }
+    // ==== TAMBAHKAN INI ====
+    $json_path = FCPATH . 'assets/hero_setting.json';
+    $default_hero = [
+            'card1_title' => 'Complete chapters', 'card1_sub' => 'to earn certificates',
+            'card2_title' => 'Forum Alumni',      'card2_sub' => 'Jaringan profesional',
+            'card3_title' => 'MyTeLU',            'card3_sub' => 'Dashboard interaktif',
+            'card4_title' => 'Beasiswa',          'card4_sub' => 'Peluang bantuan biaya',
+            'card5_title' => 'Karier',            'card5_sub' => 'Persiapan dunia kerja',
+            'winner1_text' => '',
+            'winner2_text' => '',
+        ];
+    $data['hero_text'] = file_exists($json_path)
+        ? array_merge($default_hero, json_decode(file_get_contents($json_path), true) ?: [])
+        : $default_hero;
 
-        // Load view dashboard
-        $this->load->view('dashboard', $data);
+    // Cache-buster untuk gambar hero
+    $img_path = FCPATH . 'assets/mahasiswa.png';
+    $data['hero_img_version'] = file_exists($img_path) ? filemtime($img_path) : time();
+    // ========================
+
+    if ($is_logged_in) {
+         $data['user_data'] = [
+        'user_id'   => $this->session->userdata('user_id'),
+        'nama'      => $this->session->userdata('nama'),
+        'foto'      => $this->session->userdata('foto'),
+        'role'      => $this->session->userdata('role'),
+        'logged_in' => true,
+    ];
+    } else {
+        $data['user_data'] = null;
     }
 
-    // ==================== CHATML MACHINE LEARNING - PERBAIKAN UTAMA ====================
+    $data['mitra_list'] = $this->Mitra_model->get_all_mitra(true);
+    $data['recog_list'] = $this->Mitra_model->get_all_recog(true);
+    
+    $this->db->order_by('id', 'DESC');
+    $data['testimoni_list'] = $this->Testimoni_model->get_all_testimoni(true);
+    $this->load->view('dashboard', $data);
+}
 
-    /**
-     * Process chat message - VERSI PERBAIKAN
-     */
+    public function direktorat() {
+        $this->load->model('Direktorat_model');
+        $direktorat_all = $this->Direktorat_model->get_aktif();
+        $data['direktorat'] = !empty($direktorat_all) ? $direktorat_all[0] : null;
+        $data['title'] = $data['direktorat'] ? $data['direktorat']->judul : 'Direktorat';
+        $data['user_data'] = $this->session->userdata('logged_in') ? [
+            'nama' => $this->session->userdata('nama'),
+            'role' => $this->session->userdata('role'),
+            'logged_in' => true
+        ] : null;
+        $this->load->view('direktorat_detail', $data);
+    }
     public function process_chat()
     {
         header('Content-Type: application/json');
@@ -925,7 +930,7 @@ class Dashboard extends CI_Controller
             redirect('login');
         } else {
             $username = $this->input->post('username');
-            $password = md5($this->input->post('password'));
+            $password = $this->input->post('password');
 
             $user = $this->Dashboard_model->cek_login($username, $password);
 
@@ -1148,57 +1153,57 @@ class Dashboard extends CI_Controller
     /**
      * Halaman Profil User
      */
-    public function profile()
-    {
-        // Cek apakah user sudah login
-        if (!$this->session->userdata('logged_in')) {
-            redirect('login');
-        }
+    // public function profile()
+    // {
+    //     // Cek apakah user sudah login
+    //     if (!$this->session->userdata('logged_in')) {
+    //         redirect('login');
+    //     }
 
-        $data['title'] = 'Profil Saya - FIK Telkom University';
+    //     $data['title'] = 'Profil Saya - FIK Telkom University';
 
-        // Data user dari session
-        $data['user_data'] = [
-            'user_id' => $this->session->userdata('user_id'),
-            'username' => $this->session->userdata('username'),
-            'nama' => $this->session->userdata('nama'),
-            'nim' => $this->session->userdata('nim'),
-            'nidn' => $this->session->userdata('nidn'),
-            'role' => $this->session->userdata('role'),
-            'prodi' => $this->session->userdata('prodi'),
-            'foto' => $this->session->userdata('foto'),
-            'logged_in' => true
-        ];
+    //     // Data user dari session
+    //     $data['user_data'] = [
+    //         'user_id' => $this->session->userdata('user_id'),
+    //         'username' => $this->session->userdata('username'),
+    //         'nama' => $this->session->userdata('nama'),
+    //         'nim' => $this->session->userdata('nim'),
+    //         'nidn' => $this->session->userdata('nidn'),
+    //         'role' => $this->session->userdata('role'),
+    //         'prodi' => $this->session->userdata('prodi'),
+    //         'foto' => $this->session->userdata('foto'),
+    //         'logged_in' => true
+    //     ];
 
-        // Format role untuk tampilan
-        $role_display = '';
-        switch ($data['user_data']['role']) {
-            case 'mahasiswa':
-                $role_display = 'Mahasiswa';
-                break;
-            case 'dosen':
-            case 'dosen_pembina':
-                $role_display = 'Dosen';
-                break;
-            case 'kemahasiswaan':
-                $role_display = 'Staff Kemahasiswaan';
-                break;
-            case 'kaprodi':
-                $role_display = 'Kepala Program Studi';
-                break;
-            case 'bemdpm':
-                $role_display = 'BEM/DPM';
-                break;
-            default:
-                $role_display = ucfirst($data['user_data']['role']);
-        }
-        $data['user_data']['role_display'] = $role_display;
+    //     // Format role untuk tampilan
+    //     $role_display = '';
+    //     switch ($data['user_data']['role']) {
+    //         case 'mahasiswa':
+    //             $role_display = 'Mahasiswa';
+    //             break;
+    //         case 'dosen':
+    //         case 'dosen_pembina':
+    //             $role_display = 'Dosen';
+    //             break;
+    //         case 'kemahasiswaan':
+    //             $role_display = 'Staff Kemahasiswaan';
+    //             break;
+    //         case 'kaprodi':
+    //             $role_display = 'Kepala Program Studi';
+    //             break;
+    //         case 'bemdpm':
+    //             $role_display = 'BEM/DPM';
+    //             break;
+    //         default:
+    //             $role_display = ucfirst($data['user_data']['role']);
+    //     }
+    //     $data['user_data']['role_display'] = $role_display;
 
-        // Format waktu login
-        $data['user_data']['login_time'] = date('d F Y H:i:s', $this->session->userdata('login_time') ?? time());
+    //     // Format waktu login
+    //     $data['user_data']['login_time'] = date('d F Y H:i:s', $this->session->userdata('login_time') ?? time());
 
-        $this->load->view('profile', $data);
-    }
+    //     $this->load->view('profile', $data);
+    // }
     /**
  * Get berita untuk ditampilkan di dashboard via AJAX
  */

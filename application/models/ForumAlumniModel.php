@@ -14,6 +14,7 @@ class ForumAlumniModel extends CI_Model {
         $this->db->select('p.*, u.nama, u.foto as user_foto, u.email');
         $this->db->from('forum_alumni_posts p');
         $this->db->join('users u', 'u.id = p.user_id');
+        $this->db->where('p.status', 'approved');
         $this->db->order_by('p.created_at', 'DESC');
         $this->db->limit($limit, $offset);
         $query = $this->db->get();
@@ -22,8 +23,11 @@ class ForumAlumniModel extends CI_Model {
         // Get likes and comments for each post
         foreach ($posts as &$post) {
             $post['likes'] = $this->get_post_likes($post['id']);
+            $post['likes_count'] = $this->get_like_count($post['id']);
             $post['user_has_liked'] = $this->user_has_liked($post['id']);
-            $post['comments'] = $this->get_post_comments($post['id'], 3);
+            $post['comments'] = $this->get_post_comments($post['id'], 5);
+            $post['comments_count'] = $this->get_comment_count($post['id']);
+            $post['top_level_comments_count'] = $this->get_top_level_comment_count($post['id']);
         }
         
         return $posts;
@@ -78,11 +82,32 @@ class ForumAlumniModel extends CI_Model {
         $this->db->join('users u', 'u.id = c.user_id');
         $this->db->where('c.post_id', $post_id);
         $this->db->order_by('c.created_at', 'ASC');
-        if ($limit) {
-            $this->db->limit($limit);
-        }
         $query = $this->db->get();
-        return $query->result_array();
+        $all_comments = $query->result_array();
+        
+        $top_level = [];
+        $replies = [];
+        
+        foreach ($all_comments as $c) {
+            if (empty($c['parent_id'])) {
+                $c['replies'] = [];
+                $top_level[$c['id']] = $c;
+            } else {
+                $replies[] = $c;
+            }
+        }
+        
+        foreach ($replies as $r) {
+            if (isset($top_level[$r['parent_id']])) {
+                $top_level[$r['parent_id']]['replies'][] = $r;
+            }
+        }
+        
+        $result = array_values($top_level);
+        if ($limit) {
+            $result = array_slice($result, 0, $limit);
+        }
+        return $result;
     }
     
     // Create post
@@ -239,7 +264,8 @@ class ForumAlumniModel extends CI_Model {
     
     // Get total posts count
     public function get_total_posts() {
-        return $this->db->count_all('forum_alumni_posts');
+        $this->db->where('status', 'approved');
+        return $this->db->count_all_results('forum_alumni_posts');
     }
     
     // Get user posts
@@ -275,6 +301,13 @@ class ForumAlumniModel extends CI_Model {
         $this->db->where('post_id', $post_id);
         return $this->db->count_all_results('forum_alumni_comments');
     }
+
+    // Get only top level (parent) comments count for a post
+    public function get_top_level_comment_count($post_id) {
+        $this->db->where('post_id', $post_id);
+        $this->db->where('parent_id IS NULL');
+        return $this->db->count_all_results('forum_alumni_comments');
+    }
     
     // Check if post exists
     public function post_exists($post_id) {
@@ -282,11 +315,11 @@ class ForumAlumniModel extends CI_Model {
         return $this->db->get('forum_alumni_posts')->num_rows() > 0;
     }
     
-    // Get recent posts with pagination
     public function get_recent_posts($limit = 10, $offset = 0) {
         $this->db->select('p.*, u.nama, u.foto as user_foto');
         $this->db->from('forum_alumni_posts p');
         $this->db->join('users u', 'u.id = p.user_id');
+        $this->db->where('p.status', 'approved');
         $this->db->order_by('p.created_at', 'DESC');
         $this->db->limit($limit, $offset);
         $query = $this->db->get();

@@ -33,94 +33,12 @@
             --border: #e2e8f0;
         }
 
-        /* Header Navigation */
-        .header-glass {
-            position: absolute;
-            top: 24px;
-            left: 0;
-            right: 0;
-            z-index: 50;
-        }
-
-        .navbar-glass {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 12px 32px;
-            border: 1px solid rgba(255,255,255,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #f97316, #fdba74);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.3rem;
-        }
-
-        .logo-text h5 {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .logo-text span {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.85);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            position: relative;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-bottom: 2px solid transparent;
-            padding-bottom: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a.active, .nav-links a:hover {
-            border-bottom-color: #f97316;
-        }
-
-
-        .mobile-toggle { display: none; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 14px; font-size: 1.4rem; color: white; cursor: pointer; }
-        .btn-mytelu-custom { background: #f97316; padding: 8px 28px; border-radius: 40px; font-weight: 700; color: white; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-        .btn-mytelu-custom:hover { background: #ea580c; color: white; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); }
-        .user-avatar-small { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-
-        /* Main Container */
         .profile-container {
             max-width: 1280px;
             margin: 100px auto 50px;
             padding: 0 24px;
         }
 
-        /* Welcome Banner */
         .welcome-banner {
             background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
             border-radius: 32px;
@@ -181,14 +99,12 @@
             margin-top: 16px;
         }
 
-        /* Profile Grid */
         .profile-grid {
             display: grid;
             grid-template-columns: 320px 1fr;
             gap: 32px;
         }
 
-        /* Profile Card Sidebar */
         .profile-sidebar {
             background: white;
             border-radius: 32px;
@@ -373,7 +289,6 @@
             transform: translateY(-2px);
         }
 
-        /* Main Content Cards */
         .profile-main {
             display: flex;
             flex-direction: column;
@@ -433,7 +348,6 @@
             font-weight: 600;
         }
 
-        /* Info Grid */
         .info-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -476,7 +390,6 @@
             font-size: 0.9rem;
         }
 
-        /* Activity Timeline */
         .timeline {
             position: relative;
             padding-left: 30px;
@@ -527,7 +440,6 @@
             color: #6b7280;
         }
 
-        /* Alert Custom */
         .alert-custom {
             border-radius: 20px;
             padding: 16px 20px;
@@ -561,7 +473,25 @@
             color: #991b1b;
         }
 
-        /* Responsive */
+        /* ===== Password toggle & inline error di modal ganti password ===== */
+        .password-toggle-btn {
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-left: none;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s ease;
+        }
+        .password-toggle-btn:hover {
+            color: #f97316;
+        }
+        .password-toggle-btn:focus {
+            box-shadow: none;
+        }
+        .is-invalid {
+            border-color: #dc2626 !important;
+        }
+
         @media (max-width: 968px) {
             .profile-grid {
                 grid-template-columns: 1fr;
@@ -583,21 +513,6 @@
                 margin-top: 120px;
             }
             
-            .navbar-glass {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 12px;
-                gap: 16px;
-            }
-            .nav-links.open { display: flex !important; }
-            .mobile-toggle { display: block; align-self: flex-end; }
-
             .welcome-banner {
                 padding: 24px;
             }
@@ -615,7 +530,6 @@
             }
         }
 
-        /* Animation */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -629,6 +543,18 @@
 
         .profile-sidebar, .info-card {
             animation: fadeInUp 0.6s ease forwards;
+        }
+         .btn-logout {
+            background: white;
+            color: #E67E22;
+            border: 2px solid #E67E22;
+        }
+
+        .btn-logout:hover {
+            background: #E67E22;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(230,126,34,0.3);
         }
 
         .info-card:nth-child(1) { animation-delay: 0.1s; }
@@ -656,18 +582,6 @@
         </div>
         <?php endif; ?>
         
-        <!-- Welcome Banner -->
-        <div class="welcome-banner">
-            <div class="welcome-content">
-                <h1>Selamat Datang, <?= htmlspecialchars($user->nama) ?>! 👋</h1>
-                <p>Kelola profil Anda dan pantau perkembangan aktivitas kemahasiswaan di sini</p>
-                <div class="welcome-badge">
-                    <i class="fas fa-calendar-alt me-2"></i>
-                    Terakhir login: <?= date('d F Y H:i', strtotime($user->updated_at ?? date('Y-m-d H:i:s'))) ?>
-                </div>
-            </div>
-        </div>
-        
         <!-- Profile Grid -->
         <div class="profile-grid">
             <!-- Sidebar -->
@@ -687,14 +601,14 @@
                 <div class="profile-role">
                     <?php 
                     $role_labels = [
-                        'mahasiswa' => '🎓 Mahasiswa',
-                        'pembina' => '👨‍🏫 Dosen Pembina',
-                        'bemdpm' => '🏛️ BEM/DPM',
-                        'kaprodi' => '📚 Kepala Program Studi',
-                        'kemahasiswaan' => '⚙️ TPA Kemahasiswaan'
+                        'mahasiswa' => 'Mahasiswa',
+                        'pembina' => 'Dosen Pembina',
+                        'bemdpm' => 'BEM/DPM',
+                        'kaprodi' => 'Kepala Program Studi',
+                        'kemahasiswaan' => 'TPA Kemahasiswaan'
                     ];
                     $user_role = isset($user->role) ? $user->role : 'mahasiswa';
-                    echo $role_labels[$user_role] ?? '🎓 Mahasiswa';
+                    echo $role_labels[$user_role] ?? 'Mahasiswa';
                     ?>
                 </div>
                 
@@ -739,7 +653,7 @@
                     <a href="<?= base_url('profile/edit') ?>" class="btn-sidebar btn-edit-profile">
                         <i class="fas fa-edit me-2"></i>Edit
                     </a>
-                    <button class="btn-sidebar btn-change-pwd" onclick="showChangePasswordModal()">
+                     <button class="btn-sidebar btn-change-pwd" onclick="showChangePasswordModal()">
                         <i class="fas fa-key me-2"></i>Ganti PW
                     </button>
                 </div>
@@ -823,40 +737,6 @@
                         <?php endif; ?>
                     </div>
                 </div>
-                
-                <!-- Aktivitas Terbaru -->
-                <div class="info-card">
-                    <div class="card-header-custom">
-                        <div class="card-title">
-                            <i class="fas fa-history"></i>
-                            Aktivitas Terbaru
-                        </div>
-                        <div class="badge-complete">
-                            <i class="fas fa-clock me-1"></i>Riwayat
-                        </div>
-                    </div>
-                    
-                    <div class="timeline">
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-date"><?= date('d F Y H:i') ?></div>
-                            <div class="timeline-title">Login ke Dashboard</div>
-                            <div class="timeline-desc">Anda telah login ke sistem kemahasiswaan</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-date"><?= date('d F Y', strtotime('-1 day')) ?></div>
-                            <div class="timeline-title">Mengunjungi Informasi</div>
-                            <div class="timeline-desc">Membaca update terbaru dari fakultas</div>
-                        </div>
-                        <div class="timeline-item">
-                            <div class="timeline-dot"></div>
-                            <div class="timeline-date"><?= date('d F Y', strtotime('-3 day')) ?></div>
-                            <div class="timeline-title">Profil Diperbarui</div>
-                            <div class="timeline-desc">Informasi profil telah diperbaharui</div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -873,38 +753,50 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form action="<?= base_url('profile/change_password') ?>" method="POST">
+            <form id="changePasswordFormIdx" onsubmit="return false;">
                 <div class="modal-body p-4">
+                    <div id="changePasswordAlertIdx" class="alert alert-danger" style="display:none; border-radius: 12px;"></div>
+
                     <div class="mb-3">
                         <label class="form-label fw-bold">Password Saat Ini</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="fas fa-lock text-muted"></i></span>
-                            <input type="password" class="form-control" name="current_password" required style="border-radius: 0 12px 12px 0;">
+                            <input type="password" class="form-control" name="current_password" id="currentPasswordIdx" required>
+                            <button type="button" class="input-group-text password-toggle-btn" data-target="currentPasswordIdx" style="border-radius: 0 12px 12px 0;">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
+                        <div id="currentPasswordIdxError" style="display:none; color:#dc2626; font-size:0.8rem; margin-top:4px;"></div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Password Baru</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="fas fa-key text-muted"></i></span>
-                            <input type="password" class="form-control" name="new_password" id="newPassword" required minlength="8" style="border-radius: 0 12px 12px 0;">
+                            <input type="password" class="form-control" name="new_password" id="newPasswordIdx" required minlength="8">
+                            <button type="button" class="input-group-text password-toggle-btn" data-target="newPasswordIdx" style="border-radius: 0 12px 12px 0;">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                         <small class="text-muted">Minimal 8 karakter, gunakan kombinasi huruf, angka, dan simbol</small>
+                        <div id="newPasswordIdxError" style="display:none; color:#dc2626; font-size:0.8rem; margin-top:4px;"></div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">Konfirmasi Password Baru</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light"><i class="fas fa-check-circle text-muted"></i></span>
-                            <input type="password" class="form-control" name="confirm_password" id="confirmPassword" required style="border-radius: 0 12px 12px 0;">
+                            <input type="password" class="form-control" name="confirm_password" id="confirmPasswordIdx" required>
+                            <button type="button" class="input-group-text password-toggle-btn" data-target="confirmPasswordIdx" style="border-radius: 0 12px 12px 0;">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
-                        <div id="passwordMatchError" style="display: none; color: #ef4444; font-size: 0.85rem; margin-top: 8px;">
-                            <i class="fas fa-times-circle me-1"></i>Password tidak cocok
-                        </div>
+                        <div id="confirmPasswordIdxError" style="display:none; color:#dc2626; font-size:0.8rem; margin-top:4px;"></div>
                     </div>
                 </div>
                 <div class="modal-footer" style="border-top: 1px solid #e2e8f0;">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal" style="border-radius: 12px;">Batal</button>
-                    <button type="submit" class="btn" style="background: #f97316; color: white; border-radius: 12px;" onclick="return validatePassword()">
-                        <i class="fas fa-save me-2"></i>Simpan Password
+                    <button type="button" class="btn" style="background: #f97316; color: white; border-radius: 12px; padding: 8px 24px;" id="changePwdBtnIdx" onclick="submitChangePasswordIdx()">
+                        <span class="spinner-border spinner-border-sm me-2" style="display: none;"></span>
+                        <span class="btn-text">Simpan Password</span>
                     </button>
                 </div>
             </form>
@@ -919,26 +811,147 @@
         var myModal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
         myModal.show();
     }
-    
-    function validatePassword() {
-        var newPass = document.getElementById('newPassword').value;
-        var confirmPass = document.getElementById('confirmPassword').value;
-        var errorDiv = document.getElementById('passwordMatchError');
-        
-        if (newPass !== confirmPass) {
-            errorDiv.style.display = 'block';
-            return false;
-        }
-        
-        if (newPass.length < 8) {
-            alert('Password minimal 8 karakter!');
-            return false;
-        }
-        
-        errorDiv.style.display = 'none';
-        return true;
+
+    // Toggle show/hide password
+    document.querySelectorAll('.password-toggle-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var targetId = this.getAttribute('data-target');
+            var input = document.getElementById(targetId);
+            var icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+
+    function resetChangePasswordErrorsIdx() {
+        document.getElementById('changePasswordAlertIdx').style.display = 'none';
+        ['currentPasswordIdx', 'newPasswordIdx', 'confirmPasswordIdx'].forEach(function(id) {
+            document.getElementById(id).classList.remove('is-invalid');
+            var errEl = document.getElementById(id + 'Error');
+            errEl.textContent = '';
+            errEl.style.display = 'none';
+        });
     }
-    
+
+    function submitChangePasswordIdx() {
+        resetChangePasswordErrorsIdx();
+
+        var currentPassword = document.getElementById('currentPasswordIdx').value;
+        var newPassword = document.getElementById('newPasswordIdx').value;
+        var confirmPassword = document.getElementById('confirmPasswordIdx').value;
+
+        var firstInvalid = null;
+        if (!currentPassword) {
+            document.getElementById('currentPasswordIdxError').textContent = 'Password saat ini harus diisi!';
+            document.getElementById('currentPasswordIdxError').style.display = 'block';
+            document.getElementById('currentPasswordIdx').classList.add('is-invalid');
+            firstInvalid = firstInvalid || 'currentPasswordIdx';
+        }
+        if (!newPassword || newPassword.length < 8) {
+            document.getElementById('newPasswordIdxError').textContent = !newPassword ? 'Password baru harus diisi!' : 'Password minimal 8 karakter!';
+            document.getElementById('newPasswordIdxError').style.display = 'block';
+            document.getElementById('newPasswordIdx').classList.add('is-invalid');
+            firstInvalid = firstInvalid || 'newPasswordIdx';
+        }
+        if (newPassword !== confirmPassword) {
+            document.getElementById('confirmPasswordIdxError').textContent = 'Konfirmasi password tidak cocok!';
+            document.getElementById('confirmPasswordIdxError').style.display = 'block';
+            document.getElementById('confirmPasswordIdx').classList.add('is-invalid');
+            firstInvalid = firstInvalid || 'confirmPasswordIdx';
+        }
+        if (firstInvalid) {
+            document.getElementById(firstInvalid).focus();
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append('current_password', currentPassword);
+        formData.append('new_password', newPassword);
+        formData.append('confirm_password', confirmPassword);
+
+        var btn = document.getElementById('changePwdBtnIdx');
+        var spinner = btn.querySelector('.spinner-border');
+        var btnText = btn.querySelector('.btn-text');
+        spinner.style.display = 'inline-block';
+        btnText.textContent = 'Memproses...';
+        btn.disabled = true;
+
+        fetch('<?= base_url("profile/change_password_ajax") ?>', {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            spinner.style.display = 'none';
+            btnText.textContent = 'Simpan Password';
+            btn.disabled = false;
+
+            if (data.status === 'success') {
+                var modalEl = document.getElementById('changePasswordModal');
+                var modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+                document.getElementById('changePasswordFormIdx').reset();
+
+                var toast = document.createElement('div');
+                toast.className = 'alert-custom alert-success';
+                toast.style.position = 'fixed';
+                toast.style.top = '100px';
+                toast.style.right = '24px';
+                toast.style.zIndex = '9999';
+                toast.style.minWidth = '300px';
+                toast.innerHTML = '<i class="fas fa-check-circle fa-lg"></i><div>' + data.message + '</div>';
+                document.body.appendChild(toast);
+                setTimeout(function() {
+                    toast.style.transition = 'opacity 0.5s';
+                    toast.style.opacity = '0';
+                    setTimeout(function() { toast.remove(); }, 500);
+                }, 4000);
+            } else {
+                var focusTarget = null;
+                if (data.errors && Object.keys(data.errors).length > 0) {
+                    var map = {
+                        current_password: 'currentPasswordIdx',
+                        new_password: 'newPasswordIdx',
+                        confirm_password: 'confirmPasswordIdx'
+                    };
+                    Object.keys(data.errors).forEach(function(field) {
+                        var id = map[field];
+                        if (!id) return;
+                        document.getElementById(id).classList.add('is-invalid');
+                        var errEl = document.getElementById(id + 'Error');
+                        errEl.textContent = data.errors[field];
+                        errEl.style.display = 'block';
+                        if (!focusTarget) focusTarget = id;
+                    });
+                } else {
+                    var alertBox = document.getElementById('changePasswordAlertIdx');
+                    alertBox.textContent = data.message || 'Terjadi kesalahan.';
+                    alertBox.style.display = 'block';
+                }
+                if (focusTarget) {
+                    document.getElementById(focusTarget).focus();
+                }
+            }
+        })
+        .catch(function(error) {
+            spinner.style.display = 'none';
+            btnText.textContent = 'Simpan Password';
+            btn.disabled = false;
+            console.error('Error:', error);
+            var alertBox = document.getElementById('changePasswordAlertIdx');
+            alertBox.textContent = 'Terjadi kesalahan koneksi. Silakan coba lagi.';
+            alertBox.style.display = 'block';
+        });
+    }
+
     // Auto dismiss flash messages after 5 seconds
     setTimeout(() => {
         document.querySelectorAll('.alert-custom').forEach(alert => {

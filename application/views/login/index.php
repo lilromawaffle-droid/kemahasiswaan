@@ -250,19 +250,51 @@
         input:focus + i, .input-wrap:focus-within i { color: #E67E22; }
 
         /* Password toggle */
-        .pw-toggle {
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
+        .input-wrap .pw-toggle {
             cursor: pointer;
-            color: #bbb;
-            font-size: 0.85rem;
             left: auto;
-            transition: color 0.2s;
+            right: 1rem;
+            pointer-events: auto;
+            z-index: 10;
         }
 
         .pw-toggle:hover { color: #E67E22; }
+
+        /* CAPTCHA */
+        .captcha-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .captcha-img-box {
+            border: 1.5px solid #e0dbd4;
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .captcha-img-box img { display: block; }
+
+        .captcha-refresh {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            border-radius: 10px;
+            border: 1.5px solid #e0dbd4;
+            background: white;
+            color: #888;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .captcha-refresh:hover { border-color: #E67E22; color: #E67E22; transform: rotate(45deg); }
 
         /* Submit button */
         .btn-login {
@@ -347,7 +379,8 @@
             .right-panel { width: 100%; padding: 2rem; }
         }
     </style>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
+    <!-- Google reCAPTCHA sudah tidak dipakai, diganti CAPTCHA bawaan CodeIgniter 3 -->
 </head>
 <body>
 
@@ -415,14 +448,34 @@
         <div class="form-group">
             <label>Password</label>
             <div class="input-wrap">
-                <input type="password" name="password" id="pw-field" placeholder="••••••••" autocomplete="current-password" required>
+                <input type="password" name="password" id="pw-field" placeholder="••••••••" autocomplete="current-password" required style="padding-right: 2.8rem;">
+                <i class="fas fa-lock"></i>
                 <i class="fas fa-eye pw-toggle" id="pw-toggle" onclick="togglePw()"></i>
             </div>
         </div>
 
-        <div class="form-group" style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
-            <div class="g-recaptcha" data-sitekey="6LeVCkctAAAAAISExNoUzSY08rc1XlzJC_fQjT91"></div>
-        </div> 
+        <!--
+            ── CAPTCHA lama (Google reCAPTCHA) — dinonaktifkan ──
+            <div class="form-group" style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
+                <div class="g-recaptcha" data-sitekey="6LeVCkctAAAAAISExNoUzSY08rc1XlzJC_fQjT91"></div>
+            </div>
+        -->
+
+        <!-- ── CAPTCHA bawaan CodeIgniter 3 (menggantikan Google reCAPTCHA) ── -->
+        <div class="form-group">
+            <label>Kode Verifikasi (CAPTCHA)</label>
+            <div class="captcha-wrap">
+                <div class="captcha-img-box" id="captcha-img-box"><?= $captcha_image ?></div>
+                <button type="button" class="captcha-refresh" id="captcha-refresh" title="Muat ulang captcha">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+            </div>
+            <div class="input-wrap" style="margin-top: 0.6rem;">
+                <input type="text" name="captcha" placeholder="Masukkan kode di atas (peka huruf besar/kecil)" autocomplete="off" required>
+                <i class="fas fa-shield-alt"></i>
+            </div>
+        </div>
+
         <button type="submit" class="btn-login">
             <i class="fas fa-sign-in-alt"></i> Masuk ke Portal
         </button>
@@ -516,6 +569,17 @@ function switchTab(tab, btn) {
     document.querySelectorAll('.tab-login button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 }
+
+// Refresh CAPTCHA tanpa reload halaman
+document.getElementById('captcha-refresh').addEventListener('click', function() {
+    fetch('<?= site_url("login/refresh_captcha") ?>')
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('captcha-img-box').innerHTML = data.image;
+            document.querySelector('[name=captcha]').value = '';
+        })
+        .catch(() => {});
+});
 
 // Isi demo cepat untuk testing (hapus di production)
 function fillDemo(role) {

@@ -31,12 +31,7 @@
         .sidebar-menu a.active { background: rgba(230, 126, 34, 0.2); color: white; border-left-color: #E67E22; }
         .sidebar-menu a i { width: 20px; color: #E67E22; }
         .sidebar-menu .menu-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 1rem 0; }
-        .sidebar-badge {
-            margin-left: auto; background: #dc2626; color: #fff;
-            font-size: .68rem; font-weight: 700; padding: .15rem .55rem;
-            border-radius: 20px; min-width: 20px; text-align: center;
-        }
-
+        
         /* ── Main ── */
         .admin-main { flex: 1; margin-left: 280px; padding: 2rem; }
         .admin-header {
@@ -192,259 +187,382 @@
         .btn-hapus  { background: #e74c3c; color: white; border: none; padding: .55rem 1.3rem; border-radius: 10px; cursor: pointer; font-weight: 600; }
         .btn-hapus:hover { background: #c0392b; }
 
+        /* === MOBILE RESPONSIVE === */
+        * { box-sizing: border-box; }
+        html, body { overflow-x: hidden; max-width: 100%; }
+        .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1100; background: linear-gradient(135deg, #2C3E50, #1a2632); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 0.75rem; gap: 0.5rem; }
+        .hamburger-btn { display: none; background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 8px; width: 38px; height: 38px; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; }
+        .hamburger-btn:hover { background: rgba(230,126,34,0.6); }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; justify-content: flex-end; }
+        .topbar-username { display: flex; align-items: center; gap: 0.35rem; color: rgba(255,255,255,0.9); font-size: 0.78rem; font-weight: 500; flex: 1; min-width: 0; }
+        .topbar-username i { color: #E67E22; font-size: 1rem; flex-shrink: 0; }
+        .topbar-username .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+        .topbar-logout { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 0.38rem 0.8rem; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; transition: background 0.2s; flex-shrink: 0; }
+        .topbar-logout:hover { background: #c0392b; color: white; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
         @media (max-width: 768px) {
-            .admin-sidebar { transform: translateX(-100%); }
-            .admin-main { margin-left: 0; padding: 1rem; }
+            .mobile-topbar { display: block; }
+            .hamburger-btn { display: flex; }
+            .admin-sidebar { position: fixed !important; left: -280px !important; z-index: 1000; transition: left 0.3s ease; width: 280px !important; }
+            .admin-sidebar.open { left: 0 !important; }
+            .admin-main { margin-left: 0 !important; padding: 1rem !important; padding-top: 4.5rem !important; max-width: 100vw; overflow-x: hidden; }
+            .admin-header { flex-direction: column !important; align-items: stretch !important; gap: 0.75rem; margin-bottom: 1.5rem; }
+            .admin-header h1 { font-size: 1.3rem !important; word-break: break-word; }
+            .admin-header .user-info > span, .admin-header .user-info .logout-btn { display: none; }
+            .admin-header .user-info { width: 100%; justify-content: stretch; }
+            .admin-header .user-info .btn { flex: 0 0 100%; text-align: center; padding: 0.65rem 1rem; border-radius: 12px; }
+            .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 1rem; }
+            .stat-card { padding: 1rem; }
+            .stat-card .stat-value { font-size: 1.5rem; }
+            .toolbar { padding: 1rem; flex-direction: column; align-items: stretch; }
+            .toolbar form { display: flex; flex-direction: column; gap: 0.8rem; width: 100%; }
+            .toolbar .search-box { width: 100%; min-width: 100%; }
+            .toolbar select { width: 100%; }
+            .toolbar button, .toolbar a { width: 100%; text-align: center; justify-content: center; }
+            .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
+            
+            .table-stackable thead { display: none; }
+            .table-stackable tr {
+                display: block;
+                margin-bottom: 1rem;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 0;
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            }
+            .table-stackable td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #f1f5f9;
+                padding: 0.8rem 1rem;
+                font-size: 0.85rem;
+                text-align: right;
+                gap: 1rem;
+                white-space: normal;
+            }
+            .table-stackable td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                text-transform: uppercase;
+                font-size: 0.72rem;
+                color: #64748b;
+                text-align: left;
+                flex-shrink: 0;
+            }
+            .table-stackable td:last-child { border-bottom: 0; justify-content: flex-end; }
+            
+            .action-btns { flex-wrap: wrap; }
         }
+        @media (max-width: 400px) { .stats-grid { grid-template-columns: 1fr !important; } }
     </style>
 </head>
 <body>
-<div class="admin-wrapper">
 
-    <!-- Sidebar -->
-    <div class="admin-sidebar">
-        <div class="sidebar-header">
-            <h3>Admin FIK</h3>
-            <p>Manajemen Proposal</p>
-        </div>
-        
-        <div class="sidebar-menu">
-            <a href="<?= base_url('admin/proposal') ?>">
-                <i class="fas fa-file-alt"></i>
-                <span>Proposal</span>
-            </a>
-            <a href="<?= base_url('sertifikat/admin') ?>">
-                <i class="fas fa-certificate"></i>
-                <span>Sertifikat</span>
-            </a>
-            <a href="<?= base_url('tak_admin') ?>">
-                <i class="fas fa-file-signature"></i>
-                <span>TAK</span>
-            </a>
-            <a href="<?= base_url('berita/admin') ?>">
-                <i class="fas fa-newspaper"></i>
-                <span>Berita</span>
-            </a>
-            <a href="<?= base_url('admin/organisasi') ?>" class="active">
-                <i class="fas fa-users"></i>
-                <span>Organisasi</span>
-            </a>
-            
-            <div class="menu-divider"></div>
-            
-            <a href="<?= base_url('admin/history_log') ?>">
-                <i class="fas fa-history"></i>
-                <span>History Log</span>
-            </a>
-            
-            <div class="menu-divider"></div>
-            
-            <a href="<?= base_url('dashboard') ?>">
-                <i class="fas fa-arrow-left"></i>
-                <span>Kembali ke Dashboard</span>
-            </a>
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar" id="mobileTopbar">
+        <div class="topbar-inner">
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                <i class="fas fa-bars" id="hamburgerIcon"></i>
+            </button>
+            <div class="topbar-right">
+                <span class="topbar-username">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="name-text"><?= $this->session->userdata('nama') ?></span>
+                </span>
+                <a href="<?= base_url('login/logout') ?>" class="topbar-logout">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="admin-main">
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-        <!-- Header -->
-        <div class="admin-header">
-            <h1><i class="fas fa-users" style="color:#E67E22; font-size:1.4rem;"></i> Organisasi Kemahasiswaan</h1>
-            <div class="user-info">
-                <span><i class="fas fa-user-circle me-2" style="color: #E67E22;"></i> <?= $this->session->userdata('nama') ?></span>
-                <a href="<?= base_url('login/logout') ?>" class="logout-btn">
-                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+    <div class="admin-wrapper">
+
+        <!-- Sidebar -->
+        <div class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <h3>Admin FIK</h3>
+                <p>Manajemen Proposal</p>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="<?= base_url('admin/proposal') ?>">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Proposal</span>
+                </a>
+                <a href="<?= base_url('sertifikat/admin') ?>">
+                    <i class="fas fa-certificate"></i>
+                    <span>Sertifikat</span>
+                </a>
+                <a href="<?= base_url('tak_admin') ?>">
+                    <i class="fas fa-file-signature"></i>
+                    <span>TAK</span>
+                </a>
+                <a href="<?= base_url('berita/admin') ?>">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="<?= base_url('admin/organisasi') ?>" class="active">
+                    <i class="fas fa-users"></i>
+                    <span>Organisasi</span>
+                </a>
+
+                <a href="<?= base_url('admin/mitra') ?>">
+                    <i class="fas fa-handshake"></i>
+                    <span>Mitra & Recog</span>
+                </a>
+                <a href="<?= base_url('admin/testimoni') ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Testimoni Alumni</span>
+                </a>
+                
+                <div class="menu-divider"></div>
+                
+                <a href="<?= base_url('admin/history_log') ?>">
+                    <i class="fas fa-history"></i>
+                    <span>History Log</span>
+                </a>
+                
+                <div class="menu-divider"></div>
+                
+                <a href="<?= base_url('dashboard') ?>">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali ke Dashboard</span>
                 </a>
             </div>
         </div>
 
-        <!-- Flash Messages -->
-        <?php if ($this->session->flashdata('success')): ?>
-            <div class="alert-org alert-success"><i class="fas fa-check-circle"></i> <?= $this->session->flashdata('success') ?></div>
-        <?php endif; ?>
-        <?php if ($this->session->flashdata('error')): ?>
-            <div class="alert-org alert-error"><i class="fas fa-exclamation-circle"></i> <?= $this->session->flashdata('error') ?></div>
-        <?php endif; ?>
+        <!-- Main Content -->
+        <main class="admin-main">
 
-        <!-- Stats Cards -->
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-icon orange"><i class="fas fa-layer-group"></i></div>
-                <div>
-                    <div class="stat-value"><?= $total ?></div>
-                    <div class="stat-label">Total Organisasi</div>
+            <!-- Header -->
+            <div class="admin-header">
+                <h1><i class="fas fa-users" style="color:#E67E22; font-size:1.4rem;"></i> Organisasi Kemahasiswaan</h1>
+                <div class="user-info">
+                    <span><i class="fas fa-user-circle me-2" style="color: #E67E22;"></i> <?= $this->session->userdata('nama') ?></span>
+                    <a href="<?= base_url('login/logout') ?>" class="logout-btn">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
-                <div>
-                    <div class="stat-value"><?= $total_aktif ?></div>
-                    <div class="stat-label">Aktif / Tampil</div>
+
+            <!-- Flash Messages -->
+            <?php if ($this->session->flashdata('success')): ?>
+                <div class="alert-org alert-success"><i class="fas fa-check-circle"></i> <?= $this->session->flashdata('success') ?></div>
+            <?php endif; ?>
+            <?php if ($this->session->flashdata('error')): ?>
+                <div class="alert-org alert-error"><i class="fas fa-exclamation-circle"></i> <?= $this->session->flashdata('error') ?></div>
+            <?php endif; ?>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-layer-group"></i></div>
+                    <div>
+                        <div class="stat-value"><?= $total ?></div>
+                        <div class="stat-label">Total Organisasi</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div>
+                        <div class="stat-value"><?= $total_aktif ?></div>
+                        <div class="stat-label">Aktif / Tampil</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="fas fa-eye-slash"></i></div>
+                    <div>
+                        <div class="stat-value"><?= $total - $total_aktif ?></div>
+                        <div class="stat-label">Nonaktif</div>
+                    </div>
                 </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-icon red"><i class="fas fa-eye-slash"></i></div>
-                <div>
-                    <div class="stat-value"><?= $total - $total_aktif ?></div>
-                    <div class="stat-label">Nonaktif</div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <form method="GET" action="<?= base_url('admin/organisasi') ?>" style="display:contents;">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" name="q" placeholder="Cari nama atau deskripsi..." value="<?= htmlspecialchars($search ?? '') ?>">
-                </div>
-                <select name="kategori">
-                    <option value="">Semua Kategori</option>
-                    <?php foreach ($kategori_list as $kat): ?>
-                        <option value="<?= $kat ?>" <?= ($filter_kategori === $kat) ? 'selected' : '' ?>><?= $kat ?></option>
-                    <?php endforeach; ?>
-                </select>
-                <select name="aktif">
-                    <option value="">Semua Status</option>
-                    <option value="1" <?= ($filter_aktif === '1') ? 'selected' : '' ?>>Aktif</option>
-                    <option value="0" <?= ($filter_aktif === '0') ? 'selected' : '' ?>>Nonaktif</option>
-                </select>
-                <button type="submit" class="btn-primary-org"><i class="fas fa-search"></i> Filter</button>
-                <a href="<?= base_url('admin/organisasi') ?>" class="btn-reset-org"><i class="fas fa-times"></i> Reset</a>
-            </form>
-            <a href="<?= base_url('admin/organisasi_tambah') ?>" class="btn-primary-org" style="margin-left:auto;">
-                <i class="fas fa-plus"></i> Tambah Organisasi
-            </a>
-        </div>
-
-        <!-- Table -->
-        <div class="table-card">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width:50px;">#</th>
-                        <th style="width:70px;">Logo</th>
-                        <th>Nama Organisasi</th>
-                        <th>Kategori</th>
-                        <th style="width:60px;">Urutan</th>
-                        <th style="width:80px; text-align:center;">Tampil</th>
-                        <th style="width:150px; text-align:center;">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($organisasi_list)): ?>
-                        <tr>
-                            <td colspan="7">
-                                <div class="empty-state">
-                                    <i class="fas fa-inbox"></i>
-                                    <p>Belum ada organisasi<?= $search ? ' yang cocok dengan pencarian.' : '.' ?></p>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php else: ?>
-                        <?php $no = 1; foreach ($organisasi_list as $org): ?>
-                            <tr id="row-<?= $org->id ?>">
-                                <td style="font-weight:600; color:#aaa;"><?= $no++ ?></td>
-                                <td>
-                                    <?php if ($org->logo): ?>
-                                        <img src="<?= base_url($org->logo) ?>" alt="<?= htmlspecialchars($org->nama) ?>"
-                                             class="org-logo-thumb"
-                                             onerror="this.parentElement.innerHTML='<div class=\'org-logo-placeholder\'><i class=\'<?= htmlspecialchars($org->icon) ?>\'></i></div>'">
-                                    <?php else: ?>
-                                        <div class="org-logo-placeholder"><i class="<?= htmlspecialchars($org->icon) ?>"></i></div>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <div style="font-weight:600; color:#2C3E50;"><?= htmlspecialchars($org->nama) ?></div>
-                                    <div style="font-size:.78rem; color:#999; margin-top:.2rem;"><?= htmlspecialchars(substr($org->deskripsi ?? '', 0, 70)) ?><?= strlen($org->deskripsi ?? '') > 70 ? '…' : '' ?></div>
-                                </td>
-                                <td>
-                                    <?php
-                                        $kat_class = [
-                                            'Seni & Budaya'  => 'badge-kat-seni',
-                                            'Olahraga'       => 'badge-kat-olahraga',
-                                            'Akademik'       => 'badge-kat-akademik',
-                                            'Sosial'         => 'badge-kat-sosial',
-                                            'Kerohanian'     => 'badge-kat-kerohanian',
-                                            'Kewirausahaan'  => 'badge-kat-kewirausahaan',
-                                        ][$org->kategori] ?? 'badge-kat-umum';
-                                    ?>
-                                    <span class="badge-kategori <?= $kat_class ?>"><?= htmlspecialchars($org->kategori) ?></span>
-                                </td>
-                                <td style="text-align:center; font-weight:700; color:#E67E22;"><?= $org->urutan ?></td>
-                                <td style="text-align:center;">
-                                    <button class="toggle-btn <?= $org->aktif ? 'on' : 'off' ?>"
-                                            id="toggle-<?= $org->id ?>"
-                                            onclick="toggleAktif(<?= $org->id ?>)"
-                                            title="<?= $org->aktif ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan' ?>"></button>
-                                </td>
-                                <td>
-                                    <div class="action-btns">
-                                        <a href="<?= base_url('admin/organisasi_edit/' . $org->id) ?>" class="btn-edit">
-                                            <i class="fas fa-edit"></i> Edit
-                                        </a>
-                                        <button class="btn-del" onclick="confirmHapus(<?= $org->id ?>, '<?= htmlspecialchars(addslashes($org->nama)) ?>')">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <form method="GET" action="<?= base_url('admin/organisasi') ?>" style="display:contents;">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" name="q" placeholder="Cari nama atau deskripsi..." value="<?= htmlspecialchars($search ?? '') ?>">
+                    </div>
+                    <select name="kategori">
+                        <option value="">Semua Kategori</option>
+                        <?php foreach ($kategori_list as $kat): ?>
+                            <option value="<?= $kat ?>" <?= ($filter_kategori === $kat) ? 'selected' : '' ?>><?= $kat ?></option>
                         <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+                    </select>
+                    <select name="aktif">
+                        <option value="">Semua Status</option>
+                        <option value="1" <?= ($filter_aktif === '1') ? 'selected' : '' ?>>Aktif</option>
+                        <option value="0" <?= ($filter_aktif === '0') ? 'selected' : '' ?>>Nonaktif</option>
+                    </select>
+                    <button type="submit" class="btn-primary-org"><i class="fas fa-search"></i> Filter</button>
+                    <a href="<?= base_url('admin/organisasi') ?>" class="btn-reset-org"><i class="fas fa-times"></i> Reset</a>
+                </form>
+                <a href="<?= base_url('admin/organisasi_tambah') ?>" class="btn-primary-org" style="margin-left:auto;">
+                    <i class="fas fa-plus"></i> Tambah Organisasi
+                </a>
+            </div>
 
-    </main>
-</div>
+            <!-- Table -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="table-stackable">
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">#</th>
+                                <th style="width:70px;">Logo</th>
+                                <th>Nama Organisasi</th>
+                                <th>Kategori</th>
+                                <th style="width:60px;">Urutan</th>
+                                <th style="width:80px; text-align:center;">Tampil</th>
+                                <th style="width:150px; text-align:center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($organisasi_list)): ?>
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="empty-state">
+                                            <i class="fas fa-inbox"></i>
+                                            <p>Belum ada organisasi<?= $search ? ' yang cocok dengan pencarian.' : '.' ?></p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php $no = 1; foreach ($organisasi_list as $org): ?>
+                                    <tr id="row-<?= $org->id ?>">
+                                        <td data-label="#" style="font-weight:600; color:#aaa;"><?= $no++ ?></td>
+                                        <td data-label="Logo">
+                                            <?php if ($org->logo): ?>
+                                                <img src="<?= base_url($org->logo) ?>" alt="<?= htmlspecialchars($org->nama) ?>"
+                                                     class="org-logo-thumb"
+                                                     onerror="this.parentElement.innerHTML='<div class=\'org-logo-placeholder\'><i class=\'<?= htmlspecialchars($org->icon) ?>\'></i></div>'">
+                                            <?php else: ?>
+                                                <div class="org-logo-placeholder"><i class="<?= htmlspecialchars($org->icon) ?>"></i></div>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td data-label="Nama Organisasi">
+                                            <div style="font-weight:600; color:#2C3E50; text-align: right;"><?= htmlspecialchars($org->nama) ?></div>
+                                            <div style="font-size:.78rem; color:#999; margin-top:.2rem; text-align: right;"><?= htmlspecialchars(substr($org->deskripsi ?? '', 0, 70)) ?><?= strlen($org->deskripsi ?? '') > 70 ? '…' : '' ?></div>
+                                        </td>
+                                        <td data-label="Kategori">
+                                            <?php
+                                                $kat_class = [
+                                                    'Seni & Budaya'  => 'badge-kat-seni',
+                                                    'Olahraga'       => 'badge-kat-olahraga',
+                                                    'Akademik'       => 'badge-kat-akademik',
+                                                    'Sosial'         => 'badge-kat-sosial',
+                                                    'Kerohanian'     => 'badge-kat-kerohanian',
+                                                    'Kewirausahaan'  => 'badge-kat-kewirausahaan',
+                                                ][$org->kategori] ?? 'badge-kat-umum';
+                                            ?>
+                                            <span class="badge-kategori <?= $kat_class ?>"><?= htmlspecialchars($org->kategori) ?></span>
+                                        </td>
+                                        <td data-label="Urutan" style="text-align:center; font-weight:700; color:#E67E22;"><?= $org->urutan ?></td>
+                                        <td data-label="Tampil" style="text-align:center;">
+                                            <button class="toggle-btn <?= $org->aktif ? 'on' : 'off' ?>"
+                                                    id="toggle-<?= $org->id ?>"
+                                                    onclick="toggleAktif(<?= $org->id ?>)"
+                                                    title="<?= $org->aktif ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan' ?>"></button>
+                                        </td>
+                                        <td data-label="Aksi">
+                                            <div class="action-btns justify-content-end">
+                                                <a href="<?= base_url('admin/organisasi_edit/' . $org->id) ?>" class="btn-edit">
+                                                    <i class="fas fa-edit"></i> Edit
+                                                </a>
+                                                <button class="btn-del" onclick="confirmHapus(<?= $org->id ?>, '<?= htmlspecialchars(addslashes($org->nama)) ?>')">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-<!-- Modal Konfirmasi Hapus -->
-<div class="modal-backdrop-custom" id="hapusModal">
-    <div class="modal-box">
-        <h5><i class="fas fa-exclamation-triangle" style="color:#e74c3c;"></i> Konfirmasi Hapus</h5>
-        <p id="hapusModalText">Apakah Anda yakin ingin menghapus organisasi ini?</p>
-        <div class="modal-actions">
-            <button class="btn-cancel" onclick="tutupModal()">Batal</button>
-            <a id="hapusModalBtn" href="#" class="btn-hapus"><i class="fas fa-trash"></i> Hapus</a>
+        </main>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus -->
+    <div class="modal-backdrop-custom" id="hapusModal">
+        <div class="modal-box">
+            <h5><i class="fas fa-exclamation-triangle" style="color:#e74c3c;"></i> Konfirmasi Hapus</h5>
+            <p id="hapusModalText">Apakah Anda yakin ingin menghapus organisasi ini?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="tutupModal()">Batal</button>
+                <a id="hapusModalBtn" href="#" class="btn-hapus"><i class="fas fa-trash"></i> Hapus</a>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-function confirmHapus(id, nama) {
-    document.getElementById('hapusModalText').textContent = 'Hapus organisasi "' + nama + '"? Data tidak dapat dikembalikan.';
-    document.getElementById('hapusModalBtn').href = '<?= base_url('admin/organisasi_hapus/') ?>' + id;
-    document.getElementById('hapusModal').classList.add('show');
-}
-function tutupModal() {
-    document.getElementById('hapusModal').classList.remove('show');
-}
-document.getElementById('hapusModal').addEventListener('click', function(e) {
-    if (e.target === this) tutupModal();
-});
+    <script>
+    function confirmHapus(id, nama) {
+        document.getElementById('hapusModalText').textContent = 'Hapus organisasi "' + nama + '"? Data tidak dapat dikembalikan.';
+        document.getElementById('hapusModalBtn').href = '<?= base_url('admin/organisasi_hapus/') ?>' + id;
+        document.getElementById('hapusModal').classList.add('show');
+    }
+    function tutupModal() {
+        document.getElementById('hapusModal').classList.remove('show');
+    }
+    document.getElementById('hapusModal').addEventListener('click', function(e) {
+        if (e.target === this) tutupModal();
+    });
 
-function toggleAktif(id) {
-    const btn = document.getElementById('toggle-' + id);
-    fetch('<?= base_url('admin/organisasi_toggle/') ?>' + id, {
-        method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.status === 'success') {
-            if (data.aktif) {
-                btn.classList.replace('off', 'on');
-                btn.title = 'Klik untuk nonaktifkan';
-            } else {
-                btn.classList.replace('on', 'off');
-                btn.title = 'Klik untuk aktifkan';
+    function toggleAktif(id) {
+        const btn = document.getElementById('toggle-' + id);
+        fetch('<?= base_url('admin/organisasi_toggle/') ?>' + id, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success') {
+                if (data.aktif) {
+                    btn.classList.replace('off', 'on');
+                    btn.title = 'Klik untuk nonaktifkan';
+                } else {
+                    btn.classList.replace('on', 'off');
+                    btn.title = 'Klik untuk aktifkan';
+                }
             }
-        }
-    })
-    .catch(console.error);
-}
-</script>
+        })
+        .catch(console.error);
+    }
+
+    // Mobile Sidebar Toggle
+    function toggleSidebar() {
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const icon = document.getElementById('hamburgerIcon');
+        const isOpen = sidebar.classList.toggle('open');
+        overlay.classList.toggle('active', isOpen);
+        icon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+    }
+    
+    // Auto-close sidebar on menu click (for SPA links, or just general practice)
+    document.querySelectorAll('.sidebar-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('adminSidebar');
+                const overlay = document.getElementById('sidebarOverlay');
+                sidebar.classList.remove('open');
+                overlay.classList.remove('active');
+                document.getElementById('hamburgerIcon').className = 'fas fa-bars';
+            }
+        });
+    });
+    </script>
 </body>
 </html>

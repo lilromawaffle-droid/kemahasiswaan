@@ -41,10 +41,10 @@ class Profile extends CI_Controller {
         
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|min_length[3]');
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
-        $this->form_validation->set_rules('nim', 'NIM/NID', 'required');
+        $this->form_validation->set_rules('nim', 'NIM/NID', 'trim');
         $this->form_validation->set_rules('prodi', 'Program Studi', 'required');
-        $this->form_validation->set_rules('no_hp', 'Nomor HP', 'required');
-        $this->form_validation->set_rules('alamat', 'Alamat', 'required');
+        $this->form_validation->set_rules('no_hp', 'Nomor HP', 'trim');
+        $this->form_validation->set_rules('alamat', 'Alamat', 'trim');
         
         if ($this->form_validation->run() == FALSE) {
             $user = $this->User_model->get_user_by_id($user_id);
@@ -63,7 +63,6 @@ class Profile extends CI_Controller {
             );
             
             if ($this->User_model->update_user($user_id, $update_data)) {
-                // Update session data
                 $this->session->set_userdata('nama', $this->input->post('nama'));
                 $this->session->set_userdata('email', $this->input->post('email'));
                 
@@ -82,7 +81,6 @@ class Profile extends CI_Controller {
     public function update_ajax() {
         $user_id = $this->session->userdata('user_id');
         
-        // Set validation rules
         $this->form_validation->set_rules('nama', 'Nama Lengkap', 'required|min_length[3]');
         $this->form_validation->set_rules('email', 'Email', 'required|valid_email');
         $this->form_validation->set_rules('prodi', 'Program Studi', 'required');
@@ -120,12 +118,8 @@ class Profile extends CI_Controller {
         );
         
         if ($this->User_model->update_user($user_id, $update_data)) {
-            // Update session data
             $this->session->set_userdata('nama', $this->input->post('nama'));
             $this->session->set_userdata('email', $this->input->post('email'));
-            
-            // Log activity
-            $this->User_model->log_activity($user_id, 'update_profile', 'Memperbarui informasi profil');
             
             $response = array(
                 'status' => 'success',
@@ -143,26 +137,25 @@ class Profile extends CI_Controller {
 
     public function update_photo() {
         $user_id = $this->session->userdata('user_id');
-        
-        $config['upload_path'] = './uploads/users/';
+                
+        $config['upload_path'] = FCPATH . 'uploads/users/';
         $config['allowed_types'] = 'jpg|jpeg|png|gif';
-        $config['max_size'] = 2048; // 2MB
+        $config['max_size'] = 5048;
         $config['encrypt_name'] = TRUE;
-        
-        // Buat folder jika belum ada
-        if (!is_dir('./uploads/users/')) {
-            mkdir('./uploads/users/', 0777, TRUE);
+    
+        if (!is_dir(FCPATH . 'uploads/users/')) {
+            mkdir(FCPATH . 'uploads/users/', 0777, TRUE);
         }
         
         $this->load->library('upload', $config);
-        
+        $this->upload->initialize($config);
+
         if (!$this->upload->do_upload('foto')) {
             $error = $this->upload->display_errors();
             $this->session->set_flashdata('error', strip_tags($error));
         } else {
             $upload_data = $this->upload->data();
             
-            // Hapus foto lama jika ada
             $user = $this->User_model->get_user_by_id($user_id);
             if ($user && !empty($user->foto) && file_exists('./uploads/users/' . $user->foto)) {
                 unlink('./uploads/users/' . $user->foto);
@@ -174,7 +167,6 @@ class Profile extends CI_Controller {
             );
             
             if ($this->User_model->update_user($user_id, $update_data)) {
-                // Update session data
                 $this->session->set_userdata('foto', $upload_data['file_name']);
                 $this->session->set_flashdata('success', '✅ Foto profil berhasil diperbarui!');
             } else {
@@ -191,24 +183,23 @@ class Profile extends CI_Controller {
     public function update_photo_ajax() {
         $user_id = $this->session->userdata('user_id');
         
-        // Cek apakah ada file yang diupload
         if (!isset($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
             echo json_encode(['status' => 'error', 'message' => 'Tidak ada file yang diunggah.']);
             return;
         }
         
-        $config['upload_path'] = './uploads/users/';
+        $config['upload_path'] = FCPATH . 'uploads/users/';
         $config['allowed_types'] = 'jpg|jpeg|png|gif';
-        $config['max_size'] = 2048; // 2MB
+        $config['max_size'] = 2048;
         $config['encrypt_name'] = TRUE;
         
-        // Buat folder jika belum ada
-        if (!is_dir('./uploads/users/')) {
-            mkdir('./uploads/users/', 0777, TRUE);
+        if (!is_dir(FCPATH . 'uploads/users/')) {
+            mkdir(FCPATH . 'uploads/users/', 0777, TRUE);
         }
         
         $this->load->library('upload', $config);
-        
+        $this->upload->initialize($config);
+
         if (!$this->upload->do_upload('foto')) {
             $error = $this->upload->display_errors();
             echo json_encode(['status' => 'error', 'message' => strip_tags($error)]);
@@ -217,7 +208,6 @@ class Profile extends CI_Controller {
         
         $upload_data = $this->upload->data();
         
-        // Hapus foto lama jika ada
         $user = $this->User_model->get_user_by_id($user_id);
         if ($user && !empty($user->foto) && file_exists('./uploads/users/' . $user->foto)) {
             unlink('./uploads/users/' . $user->foto);
@@ -229,11 +219,7 @@ class Profile extends CI_Controller {
         );
         
         if ($this->User_model->update_user($user_id, $update_data)) {
-            // Update session data
             $this->session->set_userdata('foto', $upload_data['file_name']);
-            
-            // Log activity
-            $this->User_model->log_activity($user_id, 'update_photo', 'Memperbarui foto profil');
             
             echo json_encode([
                 'status' => 'success', 
@@ -249,7 +235,7 @@ class Profile extends CI_Controller {
         $user_id = $this->session->userdata('user_id');
         
         $this->form_validation->set_rules('current_password', 'Password Saat Ini', 'required');
-        $this->form_validation->set_rules('new_password', 'Password Baru', 'required|min_length[8]');
+        $this->form_validation->set_rules('new_password', 'Password Baru', 'required|min_length[8]|callback_cek_kemiripan_password');
         $this->form_validation->set_rules('confirm_password', 'Konfirmasi Password', 'required|matches[new_password]');
         
         if ($this->form_validation->run() == FALSE) {
@@ -265,8 +251,6 @@ class Profile extends CI_Controller {
                 $new_password = password_hash($this->input->post('new_password'), PASSWORD_DEFAULT);
                 
                 if ($this->User_model->update_password($user_id, $new_password)) {
-                    // Log activity
-                    $this->User_model->log_activity($user_id, 'change_password', 'Mengubah password akun');
                     $this->session->set_flashdata('success', '✅ Password berhasil diubah!');
                 } else {
                     $this->session->set_flashdata('error', '❌ Gagal mengubah password.');
@@ -275,7 +259,7 @@ class Profile extends CI_Controller {
                 $this->session->set_flashdata('error', '❌ Password saat ini salah!');
             }
             
-            redirect('profile/edit');
+            redirect('profile');
         }
     }
 
@@ -286,7 +270,7 @@ class Profile extends CI_Controller {
         $user_id = $this->session->userdata('user_id');
         
         $this->form_validation->set_rules('current_password', 'Password Saat Ini', 'required');
-        $this->form_validation->set_rules('new_password', 'Password Baru', 'required|min_length[8]');
+        $this->form_validation->set_rules('new_password', 'Password Baru', 'required|min_length[8]|callback_cek_kemiripan_password');
         $this->form_validation->set_rules('confirm_password', 'Konfirmasi Password', 'required|matches[new_password]');
         
         if ($this->form_validation->run() == FALSE) {
@@ -319,8 +303,7 @@ class Profile extends CI_Controller {
             $new_password = password_hash($this->input->post('new_password'), PASSWORD_DEFAULT);
             
             if ($this->User_model->update_password($user_id, $new_password)) {
-                // Log activity
-                $this->User_model->log_activity($user_id, 'change_password', 'Mengubah password akun');
+                //$this->User_model->log_activity($user_id, 'change_password', 'Mengubah password akun');
                 
                 $response = array(
                     'status' => 'success',
@@ -343,10 +326,56 @@ class Profile extends CI_Controller {
         echo json_encode($response);
     }
 
+    /**
+     * Callback form_validation: tolak password baru yang terlalu mirip password lama
+     */
+    public function cek_kemiripan_password($new_password) {
+        $old_password = $this->input->post('current_password');
+
+        if ($old_password === null || $old_password === '') {
+            return TRUE;
+        }
+
+        $new_norm = $this->normalisasi_password($new_password);
+        $old_norm = $this->normalisasi_password($old_password);
+
+        if ($new_norm === $old_norm) {
+            $this->form_validation->set_message('cek_kemiripan_password', 'Password baru tidak boleh sama dengan password lama.');
+            return FALSE;
+        }
+
+        if ($this->is_anagram_password($new_norm, $old_norm)) {
+            $this->form_validation->set_message('cek_kemiripan_password', 'Password baru terlalu mirip (hanya diacak posisinya) dengan password lama.');
+            return FALSE;
+        }
+
+        $distance = levenshtein($new_norm, $old_norm);
+        if ($distance < 4) {
+            $this->form_validation->set_message('cek_kemiripan_password', 'Password baru terlalu mirip dengan password lama. Gunakan kombinasi yang lebih berbeda (minimal 4 karakter perubahan).');
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+
+    private function normalisasi_password($str) {
+        return str_replace(' ', '', strtolower((string) $str));
+    }
+
+    private function is_anagram_password($a, $b) {
+        if (strlen($a) !== strlen($b)) {
+            return FALSE;
+        }
+        $a_chars = str_split($a);
+        $b_chars = str_split($b);
+        sort($a_chars);
+        sort($b_chars);
+        return $a_chars === $b_chars;
+    }
+
     public function delete_account() {
         $user_id = $this->session->userdata('user_id');
         
-        // Hapus foto profil jika ada
         $user = $this->User_model->get_user_by_id($user_id);
         if ($user && !empty($user->foto) && file_exists('./uploads/users/' . $user->foto)) {
             unlink('./uploads/users/' . $user->foto);
@@ -362,14 +391,31 @@ class Profile extends CI_Controller {
         }
     }
 
-    /**
-     * Get user activity history
-     */
     public function get_activities() {
         $user_id = $this->session->userdata('user_id');
         $activities = $this->User_model->get_user_activities($user_id, 10);
         
         echo json_encode(['status' => 'success', 'data' => $activities]);
     }
+
+     public function remove_photo_ajax() {
+        $user_id = $this->session->userdata('user_id');
+        $user = $this->User_model->get_user_by_id($user_id);
+        
+        if ($user && !empty($user->foto) && file_exists('./uploads/users/' . $user->foto)) {
+            unlink('./uploads/users/' . $user->foto);
+        }
+        
+        $update_data = array(
+            'foto' => NULL,
+            'updated_at' => date('Y-m-d H:i:s')
+        );
+        
+        if ($this->User_model->update_user($user_id, $update_data)) {
+            $this->session->unset_userdata('foto');
+            echo json_encode(['status' => 'success', 'message' => 'Foto profil berhasil dihapus.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus foto profil.']);
+        }
+    }
 }
-?>

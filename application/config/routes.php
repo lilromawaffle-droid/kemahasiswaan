@@ -61,9 +61,19 @@ $route['logout']                        = 'Login/logout';
 $route['login/microsoft']                 = 'Login/microsoft';
 $route['admin/history_log/tambah_sso']       = 'admin/tambah_sso_whitelist';
 $route['admin/history_log/hapus_sso/(:num)'] = 'admin/hapus_sso_whitelist/$1';
+$route['admin/history_log/import_sso'] = 'admin/import_sso_whitelist';
+$route['admin/forum_alumni'] = 'admin/forum_alumni';
+$route['admin/forum_alumni/approve/(:num)'] = 'admin/approve_forum_post/$1';
+$route['admin/forum_alumni/reject/(:num)'] = 'admin/reject_forum_post/$1';
+$route['admin/forum_alumni/delete/(:num)'] = 'admin/delete_forum_post/$1';
+$route['admin/forum_alumni/comments/(:num)'] = 'admin/get_forum_comments/$1';
+$route['admin/forum_alumni/delete_comment/(:num)'] = 'admin/delete_forum_comment/$1';
 
 // Sertifikat routes
 $route['sertifikat/upload_template']         = 'sertifikat/upload_template';
+$route['sertifikat/admin/tambah']            = 'sertifikat/admin_tambah_pengajuan';
+$route['sertifikat/admin/import_excel']      = 'sertifikat/import_excel';
+$route['sertifikat/admin/hapus/(:num)']      = 'sertifikat/admin_hapus/$1';
 
 $route['proposal']                      = 'Proposal/index';
 $route['proposal/buat']                 = 'Proposal/buat';
@@ -81,7 +91,12 @@ $route['proposal/setujui/(:num)']       = 'Proposal/setujui/$1';
 $route['proposal/tolak/(:num)']         = 'Proposal/tolak/$1';
 $route['proposal/pdf/(:num)']          = 'Proposal/pdf/$1';
 $route['proposal/download_pdf/(:num)'] = 'Proposal/download_pdf/$1';
-$route['admin']                       = 'admin/proposal';
+  $route['proposal/notifications']       = 'Proposal/notifications';
+  $route['proposal/get_notifications']   = 'Proposal/get_notifications';
+  $route['proposal/count_unread']        = 'Proposal/count_unread';
+  $route['proposal/mark_read/(:num)']    = 'Proposal/mark_read/$1';
+  $route['proposal/mark_all_read']       = 'Proposal/mark_all_read';
+  $route['admin']                       = 'admin/proposal';
 $route['admin/dashboard']             = 'admin/dashboard';
 // Admin routes
 $route['admin/proposal'] = 'admin/proposal';
@@ -89,6 +104,13 @@ $route['admin/detail/(:num)'] = 'admin/detail/$1';
 $route['admin/get_proposal_detail/(:num)'] = 'admin/get_proposal_detail/$1';
 $route['admin/setujui/(:num)'] = 'admin/setujui/$1';
 $route['admin/tolak/(:num)'] = 'admin/tolak/$1';
+$route['admin/proposal/hapus/(:num)'] = 'admin/hapus_proposal/$1';
+
+$route['admin/beasiswa'] = 'admin/beasiswa';
+$route['admin/beasiswa/detail/(:num)'] = 'admin/get_beasiswa_detail/$1';
+$route['admin/beasiswa/setujui/(:num)'] = 'admin/setujui_beasiswa/$1';
+$route['admin/beasiswa/tolak/(:num)'] = 'admin/tolak_beasiswa/$1';
+$route['admin/beasiswa/hapus/(:num)'] = 'admin/hapus_beasiswa/$1';
 
 $route['berita'] = 'berita/index';
 $route['berita/kategori/(:any)'] = 'berita/kategori/$1';

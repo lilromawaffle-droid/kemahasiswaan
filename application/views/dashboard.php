@@ -125,9 +125,6 @@
       border-bottom-color: #f97316;
     }
 
-
-
-
     .btn-mytelu-custom {
       background: #f97316;
       padding: 8px 28px;
@@ -161,11 +158,12 @@
       background: rgba(255,255,255,0.25);
     }
 
-    /* HERO SECTION */
+    /* HERO SECTION — relative agar floating-card absolute terikat di dalamnya */
     .hero-wrap {
       min-height: 100vh;
       padding-top: 160px;
       padding-bottom: 0;
+      position: relative;
     }
 
     .hero-flex {
@@ -186,27 +184,27 @@
     }
 
     .hero-image-area {
-  width: 53%;
-  background: transparent;
-  backdrop-filter: none;
-  border-radius: 0px;
-  min-height: 550px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  overflow: hidden;
-  position: relative;
-}
+      width: 53%;
+      background: transparent;
+      backdrop-filter: none;
+      border-radius: 0px;
+      min-height: 550px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      overflow: hidden;
+      position: relative;
+    }
 
-.hero-image-area img {
-  width: 100%;
-  height: auto;
-  max-height: 550px;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-  border-radius: 0px;
-}
+    .hero-image-area img {
+      width: 100%;
+      height: auto;
+      max-height: 550px;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+      border-radius: 0px;
+    }
 
     .hero-image-area img:hover {
       transform: scale(1.02);
@@ -224,7 +222,7 @@
       display: block;
     }
 
-    /* FLOATING BADGES */
+    /* FLOATING BADGES — DESKTOP absolute / MOBILE static */
     .floating-card {
       position: absolute;
       background: white;
@@ -233,6 +231,7 @@
       display: flex;
       gap: 16px;
       align-items: center;
+      margin-bottom: 16px;
       box-shadow: 0 20px 35px -12px rgba(0,0,0,0.2);
       z-index: 15;
       transition: transform 0.3s ease;
@@ -322,39 +321,40 @@
       align-items: center;
     }
 
-    /* DIREKTORAT - Updated with image */
-.direktorat-card {
-  background: white;
-  border-radius: 32px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-  margin: 70px auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  overflow: hidden;
-  transition: transform 0.3s ease;
-}
+    /* DIREKTORAT */
+    .direktorat-card {
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+      margin: 70px auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
 
-.direktorat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 16px 48px rgba(0,0,0,0.1);
-}
+    .direktorat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.1);
+    }
 
-.direktorat-img-area {
-  background: #eef2ff;
-  min-height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
+    .direktorat-img-area {
+      background: #eef2ff;
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
 
-.direktorat-img-area img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  min-height: 300px;
-}
+    
+    .direktorat-img-area img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      min-height: 300px;
+    }
 
     /* BERITA CAROUSEL */
     .berita-carousel-container {
@@ -613,6 +613,11 @@
       z-index: 0;
     }
     
+    .badge-abs-1 { top: 12%; left: 52%; }
+    .badge-abs-2 { top: 26%; right: 2%; }
+    .badge-abs-3 { top: 38%; left: 46%; }
+    .badge-abs-4 { top: 50%; right: 6%; }
+    .badge-abs-5 { top: 12%; left: 70%; }
     .org-bg-orange::after {
       content: "";
       position: absolute;
@@ -859,7 +864,7 @@
     /* ALUMNI QUOTE */
     .alumni-quote-section {
       position: relative;
-      padding: 100px 0;
+      padding: 60px 0;
       color: white;
       overflow: hidden;
       background: linear-gradient(135deg, #f97316 0%, #fdba74 100%);
@@ -934,6 +939,227 @@
       text-align: left;
     }
 
+       /* TOMBOL TAMBAH TESTIMONI */
+    .btn-tambah-testi {
+      background: #1e3a8a;
+      color: white;
+      padding: 10px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.2s ease-in-out;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+
+    .btn-tambah-testi:hover {
+      background: #ffffff;
+      color: #f97316;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+
+    /* ==================== TESTIMONI CAROUSEL (1 per slide) ==================== */
+    .testimoni-carousel-wrap {
+      position: relative;
+      min-height: 280px;
+    }
+
+    .testimoni-slide {
+      display: none;
+      align-items: center;
+      gap: 60px;
+      animation: testiFadeIn 0.6s ease;
+    }
+
+    .testimoni-slide.active {
+      display: flex;
+    }
+
+    @keyframes testiFadeIn {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .testimoni-photo-area {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .testimoni-photo-circle {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 2px dashed rgba(255,255,255,0.5);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .testimoni-photo-circle img,
+    .testimoni-photo-fallback {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .testimoni-photo-fallback {
+      background: rgba(255,255,255,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: white;
+    }
+
+    .testimoni-badge-icon {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #1e3a8a;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    .testimoni-text-area {
+      flex: 1;
+      color: white;
+    }
+
+    .testimoni-name {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .testimoni-posisi {
+      font-size: 0.95rem;
+      opacity: 0.85;
+      margin-bottom: 20px;
+    }
+
+    .testimoni-quote {
+      font-size: 1.25rem;
+      font-style: italic;
+      line-height: 1.6;
+      max-width: 640px;
+      margin-bottom: 24px;
+    }
+
+    .testimoni-footer {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimoni-stars {
+      background: rgba(255,255,255,0.2);
+      padding: 8px 16px;
+      border-radius: 30px;
+      color: #ffe08a;
+      font-size: 0.95rem;
+    }
+
+    .testimoni-social-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+
+    .testimoni-social-icon:hover {
+      background: white;
+      color: #f97316;
+    }
+
+    .testimoni-dots-nav {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.testimoni-dots-viewport {
+  overflow: hidden;
+  max-height: 276px; /* pas untuk 5 dot: 5*44px + 4*14px gap */
+}
+
+.testimoni-dots-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.3s ease;
+}
+
+  .testimoni-dots-arrow {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+   border: 1px solid rgba(255,255,255,0.4);
+   color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+  }
+
+  .testimoni-dots-arrow:hover {
+    background: white;
+    color: #f97316;
+  }
+
+  .testimoni-dots-arrow:disabled {
+    opacity: 0.3;
+    cursor: default;
+    pointer-events: none;
+  }
+
+    .testimoni-dot-num {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .testimoni-dot-num.active {
+      background: white;
+      color: #f97316;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+    
+    
     /* MITRA KERJASAMA */
     .partner-section {
       padding: 80px 0;
@@ -1030,40 +1256,44 @@
     }
 
     @media (max-width: 1024px) {
-      .stats-three-col { grid-template-columns: 1fr; gap: 28px; }
-      .direktorat-card { grid-template-columns: 1fr; }
-      .badge-abs-1, .badge-abs-2, .badge-abs-3 { display: none; }
-      .org-layout { flex-direction: column; gap: 30px; }
-      .org-left { flex: auto; position: static; text-align: center; }
-      .org-section-title { font-size: 2rem; text-align: center; }
-      .org-right { flex-direction: column; gap: 30px; }
-      .org-col-left, .org-col-right { height: 400px; }
-      .recognition-title { font-size: 2rem; }
-      .alumni-quote-section h2 { font-size: 2.5rem; }
-      .alumni-quote-section p { font-size: 1.2rem; }
-      .alumni-quote-section { padding: 80px 0; }
-      .partner-layout { flex-direction: column; text-align: center; }
-      .partner-content { text-align: center; }
-      .partner-content h2 { text-align: center; }
-      .hero-flex { flex-direction: column; text-align: center; }
-      .hero-title h1 { text-align: center; margin: 0 auto; }
-      .hero-image-area { width: 80%; margin: 0 auto; min-height: 350px; }
-      .achievement-master { border-radius: 32px; margin-top: 30px; }
-      .recognition-logos { gap: 20px; }
-      .recognition-item { padding: 15px 20px; min-width: 130px; }
-    }
+  .hero-wrap { overflow-x: hidden; }
+  .stats-three-col { grid-template-columns: 1fr; gap: 28px; }
+  .direktorat-card { grid-template-columns: 1fr; }
+  .hero-image-area { position: static; display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 20px; }
+  .hero-image-area img { max-height: 300px; }
+  .floating-card { position: static; transform: none !important; width: 100%; border-radius: 16px; padding: 12px 16px; }
+  .floating-card:hover { transform: none !important; }
+  .badge-icon-orange { width: 40px; height: 40px; font-size: 1.2rem; flex-shrink: 0; }
+  .org-layout { flex-direction: column; gap: 30px; }
+  .org-left { flex: auto; position: static; text-align: center; }
+  .org-section-title { font-size: 2rem; text-align: center; }
+  .org-right { flex-direction: column; gap: 30px; width: 100%; }
+  .org-col-left { flex: none; width: 100%; height: 400px; }
+  .org-col-right { display: none; }
+  .org-scroll-up-content { animation-duration: 30s; }
+  .recognition-title { font-size: 2rem; }
+  .alumni-quote-section h2 { font-size: 2.5rem; }
+  .alumni-quote-section p { font-size: 1.2rem; }
+  .alumni-quote-section { padding: 80px 0; }
+  .partner-layout { flex-direction: column; text-align: center; }
+  .partner-content { text-align: center; }
+  .partner-content h2 { text-align: center; }
+  .hero-flex { flex-direction: column; text-align: center; }
+  .hero-title h1 { text-align: center; margin: 0 auto; }
+  .hero-image-area { width: 80%; margin: 0 auto; min-height: 350px; }
+  .achievement-master { border-radius: 32px; margin-top: 30px; }
+  .recognition-logos { gap: 20px; }
+  .recognition-item { padding: 15px 20px; min-width: 130px; }
+}
 
     @media (max-width: 768px) {
-      .navbar-glass { flex-direction: column; align-items: stretch; }
-      .nav-links { display: none; flex-direction: column; align-items: center; margin-top: 12px; gap: 16px; }
-      .nav-links.open { display: flex !important; }
-      .mobile-toggle { display: block; }
       .hero-image-area { width: 100%; margin-top: 20px; min-height: 280px; }
       .achievement-master { margin-top: 30px; padding: 32px 24px; }
       .hero-title h1 { font-weight: 500; }
       .org-grid-one { gap: 14px; }
       .org-section-title { font-size: 1.6rem; }
-      .org-col-left, .org-col-right { height: 400px; }
+      .org-col-right { height: 400px; }
+      .org-col-left { height: 400px; }
       .org-card { padding: 12px 14px; }
       .org-logo { width: 42px; height: 42px; min-width: 42px; }
       .org-info h3 { font-size: 0.85rem; }
@@ -1076,6 +1306,14 @@
       .alumni-quote-section { padding: 60px 0; }
       .alumni-quote-section h2 { font-size: 2rem; }
       .alumni-quote-section p { font-size: 1rem; }
+      .testimoni-slide { flex-direction: column; text-align: center; gap: 24px; }
+      .testimoni-photo-circle { width: 180px; height: 180px; }
+      .testimoni-quote { font-size: 1.05rem; }
+      .testimoni-dots-nav { flex-direction: row; position: static; justify-content: center; margin-top: 24px; transform: none; }
+      .testimoni-dots-viewport { max-height: none; max-width: 100%; overflow-x: auto; overflow-y: visible; }
+      .testimoni-dots-list { flex-direction: row; }
+      .testimoni-dots-arrow { display: none !important; }
+      .testimoni-footer { justify-content: center; flex-wrap: wrap; }
       .quote-icon { font-size: 2rem; }
       .partner-section { padding: 50px 0; }
       .partner-logos-grid { gap: 15px; }
@@ -1084,6 +1322,16 @@
       .partner-content h2 { font-size: 1.8rem; }
       .partner-content p { font-size: 0.9rem; }
     }
+
+    @media (max-width: 576px) {
+  .org-col-left { height: 350px; }
+  .org-section-title { font-size: 1.3rem; }
+  .org-card { padding: 10px 12px; }
+  .org-logo { width: 36px; height: 36px; min-width: 36px; }
+  .org-info h3 { font-size: 0.78rem; }
+  .org-info p { font-size: 0.65rem; }
+  .org-bg-orange { padding: 50px 0; }
+}
 
 
     /* ==================== BERITA CAROUSEL ==================== */
@@ -1414,34 +1662,50 @@
   <section class="bg-orange-grad hero-wrap" id="homeSection">
     <div class="container-custom hero-flex">
       <div class="hero-title">
-        <h1>Sesuaikan Ke<br>kebutuhanmu</h1>
+        <h1><?= htmlspecialchars($hero_text['hero_title_line1'] ?? 'Sesuaikan Ke') ?><br><?= htmlspecialchars($hero_text['hero_title_line2'] ?? 'kebutuhanmu') ?></h1>
       </div>
       
       <div class="hero-image-area">
-  <img id="heroStudentImage" src="<?= base_url('assets/mahasiswa.png') ?>" alt="Foto Mahasiswa" style="width:100%; height:100%; object-fit:cover; border-radius:0px;" onerror="this.onerror=null; this.style.display='none'; document.getElementById('heroFallback').style.display='flex'">
-  <div id="heroFallback" class="hero-image-placeholder" style="display:none; flex-direction:column;">
-    <i class="fas fa-user-graduate"></i>
-    <p>Foto Mahasiswa Kreatif</p>
-    <p style="font-size:12px;">Letakkan mahasiswa.png di folder assets/</p>
-  </div>
-</div>
+        <img id="heroStudentImage" 
+            src="<?= base_url('assets/mahasiswa.png') . '?v=' . ($hero_img_version ?? time()) ?>" 
+            alt="Foto Mahasiswa" 
+            style="width:80%; height:80%; object-fit:cover; border-radius:0px;"
+            onerror="this.onerror=null; this.style.display='none'; document.getElementById('heroFallback').style.display='flex';">
 
-      <div class="floating-card badge-abs-1">
-        <div class="badge-icon-orange"><i class="fas fa-certificate"></i></div>
-        <div><strong>Complete chapters</strong><br>to earn certificates</div>
-      </div>
-      
-      <div class="floating-card badge-abs-2">
-        <div class="badge-icon-orange"><i class="fas fa-users"></i></div>
-        <div><strong>Forum Alumni</strong><br>Jaringan profesional</div>
-      </div>
-      
-      <div class="floating-card badge-abs-3">
-        <div class="badge-icon-orange"><i class="fas fa-chalkboard"></i></div>
-        <div><strong>MyTeLU</strong><br>Dashboard interaktif</div>
+        <div id="heroFallback" class="hero-image-placeholder" style="display:none; flex-direction:column; align-items:center;">
+          <i class="fas fa-user-graduate"></i>
+          <p>Foto Mahasiswa Kreatif</p>
+          <p style="font-size:12px;">Letakkan mahasiswa.png di folder assets/</p>
+        </div>  
       </div>
     </div>
 
+      
+      <div class="floating-card badge-abs-1">
+              <div class="badge-icon-orange"><i class="fas fa-chalkboard"></i></div>
+              <div><strong><?= htmlspecialchars($hero_text['card1_title'] ?? 'Complete chapters') ?></strong><br><?= htmlspecialchars($hero_text['card1_sub'] ?? 'to earn certificates') ?></div>
+            </div>
+
+            <div class="floating-card badge-abs-2">
+              <div class="badge-icon-orange"><i class="fas fa-lightbulb"></i></div>
+              <div><strong><?= htmlspecialchars($hero_text['card2_title'] ?? 'Beasiswa') ?></strong><br><?= htmlspecialchars($hero_text['card2_sub'] ?? 'Jaringan profesional') ?></div>
+            </div>
+      <div class="floating-card badge-abs-3">
+              <div class="badge-icon-orange"><i class="fas fa-chalkboard"></i></div>
+              <div><strong><?= htmlspecialchars($hero_text['card3_title'] ?? 'MyTeLU') ?></strong><br><?= htmlspecialchars($hero_text['card3_sub'] ?? 'Dashboard interaktif') ?></div>
+            </div>
+
+            <div class="floating-card badge-abs-4">
+              <div class="badge-icon-orange"><i class="fas fa-lightbulb"></i></div>
+              <div><strong><?= htmlspecialchars($hero_text['card4_title'] ?? 'Beasiswa') ?></strong><br><?= htmlspecialchars($hero_text['card4_sub'] ?? 'Peluang bantuan biaya') ?></div>
+            </div>
+
+            <div class="floating-card badge-abs-5">
+              <div class="badge-icon-orange"><i class="fas fa-rocket"></i></div>
+              <div><strong><?= htmlspecialchars($hero_text['card5_title'] ?? 'Karier') ?></strong><br><?= htmlspecialchars($hero_text['card5_sub'] ?? 'Persiapan dunia kerja') ?></div>
+            </div>
+          
+  <div class="achievement-master-wrapper">
     <div class="container-custom" style="padding: 0;">
       <div class="achievement-master" id="achievementCard">
         <div class="achievement-title">
@@ -1458,11 +1722,11 @@
           <div class="winner-row">
             <div class="winner-item-flex">
               <div class="winner-avatar"><i class="fas fa-trophy"></i></div>
-              <div>Juara 1 Kategori Ilustrasi Digital dan Juara 3 Kategori Motion Graphic dalam Festival Kreatif Mahasiswa 2025 Cabang Desain Komunikasi Visual, Bandung.</div>
+              <div><?= htmlspecialchars($hero_text['winner1_text'] ?? '') ?></div>
             </div>
             <div class="winner-item-flex">
               <div class="winner-avatar"><i class="fas fa-camera-retro"></i></div>
-              <div>Juara 3 Kategori Fotografi Komersial dan Juara 2 Kategori Desain Konten Media Sosial dalam Creative Student Award 2025 Cabang Desain Komunikasi Visual, Malang.</div>
+              <div><?= htmlspecialchars($hero_text['winner2_text'] ?? '') ?></div>
             </div>
           </div>
           
@@ -1483,15 +1747,14 @@
   <div class="container-custom">
     <div class="direktorat-card">
       <div class="direktorat-img-area">
-  <img src="<?= base_url('assets/Direktorat.png') ?>" alt="Direktorat Kemahasiswaan" onerror="...">
-</div>
+        <img src="<?= base_url($direktorat && $direktorat->gambar ? $direktorat->gambar : 'assets/Direktorat.png') ?>" alt="Direktorat Kemahasiswaan" onerror="this.parentElement.style.display='none'">
+      </div>
       <div class="p-5">
-        <h2 class="fw-bold">Direktorat Kemahasiswaan, Karier, dan Alumni</h2>
-        <p class="mt-3">Direktorat Kemahasiswaan, Karier dan Alumni (KKA) merupakan Direktorat yang berfungsi mengelola prestasi, kegiatan mahasiswa, pengembangan karakter, kesejahteraan mahasiswa, pengembangan Karier dan kontribusi alumni. Dengan keberadaan Direktorat KKA diharapkan seluruh mahasiswa dapat mengembangkan minat dan bakat sehingga dapat meningkatkan kompetensi khususnya dalam mempersiapkan diri dalam memasuki dunia kerja.</p>
-        <a href="#" class="btn btn-outline-dark rounded-pill px-4">Selengkapnya <i class="fas fa-arrow-right"></i></a>
+        <h2 class="fw-bold"><?= htmlspecialchars($direktorat ? $direktorat->judul : 'Direktorat Kemahasiswaan, Karier, dan Alumni') ?></h2>
+        <p class="mt-3"><?= htmlspecialchars($direktorat ? $direktorat->isi : '') ?></p>
+        <a href="<?= base_url('dashboard/direktorat') ?>" class="btn btn-outline-dark rounded-pill px-4">Selengkapnya <i class="fas fa-arrow-right"></i></a>
       </div>
     </div>
-  </div>
 
 <!-- BERITA SECTION -->
 <section class="berita-section">
@@ -1543,11 +1806,11 @@
             </button>
             <a href="<?= base_url('berita') ?>" class="btn btn-outline-dark rounded-pill px-4">Berita Selengkapnya <i class="fas fa-arrow-right"></i></a>
             <!-- Dots Indicator -->
-            <div class="carousel-dots">
+            <!-- <div class="carousel-dots">
                 <?php foreach ($berita_list as $index => $item): ?>
                 <button class="dot <?= $index == 0 ? 'active' : '' ?>" data-index="<?= $index ?>"></button>
                 <?php endforeach; ?>
-            </div>
+            </div> -->
         </div>
         <?php else: ?>
         <div class="text-center py-5">
@@ -1595,16 +1858,86 @@
     </div>
   </section>
 
-  <!-- ALUMNI QUOTE -->
-  <section class="alumni-quote-section">
-    <div class="container-custom">
-      <div class="alumni-quote-content">
-        <div class="quote-icon"><i class="fas fa-quote-right"></i></div>
-        <h2>Apa Kata Alumni</h2>
-        <p>Jadilah salah satu orang hebat seperti mereka</p>
+    <!-- ALUMNI QUOTE -->
+<section class="alumni-quote-section" id="testimoniSection">
+  <div class="container-custom">
+    
+    <!-- TOMBOL TAMBAH TESTIMONI (Hanya muncul jika Admin/Mahasiswa sudah login) -->
+    <?php if ($this->session->userdata('logged_in') === TRUE || $this->session->userdata('username')): ?>
+      <div class="mb-4 d-flex justify-content-start">
+        <a href="<?= base_url('testimoni/tambah') ?>" class="btn-tambah-testi">
+          <i class="fas fa-plus me-2"></i> Tambah Testimoni Alumni
+        </a>
+      </div>
+    <?php endif; ?>
+
+    <?php if (!empty($testimoni_list)): ?>
+    <div class="testimoni-carousel-wrap">
+      <?php foreach ($testimoni_list as $index => $t): ?>
+      <div class="testimoni-slide <?= $index == 0 ? 'active' : '' ?>" data-index="<?= $index ?>">
+        <div class="testimoni-photo-area">
+          <div class="testimoni-photo-circle">
+            <?php if ($t->foto): ?>
+              <img src="<?= base_url($t->foto) ?>" alt="<?= htmlspecialchars($t->nama) ?>">
+            <?php else: ?>
+              <div class="testimoni-photo-fallback"><i class="fas fa-user-graduate"></i></div>
+            <?php endif; ?>
+          </div>
+          <div class="testimoni-badge-icon"><i class="fas fa-user-graduate"></i></div>
+        </div>
+
+        <div class="testimoni-text-area">
+          <h3 class="testimoni-name"><?= htmlspecialchars($t->nama) ?></h3>
+          <p class="testimoni-posisi"><?= htmlspecialchars($t->posisi) ?></p>
+          <p class="testimoni-quote">"<?= htmlspecialchars($t->testimoni) ?>"</p>
+
+          <div class="testimoni-footer">
+            <div class="testimoni-stars">
+              <?php for($i=1;$i<=5;$i++): ?>
+                <i class="<?= $i <= $t->rating ? 'fas' : 'far' ?> fa-star"></i>
+              <?php endfor; ?>
+            </div>
+            <?php if ($t->linkedin): ?>
+              <a href="<?= htmlspecialchars($t->linkedin) ?>" target="_blank" class="testimoni-social-icon"><i class="fab fa-linkedin-in"></i></a>
+            <?php endif; ?>
+            <?php if ($t->pinterest): ?>
+              <a href="<?= htmlspecialchars($t->pinterest) ?>" target="_blank" class="testimoni-social-icon"><i class="fab fa-pinterest-p"></i></a>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
+
+      <!-- Dot Navigation kanan -->
+      <div class="testimoni-dots-nav">
+        <button class="testimoni-dots-arrow up" id="testiDotsUp" style="display:none;">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+
+        <div class="testimoni-dots-viewport">
+          <div class="testimoni-dots-list" id="testimoniDotsList">
+            <?php foreach ($testimoni_list as $index => $t): ?>
+              <button class="testimoni-dot-num <?= $index == 0 ? 'active' : '' ?>" data-index="<?= $index ?>">
+                <?= sprintf('%02d', $index + 1) ?>
+              </button>
+            <?php endforeach; ?>
+          </div>
+        </div>
+
+        <button class="testimoni-dots-arrow down" id="testiDotsDown" style="display:none;">
+          <i class="fas fa-chevron-down"></i>
+        </button>
       </div>
     </div>
-  </section>
+    <?php else: ?>
+    <div class="alumni-quote-content">
+      <div class="quote-icon"><i class="fas fa-quote-right"></i></div>
+      <h2>Apa Kata Alumni</h2>
+      <p>Jadilah salah satu orang hebat seperti mereka</p>
+    </div>
+    <?php endif; ?>
+  </div>
+</section>
 
   <!-- MITRA KERJASAMA -->
   <section class="partner-section">
@@ -1616,7 +1949,6 @@
         <div class="partner-content">
           <h2>MITRA KERJASAMA</h2>
           <p>Dalam penyelenggaraan pendidikan tinggi terbuka dan jarak jauh, TelU bekerjasama dengan berbagai pihak dalam berbagai hal, seperti penyediaan beasiswa, fasilitas penunjang dan tenaga ahli</p>
-          <a href="#" class="btn-partner">Selengkapnya <i class="fas fa-arrow-right"></i></a>
         </div>
       </div>
     </div>
@@ -1627,11 +1959,6 @@
 
 <script>
   // ==================== DATA ORGANISASI (UKM) – diambil dari database ====================
-
-  function splitArray(arr) {
-    const mid = Math.ceil(arr.length / 2);
-    return { left: arr.slice(0, mid), right: arr.slice(mid) };
-  }
 
   function renderGrid(containerId, dataArray, isDuplicated = true) {
     const container = document.getElementById(containerId);
@@ -1675,21 +2002,39 @@
       const res  = await fetch('<?= base_url('dashboard/get_organisasi_json') ?>');
       const json = await res.json();
       const organizations = (json.status === 'success' && json.data.length > 0) ? json.data : [];
-      const { left, right } = splitArray(organizations);
-      renderGrid('orgLeftContent', left, true);
-      renderGrid('orgRightContent', right, true);
+      const isMobile = window.innerWidth <= 1024;
+      if (isMobile) {
+        renderGrid('orgLeftContent', organizations, true);
+      } else {
+        const mid = Math.ceil(organizations.length / 2);
+        renderGrid('orgLeftContent', organizations.slice(0, mid), true);
+        renderGrid('orgRightContent', organizations.slice(mid), true);
+      }
     } catch (e) {
       console.warn('Gagal memuat data organisasi dari server:', e);
     }
   }
 
+  let orgResizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(orgResizeTimer);
+    orgResizeTimer = setTimeout(renderOrganizations, 300);
+  });
+
   // ==================== DATA MITRA KERJASAMA ====================
-  const partners = [
-    { name: "Bank BRI", logo: "assets/Bank BRI.png", defaultIcon: "fas fa-university" },
-    { name: "BPJS Kesehatan", logo: "assets/BPJS Kesehatan.png", defaultIcon: "fas fa-hospital-user" },
-    { name: "Pertamina", logo: "assets/Pertamina.png", defaultIcon: "fas fa-gas-pump" },
-    { name: "BRIN", logo: "assets/BRIN.png", defaultIcon: "fas fa-microscope" }
-  ];
+  const partners = <?php 
+    $mitra_json = [];
+    if (!empty($mitra_list)) {
+        foreach($mitra_list as $m) {
+            $mitra_json[] = [
+                'name' => $m->name,
+                'logo' => base_url($m->logo),
+                'defaultIcon' => $m->default_icon
+            ];
+        }
+    }
+    echo json_encode($mitra_json);
+  ?>;
 
   function renderPartnerLogos() {
     const container = document.getElementById('partnerLogosGrid');
@@ -1705,14 +2050,19 @@
   }
 
   // ==================== DATA INTERNATIONAL RECOGNITIONS (LOGO DARI ASSETS) ====================
-  const recognitionItems = [
-    { name: "Bank BRI", file: "assets/Bank BRI.png", fallback: "fas fa-chart-line" },
-    { name: "Webometri", file: "assets/Webometrics.png", fallback: "fas fa-globe" },
-    { name: "Times Higher Education", file: "assets/Times Higher Education.png", fallback: "fas fa-graduation-cap" },
-    { name: "Green Metric", file: "assets/Green Metric.png", fallback: "fas fa-leaf" },
-    { name: "AppliedHE", file: "assets/AppliedHE.png", fallback: "fas fa-chalkboard-user" },
-    { name: "World University Rankings", file: "assets/World University Rankings.png", fallback:   "fas fa-trophy" }
-  ];
+  const recognitionItems = <?php 
+    $recog_json = [];
+    if (!empty($recog_list)) {
+        foreach($recog_list as $r) {
+            $recog_json[] = [
+                'name' => $r->name,
+                'file' => base_url($r->logo),
+                'fallback' => $r->default_icon
+            ];
+        }
+    }
+    echo json_encode($recog_json);
+  ?>;
 
   function renderRecognitionLogos() {
     const container = document.getElementById('recognitionLogosContainer');
@@ -1733,6 +2083,14 @@
   // (dummy news data removed – carousel now uses PHP-rendered cards below)
 
   // ==================== ANIMASI ANGKA ====================
+  const heroNumbers = {
+    activeStudents: <?= (int)($hero_text['active_students'] ?? 762918) ?>,
+    countryCount: <?= (int)($hero_text['country_count'] ?? 50) ?>,
+    alumniCount: <?= (int)($hero_text['alumni_count'] ?? 2156104) ?>,
+    teluDaerah: <?= (int)($hero_text['telu_daerah'] ?? 39) ?>,
+    teluLuar: <?= (int)($hero_text['telu_luar'] ?? 1) ?>
+  };
+
   function animateNumber(element, finalValue, duration = 800) {
     if (!element) return;
     const finalNum = parseInt(finalValue.toString().replace(/,/g, '')) || 0;
@@ -1764,11 +2122,11 @@
     const isVisible = rect.top < window.innerHeight - 100 && rect.bottom > 100;
     if (isVisible) {
       animationTriggered = true;
-      animateNumber(document.getElementById('activeStudents'), 762918, 800);
-      animateNumber(document.getElementById('countryCount'), 50, 600);
-      animateNumber(document.getElementById('alumniCount'), 2156104, 900);
-      animateNumber(document.getElementById('teluDaerah'), 39, 500);
-      animateNumber(document.getElementById('teluLuar'), 1, 500);
+      animateNumber(document.getElementById('activeStudents'), heroNumbers.activeStudents, 800);
+      animateNumber(document.getElementById('countryCount'), heroNumbers.countryCount, 600);
+      animateNumber(document.getElementById('alumniCount'), heroNumbers.alumniCount, 900);
+      animateNumber(document.getElementById('teluDaerah'), heroNumbers.teluDaerah, 500);
+      animateNumber(document.getElementById('teluLuar'), heroNumbers.teluLuar, 500);
     }
   }
 
@@ -1784,6 +2142,89 @@
     window.addEventListener('scroll', checkAndAnimateNumbers);
     setTimeout(checkAndAnimateNumbers, 500);
   });
+
+  // ==================== TESTIMONI AUTO-SLIDE + DOT PAGINATION ====================
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.testimoni-slide');
+    const dots = document.querySelectorAll('.testimoni-dot-num');
+    const dotsList = document.getElementById('testimoniDotsList');
+    const upBtn = document.getElementById('testiDotsUp');
+    const downBtn = document.getElementById('testiDotsDown');
+    if (!slides.length) return;
+
+    let currentTesti = 0;
+    const totalTesti = slides.length;
+    const maxVisible = 5;
+    const dotHeight = 44;
+    const dotGap = 14;
+    let dotScrollIndex = 0;
+
+    function updateDotsScroll() {
+        if (!dotsList) return;
+        const offset = dotScrollIndex * (dotHeight + dotGap);
+        dotsList.style.transform = `translateY(-${offset}px)`;
+        if (upBtn) upBtn.disabled = dotScrollIndex === 0;
+        if (downBtn) downBtn.disabled = dotScrollIndex >= totalTesti - maxVisible;
+    }
+
+    function ensureDotVisible(index) {
+        if (index < dotScrollIndex) {
+            dotScrollIndex = index;
+        } else if (index >= dotScrollIndex + maxVisible) {
+            dotScrollIndex = index - maxVisible + 1;
+        }
+        dotScrollIndex = Math.max(0, Math.min(dotScrollIndex, Math.max(0, totalTesti - maxVisible)));
+        updateDotsScroll();
+    }
+
+    function showTestimoni(index) {
+        slides.forEach((s, i) => s.classList.toggle('active', i === index));
+        dots.forEach((d, i) => d.classList.toggle('active', i === index));
+        currentTesti = index;
+        ensureDotVisible(index);
+    }
+
+    dots.forEach((dot) => {
+        dot.addEventListener('click', () => {
+            showTestimoni(parseInt(dot.dataset.index));
+            resetTestiInterval();
+        });
+    });
+
+    if (upBtn) {
+        upBtn.addEventListener('click', () => {
+            dotScrollIndex = Math.max(0, dotScrollIndex - 1);
+            updateDotsScroll();
+        });
+    }
+    if (downBtn) {
+        downBtn.addEventListener('click', () => {
+            dotScrollIndex = Math.min(totalTesti - maxVisible, dotScrollIndex + 1);
+            updateDotsScroll();
+        });
+    }
+
+    if (totalTesti > maxVisible) {
+        if (upBtn) upBtn.style.display = 'flex';
+        if (downBtn) downBtn.style.display = 'flex';
+    }
+
+    let testiInterval;
+    function startTestiInterval() {
+        testiInterval = setInterval(() => {
+            const next = (currentTesti + 1) % totalTesti;
+            showTestimoni(next);
+        }, 5000);
+    }
+    function resetTestiInterval() {
+        clearInterval(testiInterval);
+        startTestiInterval();
+    }
+
+    updateDotsScroll();
+    startTestiInterval();
+});
+
   // ==================== BERITA CAROUSEL ====================
 document.addEventListener('DOMContentLoaded', function() {
     const cards = Array.from(document.querySelectorAll('.berita-card'));

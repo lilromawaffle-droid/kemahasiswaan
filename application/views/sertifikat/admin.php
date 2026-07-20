@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- QR Code Generator -->
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
     <style>
         body {
@@ -447,60 +449,173 @@
             font-size: 0.8rem;
         }
 
-        /* Responsive */
+        /* Validation Highlights */
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.15) !important;
+        }
+        .form-control.is-invalid:focus, .form-select.is-invalid:focus {
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.25) !important;
+        }
+
+        /* === MOBILE RESPONSIVE === */
+        * { box-sizing: border-box; }
+        html, body { overflow-x: hidden; max-width: 100%; }
+        .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1100; background: linear-gradient(135deg, #2C3E50, #1a2632); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 0.75rem; gap: 0.5rem; }
+        .hamburger-btn { display: none; background: rgba(255, 255, 255, 0.15); color: white; border: none; border-radius: 8px; width: 38px; height: 38px; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; }
+        .hamburger-btn:hover { background: rgba(230,126,34,0.6); }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; justify-content: flex-end; }
+        .topbar-username { display: flex; align-items: center; gap: 0.35rem; color: rgba(255, 255, 255, 0.9); font-size: 0.78rem; font-weight: 500; flex: 1; min-width: 0; }
+        .topbar-username i { color: #E67E22; font-size: 1rem; flex-shrink: 0; }
+        .topbar-username .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+        .topbar-logout { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 0.38rem 0.8rem; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; transition: background 0.2s; flex-shrink: 0; }
+        .topbar-logout:hover { background: #c0392b; color: white; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
         @media (max-width: 768px) {
-            .admin-sidebar {
-                width: 0;
-                display: none;
-            }
-            
-            .admin-main {
-                margin-left: 0;
-            }
+            .mobile-topbar { display: block; }
+            .hamburger-btn { display: flex; }
+            .admin-sidebar { position: fixed !important; left: -280px !important; z-index: 1000; transition: left 0.3s ease; width: 280px !important; display: block !important; }
+            .admin-sidebar.open { left: 0 !important; }
+            .admin-main { margin-left: 0 !important; padding: 1rem !important; padding-top: 4.5rem !important; max-width: 100vw; overflow-x: hidden; }
+            .admin-header { flex-direction: column !important; align-items: stretch !important; gap: 0.75rem; margin-bottom: 1.5rem; }
+            .admin-header h1 { font-size: 1.3rem !important; word-break: break-word; }
+            .admin-header .user-info > span, .admin-header .user-info .logout-btn { display: none; }
+            .admin-header .user-info { width: 100%; display: flex; flex-direction: column; gap: 0.5rem; justify-content: stretch; }
+            .admin-header .user-info .btn { width: 100%; margin-right: 0 !important; margin-left: 0 !important; text-align: center; }
             
             .stats-grid {
                 grid-template-columns: 1fr;
             }
-
             .filter-bar .row {
                 gap: 1rem;
+            }
+            .filter-bar .col-md-2.text-end {
+                text-align: left !important;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar" id="mobileTopbar">
+        <div class="topbar-inner">
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                <i class="fas fa-bars" id="hamburgerIcon"></i>
+            </button>
+            <div class="topbar-right">
+                <span class="topbar-username">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="name-text"><?= $this->session->userdata('nama') ?></span>
+                </span>
+                <a href="<?= base_url('login/logout') ?>" class="topbar-logout">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
     <div class="admin-wrapper">
         <!-- Sidebar -->
-        <div class="admin-sidebar">
+        <div class="admin-sidebar" id="adminSidebar">
             <div class="sidebar-header">
                 <h3>Admin FIK</h3>
                 <p>Manajemen Sertifikat</p>
             </div>
             
             <div class="sidebar-menu">
-                <a href="<?= base_url('admin/proposal') ?>">
+                <a href="<?= base_url('admin/edit_hero') ?>" class="<?= ($this->uri->segment(2) == 'edit_hero') ? 'active' : '' ?>">
+                    <i class="fas fa-desktop"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="<?= base_url('admin/proposal') ?>" class="<?= ($this->uri->segment(2) == 'proposal') ? 'active' : '' ?>">
                     <i class="fas fa-file-alt"></i>
                     <span>Proposal</span>
                 </a>
-                <a href="<?= base_url('sertifikat/admin') ?>" class="active">
+
+                <a href="<?= base_url('admin/beasiswa') ?>" class="<?= ($this->uri->segment(2) == 'beasiswa') ? 'active' : '' ?>">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Beasiswa</span>
+                </a>
+
+                <a href="<?= base_url('sertifikat/admin') ?>" class="<?= ($this->uri->segment(1) == 'sertifikat' && $this->uri->segment(2) != 'generate' && $this->uri->segment(2) != 'export_excel_canva') ? 'active' : '' ?>">
                     <i class="fas fa-certificate"></i>
                     <span>Sertifikat</span>
                 </a>
-                <a href="<?= base_url('sertifikat/generate') ?>" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                
+                <?php if ($this->uri->segment(1) == 'sertifikat'): ?>
+                <a href="<?= base_url('sertifikat/generate') ?>" class="<?= ($this->uri->segment(2) == 'generate') ? 'active' : '' ?>" style="padding-left: 2.5rem; font-size: 0.85rem;">
                     <i class="fas fa-magic"></i>
                     <span>Generate Sertifikat</span>
                 </a>
-                <a href="<?= base_url('sertifikat/export_excel_canva') ?>" style="padding-left: 2.5rem; font-size: 0.85rem;">
+                <a href="<?= base_url('sertifikat/export_excel_canva') ?>" class="<?= ($this->uri->segment(2) == 'export_excel_canva') ? 'active' : '' ?>" style="padding-left: 2.5rem; font-size: 0.85rem;">
                     <i class="fas fa-file-excel"></i>
                     <span>Export Excel Canva</span>
                 </a>
-                <a href="<?= base_url('berita/admin') ?>">
+                <?php endif; ?>
+
+                <a href="<?= base_url('tak_admin') ?>" class="<?= ($this->uri->segment(1) == 'tak_admin') ? 'active' : '' ?>">
+                    <i class="fas fa-file-signature"></i>
+                    <span>TAK</span>
+                </a>
+                
+                <a href="<?= base_url('berita/admin') ?>" class="<?= ($this->uri->segment(1) == 'berita') ? 'active' : '' ?>">
                     <i class="fas fa-newspaper"></i>
                     <span>Berita</span>
                 </a>
                 
+                <a href="<?= base_url('admin/organisasi') ?>" class="<?= ($this->uri->segment(2) == 'organisasi') ? 'active' : '' ?>">
+                    <i class="fas fa-users"></i>
+                    <span>Organisasi</span>
+                </a>
+
+                <a href="<?= base_url('admin/direktorat') ?>" class="<?= ($this->uri->segment(2) == 'direktorat') ? 'active' : '' ?>">
+                    <i class="fas fa-building"></i>
+                    <span>Direktorat</span>
+                </a>
+
+                <a href="<?= base_url('admin/mitra') ?>" class="<?= ($this->uri->segment(2) == 'mitra') ? 'active' : '' ?>">
+                    <i class="fas fa-handshake"></i>
+                    <span>Mitra & Recog</span>
+                </a>
+
+                <a href="<?= base_url('admin/testimoni') ?>" class="<?= ($this->uri->segment(2) == 'testimoni') ? 'active' : '' ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Testimoni Alumni</span>
+                </a>
+
+                <a href="<?= base_url('admin/tentang_kami') ?>" class="<?= ($this->uri->segment(2) == 'tentang_kami') ? 'active' : '' ?>">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Tentang Kami</span>
+                </a>
+
                 <div class="menu-divider"></div>
-                
+
+                <a href="<?= base_url('admin/forum_alumni') ?>" class="<?= ($this->uri->segment(2) == 'forum_alumni') ? 'active' : '' ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Forum Alumni</span>
+                    <?php 
+                    $CI =& get_instance();
+                    $pending_posts = $CI->db->where('status', 'pending')->count_all_results('forum_alumni_posts');
+                    if ($pending_posts > 0): 
+                    ?>
+                        <span class="badge bg-danger ms-auto"><?= $pending_posts ?></span>
+                    <?php endif; ?>
+                </a>
+
+                <a href="<?= base_url('admin/history_log') ?>" class="<?= ($this->uri->segment(2) == 'history_log') ? 'active' : '' ?>">
+                    <i class="fas fa-history"></i>
+                    <span>History Log</span>
+                </a>
+
+                <div class="menu-divider"></div>
+
                 <a href="<?= base_url('dashboard') ?>">
                     <i class="fas fa-arrow-left"></i>
                     <span>Kembali ke Dashboard</span>
@@ -513,7 +628,13 @@
             <div class="admin-header">
                 <h1>Manajemen Pengajuan Sertifikat</h1>
                 <div class="user-info">
-                    <a href="<?= base_url('sertifikat/export_excel_canva') ?>" class="btn" style="background:#27ae60;color:white;padding:0.5rem 1.2rem;border-radius:25px;text-decoration:none;font-weight:600;font-size:0.85rem;transition:all 0.3s;" title="Export semua data approved ke Excel format Canva">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalTambahPengajuan" style="background:#f97316;color:white;padding:0.5rem 1.2rem;border-radius:25px;font-weight:600;font-size:0.85rem;transition:all 0.3s;border:none;margin-right:10px;" title="Buat pengajuan sertifikat baru atas nama mahasiswa">
+                        <i class="fas fa-plus me-2"></i>Bikin Sertifikat
+                    </button>
+                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalImportExcel" style="background:#10b981;color:white;padding:0.5rem 1.2rem;border-radius:25px;border:none;font-weight:600;font-size:0.85rem;transition:all 0.3s;margin-right:10px;" title="Import data penerima sertifikat dari Excel">
+                        <i class="fas fa-file-upload me-2"></i>Import Excel
+                    </button>
+                    <a href="<?= base_url('sertifikat/export_excel_canva') ?>" class="btn" style="background:#27ae60;color:white;padding:0.5rem 1.2rem;border-radius:25px;text-decoration:none;font-weight:600;font-size:0.85rem;transition:all 0.3s;margin-right:10px;" title="Export semua data approved ke Excel format Canva">
                         <i class="fas fa-file-excel me-2"></i>Export Excel Canva
                     </a>
                     <span><i class="fas fa-user-circle me-2" style="color: #E67E22;"></i> <?= $this->session->userdata('nama') ?></span>
@@ -698,6 +819,11 @@
 													<i class="fas fa-qrcode"></i>
 												</button>
                                             <?php endif; ?>
+
+                                            <!-- Hapus -->
+                                            <a href="<?= base_url('sertifikat/admin/hapus/' . $p['id']) ?>" class="btn-action btn-reject" title="Hapus" onclick="confirmDelete(event, '<?= base_url('sertifikat/admin/hapus/' . $p['id']) ?>')">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>
@@ -762,16 +888,65 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label d-block fw-bold">Pilihan QR Code</label>
+                        <div class="btn-group w-100" role="group" aria-label="QR Code Method">
+                            <input type="radio" class="btn-check" name="qr_method" id="qrMethodGenerate" value="generate" checked onchange="toggleQrMethod()">
+                            <label class="btn btn-outline-success" for="qrMethodGenerate">
+                                <i class="fas fa-qrcode me-2"></i>Generate QR
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="qr_method" id="qrMethodBrowse" value="browse" onchange="toggleQrMethod()">
+                            <label class="btn btn-outline-success" for="qrMethodBrowse">
+                                <i class="fas fa-folder-open me-2"></i>Browse QR
+                            </label>
+                        </div>
+                    </div>
+
+                    <div id="qrGenerateContainer" class="mb-3">
                         <label class="form-label">QR Code / Link Verifikasi (Opsional)</label>
                         <input type="text" class="form-control" id="qrCode" placeholder="Kosongkan untuk generate otomatis" oninput="updateQrPreview()">
                         <small class="text-muted">Jika dikosongkan, QR akan di-generate otomatis dari nomor sertifikat</small>
                     </div>
+
+                    <div id="qrBrowseContainer" class="mb-3" style="display: none;">
+                        <label class="form-label">Upload QR Code Gambar (JPG/PNG) <span class="text-danger">*</span></label>
+                        <div id="qrDropZone" class="border border-2 border-dashed rounded-3 p-4 text-center cursor-pointer mb-2" style="border-style: dashed !important; border-color: #27ae60 !important; background: #f0f9ff; transition: all 0.2s; border-radius: 12px;">
+                            <i class="fas fa-cloud-upload-alt fa-2x text-success mb-2"></i>
+                            <p class="mb-1 fw-bold">Tarik & Lepas gambar QR di sini</p>
+                            <p class="text-muted small mb-2">atau</p>
+                            <button type="button" class="btn btn-sm btn-success px-3" onclick="document.getElementById('qrFile').click()" style="border-radius: 8px;">Pilih File</button>
+                            <input type="file" id="qrFile" accept="image/png, image/jpeg, image/jpg" style="display: none;" onchange="previewUploadedQr(this)">
+                        </div>
+                        <small class="text-muted">Format file gambar yang didukung: JPG atau PNG.</small>
+                        <div class="text-danger" id="qrFileError" style="display: none;">File QR Code wajib diunggah</div>
+                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Preview QR Code</label>
                         <div style="background:#f8f9fa;border-radius:12px;padding:16px;text-align:center;">
-                            <canvas id="qrCanvas" style="border-radius:8px;"></canvas>
+                            <canvas id="qrCanvas" style="border-radius:8px; max-width: 100%; height: auto;"></canvas>
                             <p class="text-muted mt-2" style="font-size:0.8rem;" id="qrInfo">Isi nomor sertifikat untuk generate QR</p>
                         </div>
+                    </div>
+
+
+
+                    <!-- Upload Tanda Tangan (Drag & Drop) -->
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Gambar Tanda Tangan (PNG/JPG) <span class="text-danger">*</span></label>
+                        <div id="sigDropZone" class="border border-2 border-dashed rounded-3 p-4 text-center cursor-pointer mb-2" style="border-style: dashed !important; border-color: #f97316 !important; background: #fffaf0; transition: all 0.2s; border-radius: 12px;">
+                            <i class="fas fa-signature fa-2x text-warning mb-2" style="color: #f97316 !important;"></i>
+                            <p class="mb-1 fw-bold">Tarik & Lepas file Tanda Tangan di sini</p>
+                            <p class="text-muted small mb-2">atau</p>
+                            <button type="button" class="btn btn-sm btn-warning text-white px-3" onclick="document.getElementById('approveSignature').click()" style="border-radius: 8px; background-color: #f97316; border: none;">Pilih File</button>
+                            <input type="file" id="approveSignature" accept="image/png, image/jpeg, image/jpg" style="display: none;" onchange="previewUploadedSignature(this)">
+                        </div>
+                        <div id="sigPreviewContainer" style="display: none; background:#f8f9fa; border-radius:12px; padding:16px; text-align:center;" class="mb-2">
+                            <img id="sigPreviewImg" style="max-height: 80px; max-width: 100%; border-radius: 8px;" alt="Preview Tanda Tangan">
+                            <p class="text-muted mt-2 small mb-0">Preview Tanda Tangan</p>
+                        </div>
+                        <small class="text-muted">Format file gambar: PNG/JPG (transparan direkomendasikan).</small>
+                        <div class="text-danger" id="signatureError" style="display: none;">Gambar tanda tangan wajib diunggah</div>
                     </div>
 
                     <div class="mb-3">
@@ -805,8 +980,46 @@
 
                     <div class="mb-3">
                         <label class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="catatanReject" rows="4" placeholder="Tuliskan alasan penolakan..."></textarea>
+                        <textarea class="form-control" id="catatanReject" rows="3" placeholder="Tuliskan alasan penolakan..."></textarea>
                         <div class="text-danger" id="rejectError" style="display: none;">Alasan penolakan wajib diisi</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label d-block fw-bold mb-2">Tandai Inputan yang Salah:</label>
+                        <div class="d-flex flex-column gap-2 p-3 bg-light rounded" style="border: 1px solid #e0e0e0;">
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="nama_pic" id="checkPic">
+                                <label class="form-check-label" for="checkPic">Nama PIC</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="judul_kegiatan" id="checkJudul">
+                                <label class="form-check-label" for="checkJudul">Judul Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="tanggal_kegiatan" id="checkTanggal">
+                                <label class="form-check-label" for="checkTanggal">Tanggal Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="lokasi_kegiatan" id="checkLokasi">
+                                <label class="form-check-label" for="checkLokasi">Lokasi Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="deskripsi_kegiatan" id="checkDeskripsi">
+                                <label class="form-check-label" for="checkDeskripsi">Deskripsi Kegiatan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="catatan_tambahan" id="checkCatatan">
+                                <label class="form-check-label" for="checkCatatan">Catatan Tambahan</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="file_sertifikat" id="checkFileSertifikat">
+                                <label class="form-check-label" for="checkFileSertifikat">File Desain Sertifikat</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input reject-field-check" type="checkbox" value="file_penerima" id="checkFilePenerima">
+                                <label class="form-check-label" for="checkFilePenerima">File Data Penerima</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -830,10 +1043,10 @@
                 <div class="modal-body text-center p-4">
                     <p class="text-muted mb-2" style="font-size:0.8rem;">Nomor Sertifikat</p>
                     <p id="qrModalNomor" class="fw-bold text-dark mb-3" style="font-size:0.9rem;"></p>
-                    <div style="background:#f8f9fa;border-radius:16px;padding:20px;display:inline-block;">
-                        <canvas id="qrModalCanvas"></canvas>
+                    <div style="background:#f8f9fa;border-radius:16px;padding:20px;display:inline-block;max-width:100%;">
+                        <canvas id="qrModalCanvas" style="max-width: 100%; height: auto;"></canvas>
                     </div>
-                    <p class="text-muted mt-3 mb-0" style="font-size:0.75rem;" id="qrModalLink"></p>
+                    <p class="text-muted mt-3 mb-0" style="font-size:0.75rem; word-break: break-all;" id="qrModalLink"></p>
                 </div>
                 <div class="modal-footer border-0 justify-content-center pb-4">
                     <button class="btn btn-sm" style="background:#6366f1;color:white;border-radius:20px;padding:8px 24px;" onclick="downloadQR()">
@@ -909,7 +1122,7 @@
                                         </tr>
                                         <tr>
                                             <th>Tanggal Kegiatan</th>
-                                            <td>${(p.tanggal_kegiatan && p.tanggal_kegiatan !== '0000-00-00') ? new Date(p.tanggal_kegiatan).toLocaleDateString('id-ID') : '-'}</td>
+                                            <td>${p.tanggal_kegiatan ? new Date(p.tanggal_kegiatan).toLocaleDateString('id-ID') : '-'}</td>
                                         </tr>
                                         <tr>
                                             <th>Lokasi</th>
@@ -933,14 +1146,14 @@
                                         </tr>
                                         <tr>
                                             <th>QR Code</th>
-                                            <td>${p.qr_code || '-'}</td>
+                                            <td style="word-break: break-all;">${p.qr_code || '-'}</td>
                                         </tr>
                                         <tr>
                                             <th>Tanggal Pengajuan</th>
-                                            <td>${(p.submitted_at && p.submitted_at !== '0000-00-00 00:00:00') ? new Date(p.submitted_at).toLocaleString('id-ID') : '-'}</td>
+                                            <td>${p.submitted_at ? new Date(p.submitted_at).toLocaleString('id-ID') : '-'}</td>
                                         </tr>
-                                        ${(p.approved_at && p.approved_at !== '0000-00-00 00:00:00') ? `<tr><th>Tanggal Disetujui</th><td>${new Date(p.approved_at).toLocaleString('id-ID')}</td></tr>` : ''}
-                                        ${(p.rejected_at && p.rejected_at !== '0000-00-00 00:00:00') ? `<tr><th>Tanggal Ditolak</th><td>${new Date(p.rejected_at).toLocaleString('id-ID')}</td></tr>` : ''}
+                                        ${p.approved_at ? `<tr><th>Tanggal Disetujui</th><td>${new Date(p.approved_at).toLocaleString('id-ID')}</td></tr>` : ''}
+                                        ${p.rejected_at ? `<tr><th>Tanggal Ditolak</th><td>${new Date(p.rejected_at).toLocaleString('id-ID')}</td></tr>` : ''}
                                         <tr>
                                             <th>File Sertifikat</th>
                                             <td>
@@ -994,8 +1207,20 @@
             document.getElementById('approveJudul').textContent = judul;
             document.getElementById('nomorSertifikat').value = '';
             document.getElementById('qrCode').value = '';
+            document.getElementById('qrFile').value = ''; // Reset file input
             document.getElementById('catatanApprove').value = '';
             document.getElementById('nomorError').style.display = 'none';
+            document.getElementById('qrFileError').style.display = 'none';
+            
+            // Reset Signature
+            document.getElementById('approveSignature').value = '';
+            document.getElementById('sigPreviewContainer').style.display = 'none';
+            document.getElementById('sigPreviewImg').src = '';
+            document.getElementById('signatureError').style.display = 'none';
+
+            // Reset method to generate
+            document.getElementById('qrMethodGenerate').checked = true;
+            toggleQrMethod();
 
             // Reset QR canvas
             const canvas = document.getElementById('qrCanvas');
@@ -1006,13 +1231,189 @@
             new bootstrap.Modal(document.getElementById('modalApprove')).show();
         }
 
-        // Update QR when nomor sertifikat changes
+        // Toggle QR Input Fields depending on selected method
+        function toggleQrMethod() {
+            const isBrowse = document.getElementById('qrMethodBrowse').checked;
+            if (isBrowse) {
+                document.getElementById('qrGenerateContainer').style.display = 'none';
+                document.getElementById('qrBrowseContainer').style.display = 'block';
+                previewUploadedQr(document.getElementById('qrFile'));
+            } else {
+                document.getElementById('qrGenerateContainer').style.display = 'block';
+                document.getElementById('qrBrowseContainer').style.display = 'none';
+                updateQrPreview();
+            }
+        }
+
+        // Preview Signature Image
+        function previewUploadedSignature(input) {
+            const file = input.files[0];
+            const errorDiv = document.getElementById('signatureError');
+            const previewDiv = document.getElementById('sigPreviewContainer');
+            const previewImg = document.getElementById('sigPreviewImg');
+            
+            if (!file) {
+                previewDiv.style.display = 'none';
+                return;
+            }
+            
+            errorDiv.style.display = 'none';
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewDiv.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+
+        // Preview local QR Image on Canvas
+        function previewUploadedQr(input) {
+            const file = input.files[0];
+            const canvas = document.getElementById('qrCanvas');
+            const ctx = canvas.getContext('2d');
+            const qrInfo = document.getElementById('qrInfo');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = new Image();
+                    img.onload = function() {
+                        canvas.width = 180;
+                        canvas.height = 180;
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(img, 0, 0, 180, 180);
+                        qrInfo.textContent = 'Preview QR Code dari File: ' + file.name;
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                document.getElementById('qrFileError').style.display = 'none';
+            } else {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                qrInfo.textContent = 'Belum ada file yang dipilih';
+            }
+        }
+
+        // Update QR when nomor sertifikat changes and setup Drag & Drop
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('nomorSertifikat').addEventListener('input', updateQrPreview);
+
+            const dropZone = document.getElementById('qrDropZone');
+            const fileInput = document.getElementById('qrFile');
+            
+            if (dropZone && fileInput) {
+                // Prevent default drag behaviors
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+                
+                // Highlight drop zone when item is dragged over it
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, function() {
+                        dropZone.style.background = '#e0f2fe';
+                        dropZone.style.borderColor = '#15803d';
+                    }, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    dropZone.addEventListener(eventName, function() {
+                        dropZone.style.background = '#f0f9ff';
+                        dropZone.style.borderColor = '#27ae60';
+                    }, false);
+                });
+                
+                // Handle dropped files
+                dropZone.addEventListener('drop', function(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    if (files.length) {
+                        fileInput.files = files;
+                        previewUploadedQr(fileInput);
+                    }
+                }, false);
+            }
+            // Excel Drag & Drop setup
+            const excelDropZone = document.getElementById('excelDropZone');
+            const excelFileInput = document.getElementById('excelFileImport');
+            
+            if (excelDropZone && excelFileInput) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    excelDropZone.addEventListener(eventName, function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    excelDropZone.addEventListener(eventName, function() {
+                        excelDropZone.style.background = '#e0f2fe';
+                        excelDropZone.style.borderColor = '#15803d';
+                    }, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    excelDropZone.addEventListener(eventName, function() {
+                        excelDropZone.style.background = '#f0f9ff';
+                        excelDropZone.style.borderColor = '#27ae60';
+                    }, false);
+                });
+                
+                excelDropZone.addEventListener('drop', function(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    if (files.length) {
+                        excelFileInput.files = files;
+                        handleExcelImportDirect(excelFileInput);
+                    }
+                }, false);
+            }
+            
+            // Signature Drag & Drop setup
+            const sigDropZone = document.getElementById('sigDropZone');
+            const sigFileInput = document.getElementById('approveSignature');
+            
+            if (sigDropZone && sigFileInput) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    sigDropZone.addEventListener(eventName, function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    }, false);
+                });
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    sigDropZone.addEventListener(eventName, function() {
+                        sigDropZone.style.background = '#ffedd5';
+                        sigDropZone.style.borderColor = '#ea580c';
+                    }, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    sigDropZone.addEventListener(eventName, function() {
+                        sigDropZone.style.background = '#fffaf0';
+                        sigDropZone.style.borderColor = '#f97316';
+                    }, false);
+                });
+                
+                sigDropZone.addEventListener('drop', function(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    if (files.length) {
+                        sigFileInput.files = files;
+                        previewUploadedSignature(sigFileInput);
+                    }
+                }, false);
+            }
         });
 
         // Generate QR Code preview
         function updateQrPreview() {
+            // Only update preview if in generate mode
+            if (document.getElementById('qrMethodBrowse').checked) return;
+
             const nomor = document.getElementById('nomorSertifikat').value.trim();
             const customLink = document.getElementById('qrCode').value.trim();
             const canvas = document.getElementById('qrCanvas');
@@ -1041,6 +1442,26 @@
                 return;
             }
 
+            // Tanda Tangan validation
+            const sigInput = document.getElementById('approveSignature');
+            if (sigInput.files.length === 0) {
+                document.getElementById('signatureError').style.display = 'block';
+                return;
+            }
+            document.getElementById('signatureError').style.display = 'none';
+            const signatureFile = sigInput.files[0];
+
+            const isBrowse = document.getElementById('qrMethodBrowse').checked;
+            let qrFile = null;
+            if (isBrowse) {
+                const fileInput = document.getElementById('qrFile');
+                if (fileInput.files.length === 0) {
+                    document.getElementById('qrFileError').style.display = 'block';
+                    return;
+                }
+                qrFile = fileInput.files[0];
+            }
+
             // Get button by selector (fix: tidak pakai event.target)
             const btn = document.querySelector('#modalApprove .btn-success');
             const originalText = btn ? btn.innerHTML : '';
@@ -1049,24 +1470,28 @@
                 btn.disabled = true;
             }
 
-            // Generate QR code data
-            const customLink = document.getElementById('qrCode').value.trim();
-            const qrData = customLink || '<?= base_url('sertifikat/verifikasi/') ?>' + nomor;
-
-            const formData = new URLSearchParams();
+            const formData = new FormData();
             formData.append('id', currentId);
             formData.append('action', 'approve');
             formData.append('nomor_sertifikat', nomor);
-            formData.append('qr_code', qrData);
+            formData.append('signature_file', signatureFile);
             formData.append('catatan', document.getElementById('catatanApprove').value.trim());
+            formData.append('qr_method', isBrowse ? 'browse' : 'generate');
+
+            if (isBrowse) {
+                formData.append('qr_file', qrFile);
+            } else {
+                const customLink = document.getElementById('qrCode').value.trim();
+                const qrData = customLink || '<?= base_url('sertifikat/verifikasi/') ?>' + nomor;
+                formData.append('qr_code', qrData);
+            }
 
             fetch('<?= base_url("sertifikat/update_status") ?>', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
-                body: formData.toString()
+                body: formData
             })
             .then(response => {
                 if (!response.ok) {
@@ -1103,21 +1528,36 @@
             document.getElementById('catatanReject').value = '';
             document.getElementById('rejectError').style.display = 'none';
             
+            // Reset checkboxes
+            document.querySelectorAll('.reject-field-check').forEach(chk => chk.checked = false);
+            
             new bootstrap.Modal(document.getElementById('modalReject')).show();
         }
 
         // Submit Reject
         function submitReject() {
-            const catatan = document.getElementById('catatanReject').value.trim();
-            if (!catatan) {
+            const catatanText = document.getElementById('catatanReject').value.trim();
+            if (!catatanText) {
                 document.getElementById('rejectError').style.display = 'block';
                 return;
             }
 
+            // Get selected wrong fields
+            const wrongFields = [];
+            document.querySelectorAll('.reject-field-check:checked').forEach(chk => {
+                wrongFields.push(chk.value);
+            });
+
+            // Construct structured JSON catatan
+            const envelope = {
+                catatan: catatanText,
+                wrong_fields: wrongFields
+            };
+
             const formData = new URLSearchParams();
             formData.append('id', currentId);
             formData.append('action', 'reject');
-            formData.append('catatan', catatan);
+            formData.append('catatan', JSON.stringify(envelope));
 
             fetch('<?= base_url("sertifikat/update_status") ?>', {
                 method: 'POST',
@@ -1184,5 +1624,477 @@
             });
         }, 5000);
     </script>
+
+    <!-- Modal Bikin Pengajuan Baru (Admin) -->
+    <div class="modal fade" id="modalTambahPengajuan" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="modal-header bg-dark text-white py-3">
+                    <h5 class="modal-title font-weight-bold"><i class="fas fa-plus me-2 text-warning"></i>Bikin Sertifikat Baru</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="<?= base_url('sertifikat/admin/tambah') ?>" method="POST">
+                    <div class="modal-body p-4">
+                        <div class="row g-3">
+                            <!-- Pilih Mahasiswa (Autocomplete) -->
+                            <div class="col-md-6" id="autocompleteWrapper">
+                                <label class="form-label font-weight-bold">Mahasiswa <span class="text-danger">*</span></label>
+                                <input type="hidden" name="mahasiswa_id" id="mahasiswaIdHidden">
+                                <div style="position: relative;">
+                                    <input
+                                        type="text"
+                                        id="searchMahasiswa"
+                                        class="form-control"
+                                        placeholder="Ketik nama atau NIM mahasiswa..."
+                                        autocomplete="new-password"
+                                        readonly
+                                        required
+                                        onfocus="this.removeAttribute('readonly')"
+                                        oninvalid="this.setCustomValidity('Pilih mahasiswa dari daftar')"
+                                        oninput="this.setCustomValidity('')"
+                                        style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;"
+                                    >
+                                    <div id="autocompleteDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; background:#fff; border:2px solid #e2e8f0; border-top:none; border-radius:0 0 10px 10px; max-height:220px; overflow-y:auto; z-index:9999; box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                                    </div>
+                                </div>
+                                <style>
+                                    .autocomplete-item { padding: 9px 14px; cursor: pointer; font-size: 0.88rem; border-bottom: 1px solid #f1f5f9; }
+                                    .autocomplete-item:hover { background: #f0f9ff; }
+                                    .autocomplete-item:last-child { border-bottom: none; }
+                                </style>
+                            </div>
+                            
+                            <!-- Nama PIC -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Nama PIC <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="nama_pic" placeholder="Contoh: Dosen Pembimbing" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Judul Kegiatan -->
+                            <div class="col-12">
+                                <label class="form-label font-weight-bold">Judul Kegiatan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="judul_kegiatan" placeholder="Contoh: Lomba Nasional UI/UX 2026" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Deskripsi Kegiatan -->
+                            <div class="col-12">
+                                <label class="form-label font-weight-bold">Deskripsi Kegiatan</label>
+                                <textarea class="form-control" name="deskripsi_kegiatan" rows="3" placeholder="Masukkan deskripsi singkat pencapaian..." style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;"></textarea>
+                            </div>
+
+                            <!-- Tanggal Kegiatan -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Tanggal Kegiatan <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="tanggal_kegiatan" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Lokasi Kegiatan -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Lokasi Kegiatan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="lokasi_kegiatan" placeholder="Contoh: Universitas Telkom, Bandung" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Catatan Tambahan -->
+                            <div class="col-12">
+                                <label class="form-label font-weight-bold">Catatan Tambahan (Opsional)</label>
+                                <textarea class="form-control" name="catatan_tambahan" rows="2" placeholder="Catatan internal admin..." style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 d-flex gap-2">
+                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600;">Batal</button>
+                        <button type="submit" class="btn btn-success px-4" style="border-radius: 10px; font-weight: 600; background: #27ae60; border: none; padding: 0.55rem 1.5rem;">
+                            <i class="fas fa-paper-plane me-2"></i>Kirim Pengajuan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Import Excel (Admin) -->
+    <div class="modal fade" id="modalImportExcel" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content" style="border-radius: 16px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.15);">
+                <div class="modal-header bg-success text-white py-3">
+                    <h5 class="modal-title font-weight-bold"><i class="fas fa-file-excel me-2 text-warning"></i>Import Penerima Sertifikat dari Excel</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formImportExcel" onsubmit="submitImportExcel(event)">
+                    <div class="modal-body p-4">
+                        <div class="alert alert-info" style="border-radius: 10px; background-color: #f0fdf4; border-color: #bbf7d0; color: #15803d; font-size: 0.85rem;">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Format kolom Excel/CSV yang wajib ada di baris pertama: <strong>NO, NAMA, NIM, JURUSAN, JABATAN</strong>.
+                            <br><em>* Jika NIM mahasiswa belum terdaftar di sistem, akun mahasiswa baru akan otomatis dibuat dengan password default = NIM.</em>
+                        </div>
+                        <div class="row g-3">
+                            <!-- File Excel -->
+                            <div class="col-12">
+                                <label class="form-label font-weight-bold">File Excel / CSV <span class="text-danger">*</span></label>
+                                <div id="excelDropZone" class="border border-2 border-dashed rounded-3 p-4 text-center cursor-pointer mb-2" style="border-style: dashed !important; border-color: #27ae60 !important; background: #f0f9ff; transition: all 0.2s; border-radius: 12px;">
+                                    <i class="fas fa-file-excel fa-2x text-success mb-2"></i>
+                                    <p class="mb-1 fw-bold">Tarik & Lepas file Excel/CSV di sini</p>
+                                    <p class="text-muted small mb-2">atau</p>
+                                    <button type="button" class="btn btn-sm btn-success px-3" onclick="document.getElementById('excelFileImport').click()" style="border-radius: 8px;">Pilih File</button>
+                                    <input type="file" id="excelFileImport" accept=".xlsx, .xls, .csv" style="display: none;" onchange="handleExcelImportDirect(this)">
+                                </div>
+                                <input type="hidden" name="data_penerima" id="hiddenDataPenerima" required>
+                                <div id="excelImportFeedback" class="mt-2 fw-bold text-success" style="display: none;"></div>
+                            </div>
+
+                            <!-- Nama PIC -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Nama PIC <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="nama_pic" placeholder="Contoh: Dosen Pembimbing" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Judul Kegiatan -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Judul Kegiatan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="judul_kegiatan" placeholder="Contoh: Lomba Nasional UI/UX 2026" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Deskripsi Kegiatan -->
+                            <div class="col-12">
+                                <label class="form-label font-weight-bold">Deskripsi Kegiatan</label>
+                                <textarea class="form-control" name="deskripsi_kegiatan" rows="2" placeholder="Masukkan deskripsi singkat pencapaian..." style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;"></textarea>
+                            </div>
+
+                            <!-- Tanggal Kegiatan -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Tanggal Kegiatan <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="tanggal_kegiatan" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Lokasi Kegiatan -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Lokasi Kegiatan <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="lokasi_kegiatan" placeholder="Contoh: Universitas Telkom, Bandung" required style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                            </div>
+
+                            <!-- Opsi Status Sertifikat -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Status Sertifikat Setelah Import</label>
+                                <select class="form-select" name="import_status" style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                                    <option value="approved">Langsung Setujui (Approved)</option>
+                                    <option value="submitted">Menunggu Persetujuan (Submitted)</option>
+                                </select>
+                            </div>
+
+                            <!-- Pola Nomor Sertifikat Awal -->
+                            <div class="col-md-6">
+                                <label class="form-label font-weight-bold">Nomor Sertifikat Awal (Opsional)</label>
+                                <input type="text" class="form-control" name="nomor_sertifikat_start" placeholder="Contoh: 001/FIK/2026" style="border-radius: 10px; padding: 10px; border: 2px solid #e2e8f0;">
+                                <small class="text-muted">Nomor urut numerik pertama akan otomatis bertambah (increment) tiap baris.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-top-0 d-flex gap-2">
+                        <button type="button" class="btn btn-light px-4" data-bs-dismiss="modal" style="border-radius: 10px; font-weight: 600;">Batal</button>
+                        <button type="submit" id="btnSubmitImport" class="btn btn-success px-4" style="border-radius: 10px; font-weight: 600; background: #27ae60; border: none; padding: 0.55rem 1.5rem;">
+                            <i class="fas fa-file-import me-2"></i>Mulai Import
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </body>
 </html>
+
+<script>
+// Autocomplete Mahasiswa — script ini diletakkan SETELAH modal HTML agar DOM sudah siap
+document.addEventListener('DOMContentLoaded', function() {
+    const modalEl = document.getElementById('modalTambahPengajuan');
+    if (!modalEl) return;
+
+    const mahasiswaData = [
+        <?php if (!empty($mahasiswa_list)): ?>
+            <?php foreach ($mahasiswa_list as $idx => $m): ?>
+                {id: <?= $m['id'] ?>, nama: "<?= addslashes(htmlspecialchars($m['nama'])) ?>", nim: "<?= addslashes(htmlspecialchars($m['nim'] ?? '')) ?>"}
+                <?= $idx < count($mahasiswa_list) - 1 ? ',' : '' ?>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    ];
+
+    modalEl.addEventListener('shown.bs.modal', function() {
+        const input    = document.getElementById('searchMahasiswa');
+        const dropdown = document.getElementById('autocompleteDropdown');
+        if (!input || !dropdown) return;
+
+        // Reset state setiap kali modal dibuka
+        input.value = '';
+        document.getElementById('mahasiswaIdHidden').value = '';
+        dropdown.style.display = 'none';
+
+        function renderItems(items) {
+            dropdown.innerHTML = '';
+            if (items.length === 0) {
+                dropdown.innerHTML = '<div style="padding:10px 14px;color:#94a3b8;font-size:0.85rem;">Tidak ada hasil ditemukan</div>';
+                dropdown.style.display = 'block';
+                return;
+            }
+            items.forEach(function(m) {
+                const row = document.createElement('div');
+                row.className = 'autocomplete-item';
+                row.innerHTML =
+                    '<i class="fas fa-user-graduate me-2" style="color:#E67E22;"></i>' +
+                    '<strong>' + m.nama + '</strong>' +
+                    (m.nim && m.nim !== '-' ? '<span style="color:#94a3b8;font-size:0.78rem;margin-left:8px;">' + m.nim + '</span>' : '');
+                row.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    input.value = m.nama + (m.nim && m.nim !== '-' ? ' (' + m.nim + ')' : '');
+                    document.getElementById('mahasiswaIdHidden').value = m.id;
+                    dropdown.style.display = 'none';
+                });
+                dropdown.appendChild(row);
+            });
+            dropdown.style.display = 'block';
+        }
+
+        input.addEventListener('focus', function() {
+            const q = this.value.toLowerCase().trim();
+            renderItems(q ? mahasiswaData.filter(m => m.nama.toLowerCase().includes(q) || (m.nim && m.nim.toLowerCase().includes(q))) : mahasiswaData.slice(0, 8));
+        });
+
+        input.addEventListener('input', function() {
+            document.getElementById('mahasiswaIdHidden').value = '';
+            const q = this.value.toLowerCase().trim();
+            if (!q) { dropdown.style.display = 'none'; return; }
+            renderItems(mahasiswaData.filter(m => m.nama.toLowerCase().includes(q) || (m.nim && m.nim.toLowerCase().includes(q))));
+        });
+    });
+
+    modalEl.addEventListener('hidden.bs.modal', function() {
+        const dropdown = document.getElementById('autocompleteDropdown');
+        if (dropdown) dropdown.style.display = 'none';
+        
+        // Bersihkan semua class is-invalid jika modal ditutup
+        modalEl.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#autocompleteWrapper')) {
+            const dropdown = document.getElementById('autocompleteDropdown');
+            if (dropdown) dropdown.style.display = 'none';
+        }
+    });
+
+    // Validasi form dan penandaan input salah
+    const form = modalEl.querySelector('form');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            let firstInvalid = null;
+
+            // Periksa input wajib
+            form.querySelectorAll('[required]').forEach(el => {
+                // Cek jika field kosong atau autocomplete mahasiswa belum memilih ID
+                if (el.id === 'searchMahasiswa' && !document.getElementById('mahasiswaIdHidden').value) {
+                    el.classList.add('is-invalid');
+                    isValid = false;
+                    if (!firstInvalid) firstInvalid = el;
+                } else if (!el.value.trim()) {
+                    el.classList.add('is-invalid');
+                    isValid = false;
+                    if (!firstInvalid) firstInvalid = el;
+                } else {
+                    el.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                e.preventDefault();
+                if (firstInvalid) firstInvalid.focus();
+            }
+        });
+
+        // Hapus tanda merah ketika user mengetik/memilih kembali
+        form.querySelectorAll('.form-control, .form-select').forEach(el => {
+            el.addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+            el.addEventListener('change', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+    }
+});
+
+// Mobile Sidebar Toggle
+function toggleSidebar() {
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const icon = document.getElementById('hamburgerIcon');
+    const isOpen = sidebar.classList.toggle('open');
+    overlay.classList.toggle('active', isOpen);
+    if (icon) {
+        icon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+    }
+}
+
+// Custom SweetAlert2 Delete Confirmation
+function confirmDelete(event, url) {
+    event.preventDefault();
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Data pengajuan sertifikat ini akan dihapus permanen!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74c3c',
+        cancelButtonColor: '#95a5a6',
+        confirmButtonText: 'Ya, hapus!',
+        cancelButtonText: 'Batal',
+        borderRadius: '15px'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+
+// Parse Excel file client-side using SheetJS
+function handleExcelImportDirect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    
+    const feedback = document.getElementById('excelImportFeedback');
+    feedback.style.display = 'block';
+    feedback.className = 'mt-2 text-warning';
+    feedback.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Membaca file Excel...';
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheetName = workbook.SheetNames[0];
+            const worksheet = workbook.Sheets[firstSheetName];
+            
+            const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+            if (rawRows.length < 2) {
+                feedback.className = 'mt-2 text-danger';
+                feedback.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>File Excel kosong atau tidak memiliki data.';
+                document.getElementById('hiddenDataPenerima').value = '';
+                return;
+            }
+            
+            // Cari header kolom
+            const headers = rawRows[0].map(h => h ? String(h).toUpperCase().trim() : '');
+            const idxNama = headers.indexOf('NAMA');
+            const idxNim = headers.indexOf('NIM');
+            const idxJurusan = headers.indexOf('JURUSAN');
+            const idxJabatan = headers.indexOf('JABATAN');
+            
+            if (idxNama === -1 || idxNim === -1) {
+                feedback.className = 'mt-2 text-danger';
+                feedback.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Kolom NAMA dan NIM wajib ada di baris pertama Excel.';
+                document.getElementById('hiddenDataPenerima').value = '';
+                return;
+            }
+            
+            const mappedData = [];
+            for (let i = 1; i < rawRows.length; i++) {
+                const row = rawRows[i];
+                if (!row || row.length === 0) continue;
+                
+                const nama = row[idxNama] ? String(row[idxNama]).trim() : '';
+                const nim = row[idxNim] ? String(row[idxNim]).trim() : '';
+                const jurusan = idxJurusan !== -1 && row[idxJurusan] ? String(row[idxJurusan]).trim() : '';
+                const jabatan = idxJabatan !== -1 && row[idxJabatan] ? String(row[idxJabatan]).trim() : '';
+                
+                if (nama && nim) {
+                    mappedData.push({
+                        nama: nama,
+                        nim: nim,
+                        jurusan: jurusan,
+                        jabatan: jabatan
+                    });
+                }
+            }
+            
+            if (mappedData.length === 0) {
+                feedback.className = 'mt-2 text-danger';
+                feedback.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Tidak ada baris data mahasiswa yang valid.';
+                document.getElementById('hiddenDataPenerima').value = '';
+                return;
+            }
+            
+            document.getElementById('hiddenDataPenerima').value = JSON.stringify(mappedData);
+            feedback.className = 'mt-2 text-success';
+            feedback.innerHTML = `<i class="fas fa-check-circle me-2"></i>Berhasil membaca <strong>${mappedData.length}</strong> data penerima dari Excel.`;
+        } catch (err) {
+            feedback.className = 'mt-2 text-danger';
+            feedback.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Gagal mengurai file Excel: ' + err.message;
+            document.getElementById('hiddenDataPenerima').value = '';
+        }
+    };
+    reader.onerror = function() {
+        feedback.className = 'mt-2 text-danger';
+        feedback.innerHTML = '<i class="fas fa-exclamation-circle me-2"></i>Terjadi kesalahan saat membaca file.';
+        document.getElementById('hiddenDataPenerima').value = '';
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// Submit Excel Import Form via AJAX
+function submitImportExcel(event) {
+    event.preventDefault();
+    
+    const hiddenData = document.getElementById('hiddenDataPenerima').value;
+    if (!hiddenData) {
+        alert('Silakan pilih file Excel yang valid terlebih dahulu.');
+        return;
+    }
+    
+    const form = document.getElementById('formImportExcel');
+    const btn = document.getElementById('btnSubmitImport');
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Mengimport...';
+    btn.disabled = true;
+    
+    const formData = new FormData(form);
+    
+    fetch('<?= base_url("sertifikat/admin/import_excel") ?>', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error('Server error ' + response.status + ': ' + text.substring(0, 300));
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.status === 'success') {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('modalImportExcel'));
+            if (modal) modal.hide();
+            
+            // Tampilkan alert sukses
+            const alertEl = document.createElement('div');
+            alertEl.className = 'alert alert-success alert-dismissible fade show';
+            alertEl.innerHTML = `<i class="fas fa-check-circle me-2"></i><strong>Berhasil!</strong> ${data.message} <button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+            document.querySelector('.admin-main').prepend(alertEl);
+            
+            setTimeout(() => location.reload(), 2000);
+        } else {
+            alert('Gagal: ' + (data.message || 'Unknown error'));
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    })
+    .catch(error => {
+        alert('Terjadi kesalahan: ' + error.message);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+</script>

@@ -31,120 +31,9 @@
             --border: #e2e8f0;
         }
 
-        /* Header Styles */
-        .header-glass {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
         .container-custom {
             width: min(100% - 3rem, 1280px);
             margin-inline: auto;
-        }
-
-        .navbar-glass {
-            padding: 12px 32px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: #2d3e50;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.3rem;
-        }
-
-        .logo-text h5 {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .logo-text span {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.85);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-bottom: 2px solid transparent;
-            padding-bottom: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a.active, .nav-links a:hover {
-            border-bottom-color: #f97316;
-        }
-
-
-        .btn-mytelu-custom {
-            background: #f97316;
-            padding: 8px 28px;
-            border-radius: 40px;
-            font-weight: 700;
-            color: white;
-            transition: 0.2s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-mytelu-custom:hover {
-            background: #ea580c;
-            color: white;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
-        }
-
-        .user-avatar-small {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 8px 14px;
-            font-size: 1.4rem;
-            color: white;
-            cursor: pointer;
         }
 
         /* Forum Styles */
@@ -262,6 +151,18 @@
         .post-submit:hover {
             background: #ea580c;
             transform: translateY(-1px);
+        }
+
+        .post-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        button.media-btn {
+            font-family: inherit;
+            font-size: inherit;
+            cursor: pointer;
         }
         
         .post-card {
@@ -484,8 +385,26 @@
         .comment-time {
             font-size: 0.6rem;
             color: #9ca3af;
-            margin-top: 4px;
             display: block;
+        }
+        
+        .comment-meta {
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .comment-reply-btn {
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #64748b;
+            margin-left: 10px;
+            transition: color 0.2s;
+        }
+        
+        .comment-reply-btn:hover {
+            color: #ea580c;
         }
         
         .comment-input-area {
@@ -767,25 +686,6 @@
 
 
         @media (max-width: 768px) {
-            .navbar-glass {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 12px;
-                gap: 16px;
-            }
-            .nav-links.open {
-                display: flex !important;
-            }
-            .mobile-toggle {
-                display: block;
-                align-self: flex-end;
-            }
-
             .forum-container {
                 padding: 80px 16px 40px;
             }
@@ -806,33 +706,43 @@
 <!-- MAIN CONTENT FORUM ALUMNI -->
 <div class="forum-container">
     <!-- Create Post Card -->
-    <div class="create-post-card">
-        <div class="post-input-area">
-            <div class="avatar-circle">
-                <?php if (!empty($user_data['foto'])): ?>
-                    <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" alt="">
-                <?php else: ?>
-                    <i class="fas fa-user"></i>
-                <?php endif; ?>
+    <div class="create-post-card" id="createPostCard">
+        <form action="<?= base_url('forum_alumni/create_post') ?>" method="POST" enctype="multipart/form-data" id="createPostForm">
+            <?= $this->security->get_csrf_token_name() ? '<input type="hidden" name="' . $this->security->get_csrf_token_name() . '" value="' . $this->security->get_csrf_hash() . '">' : '' ?>
+            <div class="post-input-area">
+                <div class="avatar-circle">
+                    <?php if (!empty($user_data['foto'])): ?>
+                        <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" alt="">
+                    <?php else: ?>
+                        <i class="fas fa-user"></i>
+                    <?php endif; ?>
+                </div>
+                <div class="post-input">
+                    <textarea name="content" id="postContentInput" rows="2" placeholder="Apa yang sedang dipikirkan?" style="cursor: text; background: #fafafc; resize: none; transition: rows 0.2s;" onfocus="expandPostInput()" oninput="this.style.height='auto';this.style.height=(this.scrollHeight)+'px'"></textarea>
+                </div>
             </div>
-            <div class="post-input">
-                <a href="<?= base_url('forum_alumni/create') ?>" style="text-decoration: none;">
-                    <textarea rows="2" placeholder="Apa yang sedang dipikirkan?" readonly style="cursor: pointer; background: #fafafc;"></textarea>
-                </a>
+
+            <!-- Preview area for selected files -->
+            <div id="mediaPreviewArea" style="display:none; padding: 8px 16px 0; display:flex; gap:12px; flex-wrap:wrap;"></div>
+
+            <!-- Hidden file inputs -->
+            <input type="file" name="post_image" id="postImageInput" accept="image/*" style="display:none" onchange="previewMedia(this,'image')">
+            <input type="file" name="post_video" id="postVideoInput" accept="video/*" style="display:none" onchange="previewMedia(this,'video')">
+
+            <div class="post-actions">
+                <div class="media-buttons">
+                    <button type="button" class="media-btn" onclick="document.getElementById('postImageInput').click()">
+                        <i class="fas fa-image"></i> <span>Foto</span>
+                    </button>
+                    <button type="button" class="media-btn" onclick="document.getElementById('postVideoInput').click()">
+                        <i class="fas fa-video"></i> <span>Video</span>
+                    </button>
+                </div>
+                <button type="submit" class="post-submit" id="postSubmitBtn">Posting</button>
             </div>
-        </div>
-        <div class="post-actions">
-            <div class="media-buttons">
-                <a href="<?= base_url('forum_alumni/create') ?>" class="media-btn" style="text-decoration: none;">
-                    <i class="fas fa-image"></i> <span>Foto</span>
-                </a>
-                <a href="<?= base_url('forum_alumni/create') ?>" class="media-btn" style="text-decoration: none;">
-                    <i class="fas fa-video"></i> <span>Video</span>
-                </a>
-            </div>
-            <a href="<?= base_url('forum_alumni/create') ?>" class="post-submit" style="text-decoration: none;">Posting</a>
-        </div>
+        </form>
     </div>
+
     
     <!-- Posts Feed -->
     <div id="postsFeed">
@@ -882,53 +792,95 @@
                         <?php endif; ?>
                     </div>
                     
-                    <div class="post-stats">
-                        <span onclick="showLikes(<?= $post['id'] ?>)">
-                            <i class="fas fa-heart" style="color: <?= $post['likes_count'] > 0 ? '#f97316' : '#9ca3af' ?>"></i> 
+                    <div class="post-stats" style="border-bottom: none; margin-bottom: 0; padding-bottom: 0;">
+                        <span class="like-btn-trigger <?= $post['user_has_liked'] ? 'liked' : '' ?>" onclick="toggleLike(this, <?= $post['id'] ?>)" style="cursor: pointer; user-select: none;">
+                            <i class="fas fa-heart" style="color: <?= $post['user_has_liked'] ? '#f97316' : '#9ca3af' ?>"></i> 
                             <span class="like-count-<?= $post['id'] ?>"><?= number_format($post['likes_count']) ?></span> suka
                         </span>
-                        <span onclick="toggleComments(<?= $post['id'] ?>)">
+                        <span onclick="toggleComments(<?= $post['id'] ?>)" style="cursor: pointer; user-select: none;">
                             <i class="fas fa-comment"></i> 
-                            <span class="comment-count-<?= $post['id'] ?>"><?= number_format($post['comments_count']) ?></span> komentar
+                            <span class="comment-count-<?= $post['id'] ?>" id="comment-count-<?= $post['id'] ?>"><?= number_format($post['comments_count']) ?></span> komentar
                         </span>
-                    </div>
-                    
-                    <div class="post-engagement">
-                        <button class="engagement-btn like-btn <?= $post['user_has_liked'] ? 'liked' : '' ?>" onclick="toggleLike(this, <?= $post['id'] ?>)">
-                            <i class="fas fa-heart"></i> Suka
-                        </button>
-                        <button class="engagement-btn" onclick="openCommentModal(<?= $post['id'] ?>)">
-                            <i class="fas fa-comment"></i> Komentar
-                        </button>
                     </div>
                     
                     <div class="comments-section" id="comments-<?= $post['id'] ?>">
                         <div id="comments-list-<?= $post['id'] ?>">
                             <?php if (!empty($post['comments'])): ?>
                                 <?php foreach ($post['comments'] as $comment): ?>
-                                    <div class="comment-item" data-comment-id="<?= $comment['id'] ?>">
-                                        <div class="comment-avatar">
-                                            <?php if (!empty($comment['user_foto'])): ?>
-                                                <img src="<?= base_url('uploads/users/' . $comment['user_foto']) ?>" alt="">
-                                            <?php else: ?>
-                                                <i class="fas fa-user"></i>
+                                    <div class="comment-item-container" id="comment-container-<?= $comment['id'] ?>" style="margin-bottom: 15px;">
+                                        <div class="comment-item" data-comment-id="<?= $comment['id'] ?>">
+                                            <div class="comment-avatar">
+                                                <?php if (!empty($comment['user_foto'])): ?>
+                                                    <img src="<?= base_url('uploads/users/' . $comment['user_foto']) ?>" alt="">
+                                                <?php else: ?>
+                                                    <i class="fas fa-user"></i>
+                                                <?php endif; ?>
+                                            </div>
+                                            <div class="comment-bubble">
+                                                <strong><?= htmlspecialchars($comment['nama']) ?></strong>
+                                                <p><?= nl2br(htmlspecialchars($comment['comment'])) ?></p>
+                                                <div class="comment-meta">
+                                                    <span class="comment-time"><?= time_ago($comment['created_at']) ?></span>
+                                                    <span class="comment-reply-btn" onclick="showReplyInput(<?= $comment['id'] ?>, <?= $post['id'] ?>, '<?= htmlspecialchars($comment['nama'], ENT_QUOTES) ?>')">
+                                                        <i class="fas fa-reply"></i> Balas
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <?php if ($comment['user_id'] == $this->session->userdata('user_id')): ?>
+                                                <button class="delete-comment" onclick="deleteComment(this, <?= $comment['id'] ?>, <?= $post['id'] ?>)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="comment-bubble">
-                                            <strong><?= htmlspecialchars($comment['nama']) ?></strong>
-                                            <p><?= nl2br(htmlspecialchars($comment['comment'])) ?></p>
-                                            <span class="comment-time"><?= time_ago($comment['created_at']) ?></span>
+
+                                        <!-- Nested Replies List -->
+                                        <div class="replies-list" id="replies-list-<?= $comment['id'] ?>" style="margin-left: 45px; margin-top: 10px; border-left: 2px solid #e2e8f0; padding-left: 15px;">
+                                            <?php if (!empty($comment['replies'])): ?>
+                                                <?php foreach ($comment['replies'] as $reply): ?>
+                                                    <div class="comment-item reply-item" data-comment-id="<?= $reply['id'] ?>" style="margin-bottom: 10px;">
+                                                        <div class="comment-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;">
+                                                            <?php if (!empty($reply['user_foto'])): ?>
+                                                                <img src="<?= base_url('uploads/users/' . $reply['user_foto']) ?>" alt="">
+                                                            <?php else: ?>
+                                                                <i class="fas fa-user"></i>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                        <div class="comment-bubble" style="padding: 6px 12px;">
+                                                            <strong><?= htmlspecialchars($reply['nama']) ?></strong>
+                                                            <p><?= nl2br(htmlspecialchars($reply['comment'])) ?></p>
+                                                            <span class="comment-time" style="font-size: 0.65rem; color: #9ca3af;"><?= time_ago($reply['created_at']) ?></span>
+                                                        </div>
+                                                        <?php if ($reply['user_id'] == $this->session->userdata('user_id')): ?>
+                                                            <button class="delete-comment" onclick="deleteComment(this, <?= $reply['id'] ?>, <?= $post['id'] ?>)">
+                                                                <i class="fas fa-times"></i>
+                                                            </button>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </div>
-                                        <?php if ($comment['user_id'] == $this->session->userdata('user_id')): ?>
-                                            <button class="delete-comment" onclick="deleteComment(this, <?= $comment['id'] ?>, <?= $post['id'] ?>)">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        <?php endif; ?>
+
+                                        <!-- reply input area -->
+                                        <div class="reply-input-container" id="reply-input-container-<?= $comment['id'] ?>" style="margin-left: 45px; display: none; margin-top: 8px; margin-bottom: 10px;">
+                                            <div class="comment-input-area" style="padding-top: 6px; margin-top: 6px; border-top: none;">
+                                                <div class="comment-avatar" style="width: 24px; height: 24px; font-size: 0.75rem;">
+                                                    <?php if (!empty($user_data['foto'])): ?>
+                                                        <img src="<?= base_url('uploads/users/' . $user_data['foto']) ?>" alt="">
+                                                    <?php else: ?>
+                                                        <i class="fas fa-user"></i>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <input type="text" class="comment-input reply-input-field" placeholder="Balas @<?= htmlspecialchars($comment['nama']) ?>..." id="replyInput-<?= $comment['id'] ?>" style="font-size: 0.85rem; padding: 6px 12px;" onkeypress="handleReplyKeyPress(event, <?= $comment['id'] ?>, <?= $post['id'] ?>)">
+                                                <button class="comment-send" onclick="submitReply(<?= $comment['id'] ?>, <?= $post['id'] ?>)" style="padding: 4px 10px;">
+                                                    <i class="fas fa-paper-plane" style="font-size: 0.85rem;"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
                         </div>
-                        <?php if ($post['comments_count'] > 3): ?>
+                        <?php if ($post['top_level_comments_count'] > 5): ?>
                             <div class="view-more-comments" onclick="loadMoreComments(<?= $post['id'] ?>)">
                                 Lihat semua <?= number_format($post['comments_count']) ?> komentar
                             </div>
@@ -953,46 +905,69 @@
     </div>
 </div>
 
-<!-- Comment Modal -->
-<div class="modal-custom" id="commentModal">
-    <div class="modal-content-custom">
-        <div class="modal-header-custom">
-            <h3><i class="fas fa-comment"></i> Buat Komentar</h3>
-            <button class="modal-close" onclick="closeCommentModal()">&times;</button>
-        </div>
-        <div class="modal-body-custom">
-            <textarea id="modalCommentText" rows="4" placeholder="Tulis komentar Anda..."></textarea>
-        </div>
-        <div class="modal-footer-custom">
-            <button class="btn-cancel" onclick="closeCommentModal()">Batal</button>
-            <button class="btn-submit-comment" id="modalSubmitComment">Kirim</button>
-        </div>
-    </div>
-</div>
 
 <!-- Likes Modal -->
-<div class="modal-custom" id="likesModal">
-    <div class="modal-content-custom" style="max-width: 400px;">
-        <div class="modal-header-custom">
-            <h3><i class="fas fa-heart" style="color: #f97316;"></i> Daftar Penyuka</h3>
-            <button class="modal-close" onclick="closeLikesModal()">&times;</button>
-        </div>
-        <div class="modal-body-custom" id="likesList">
-            <div style="text-align: center; padding: 20px;">
-                <i class="fas fa-spinner fa-spin"></i> Memuat...
-            </div>
-        </div>
-        <div class="modal-footer-custom">
-            <button class="btn-cancel" onclick="closeLikesModal()">Tutup</button>
-        </div>
-    </div>
-</div>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
     let currentPostId = null;
     let currentLikesPostId = null;
-    
+
+    // === Inline Post Creation ===
+    function expandPostInput() {
+        const ta = document.getElementById('postContentInput');
+        if (ta.rows < 4) {
+            ta.rows = 4;
+            document.getElementById('mediaPreviewArea').style.display = 'flex';
+        }
+    }
+
+    function previewMedia(input, type) {
+        const preview = document.getElementById('mediaPreviewArea');
+        // Remove existing preview of same type
+        const existing = preview.querySelector('[data-type="' + type + '"]');
+        if (existing) existing.remove();
+
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        const url = URL.createObjectURL(file);
+        const wrapper = document.createElement('div');
+        wrapper.setAttribute('data-type', type);
+        wrapper.style.cssText = 'position:relative; display:inline-block;';
+
+        if (type === 'image') {
+            wrapper.innerHTML = `<img src="${url}" style="max-height:140px; max-width:200px; border-radius:8px; object-fit:cover;">
+                <button type="button" onclick="removeMedia('image')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;line-height:22px;text-align:center;">&times;</button>`;
+        } else {
+            wrapper.innerHTML = `<video src="${url}" style="max-height:140px; max-width:240px; border-radius:8px;" controls></video>
+                <button type="button" onclick="removeMedia('video')" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.55);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;line-height:22px;text-align:center;">&times;</button>`;
+        }
+
+        preview.appendChild(wrapper);
+        preview.style.display = 'flex';
+    }
+
+    function removeMedia(type) {
+        const inputId = type === 'image' ? 'postImageInput' : 'postVideoInput';
+        document.getElementById(inputId).value = '';
+        const wrapper = document.querySelector('#mediaPreviewArea [data-type="' + type + '"]');
+        if (wrapper) wrapper.remove();
+    }
+
+    document.getElementById('createPostForm').addEventListener('submit', function(e) {
+        const content = document.getElementById('postContentInput').value.trim();
+        if (!content) {
+            e.preventDefault();
+            alert('Konten postingan tidak boleh kosong!');
+            return;
+        }
+        const btn = document.getElementById('postSubmitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memposting...';
+    });
+
+
     // Toast notification
     function showToast(message, type = 'success') {
         $('.toast-notification').remove();
@@ -1022,13 +997,16 @@
     }
     
     // Toggle Like
+    // Toggle Like
     window.toggleLike = function(btn, postId) {
-        // Simpan reference ke button
         const $btn = $(btn);
-        const originalHtml = $btn.html();
+        const $heartIcon = $btn.find('i');
         
-        // Tampilkan loading
-        $btn.html('<i class="fas fa-spinner fa-spin"></i> Loading...').prop('disabled', true);
+        if ($btn.data('loading')) return;
+        $btn.data('loading', true);
+        
+        const originalHeartColor = $heartIcon.css('color');
+        $heartIcon.removeClass('fa-heart').addClass('fa-spinner fa-spin').css('color', '#f97316');
         
         $.ajax({
             url: '<?= base_url("forum_alumni/toggle_like") ?>',
@@ -1040,25 +1018,24 @@
                     const likeCountSpan = $('.like-count-' + postId);
                     likeCountSpan.text(response.count.toLocaleString());
                     
+                    $heartIcon.removeClass('fa-spinner fa-spin').addClass('fa-heart');
+                    
                     if (response.liked) {
-                        btn.classList.add('liked');
+                        $btn.addClass('liked');
+                        $heartIcon.css('color', '#f97316');
+                        
                         const rect = btn.getBoundingClientRect();
                         const x = rect.left + rect.width / 2;
                         const y = rect.top + rect.height / 2;
                         createHeartPop(x, y);
                         showToast('❤️ Berhasil menyukai postingan!', 'success');
                     } else {
-                        btn.classList.remove('liked');
+                        $btn.removeClass('liked');
+                        $heartIcon.css('color', '#9ca3af');
                         showToast('💔 Batal menyukai postingan', 'info');
                     }
-                    
-                    const statsHeart = $(`.post-stats span:first-child i`);
-                    if (response.count > 0) {
-                        statsHeart.css('color', '#f97316');
-                    } else {
-                        statsHeart.css('color', '#9ca3af');
-                    }
                 } else if (response.error) {
+                    $heartIcon.removeClass('fa-spinner fa-spin').addClass('fa-heart').css('color', originalHeartColor);
                     showToast(response.error, 'error');
                     if (response.redirect) {
                         setTimeout(() => window.location.href = response.redirect, 1000);
@@ -1066,82 +1043,13 @@
                 }
             },
             error: function(xhr, status, error) {
-                console.error('AJAX Error:', error);
+                $heartIcon.removeClass('fa-spinner fa-spin').addClass('fa-heart').css('color', originalHeartColor);
                 showToast('Gagal menyukai postingan: ' + error, 'error');
             },
             complete: function() {
-                $btn.html(originalHtml).prop('disabled', false);
+                $btn.data('loading', false);
             }
         });
-    }
-    
-    // Show Likes Modal
-    window.showLikes = function(postId) {
-        currentLikesPostId = postId;
-        $('#likesList').html('<div style="text-align: center; padding: 20px;"><i class="fas fa-spinner fa-spin"></i> Memuat daftar penyuka...</div>');
-        $('#likesModal').addClass('show');
-        
-        $.ajax({
-            url: '<?= base_url("forum_alumni/get_likes") ?>',
-            type: 'POST',
-            data: { post_id: postId },
-            dataType: 'json',
-            success: function(response) {
-                if (response.success && response.likes) {
-                    if (response.likes.length === 0) {
-                        $('#likesList').html(`
-                            <div style="text-align: center; padding: 40px;">
-                                <i class="fas fa-heart-broken" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 12px; display: block;"></i>
-                                <p style="color: #6b7280;">Belum ada yang menyukai postingan ini</p>
-                                <p style="font-size: 0.75rem; color: #9ca3af;">Jadilah yang pertama!</p>
-                            </div>
-                        `);
-                    } else {
-                        let likesHtml = '';
-                        const currentUserId = '<?= $this->session->userdata('user_id') ?>';
-                        
-                        response.likes.forEach(like => {
-                            const isCurrentUser = (like.user_id == currentUserId);
-                            likesHtml += `
-                                <div class="like-item">
-                                    <div class="like-avatar">
-                                        ${like.user_foto ? 
-                                            `<img src="<?= base_url('uploads/users/') ?>${like.user_foto}" alt="">` : 
-                                            '<i class="fas fa-user"></i>'}
-                                    </div>
-                                    <div class="like-info">
-                                        <strong>${escapeHtml(like.nama)}</strong>
-                                        <span>${like.time_ago}</span>
-                                    </div>
-                                    ${isCurrentUser ? '<div class="like-badge"><i class="fas fa-heart"></i> Anda</div>' : ''}
-                                </div>
-                            `;
-                        });
-                        $('#likesList').html(likesHtml);
-                    }
-                } else {
-                    $('#likesList').html(`
-                        <div style="text-align: center; padding: 40px;">
-                            <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #ef4444; margin-bottom: 12px; display: block;"></i>
-                            <p style="color: #6b7280;">Gagal memuat daftar penyuka</p>
-                        </div>
-                    `);
-                }
-            },
-            error: function() {
-                $('#likesList').html(`
-                    <div style="text-align: center; padding: 40px;">
-                        <i class="fas fa-exclamation-circle" style="font-size: 3rem; color: #ef4444; margin-bottom: 12px; display: block;"></i>
-                        <p style="color: #6b7280;">Terjadi kesalahan. Silakan coba lagi.</p>
-                    </div>
-                `);
-            }
-        });
-    }
-    
-    window.closeLikesModal = function() {
-        $('#likesModal').removeClass('show');
-        currentLikesPostId = null;
     }
     
     // Submit Comment from input
@@ -1167,31 +1075,46 @@
             success: function(response) {
                 if (response.success) {
                     const commentHtml = `
-                        <div class="comment-item" data-comment-id="${response.comment.id}">
-                            <div class="comment-avatar">
-                                ${response.comment.user_foto ? 
-                                    `<img src="<?= base_url('uploads/users/') ?>${response.comment.user_foto}" alt="">` : 
-                                    '<i class="fas fa-user"></i>'}
+                        <div class="comment-item-container" id="comment-container-${response.comment.id}" style="margin-bottom: 15px;">
+                            <div class="comment-item" data-comment-id="${response.comment.id}">
+                                <div class="comment-avatar">
+                                    ${response.comment.user_foto ? 
+                                        `<img src="<?= base_url('uploads/users/') ?>${response.comment.user_foto}" alt="">` : 
+                                        '<i class="fas fa-user"></i>'}
+                                </div>
+                                <div class="comment-bubble">
+                                    <strong>${escapeHtml(response.comment.nama)}</strong>
+                                    <p>${escapeHtml(response.comment.comment).replace(/\n/g, '<br>')}</p>
+                                    <div class="comment-meta">
+                                        <span class="comment-time">${response.comment.time_ago}</span>
+                                        <span class="comment-reply-btn" onclick="showReplyInput(${response.comment.id}, ${postId}, '${escapeHtml(response.comment.nama)}')">
+                                            <i class="fas fa-reply"></i> Balas
+                                        </span>
+                                    </div>
+                                </div>
+                                <button class="delete-comment" onclick="deleteComment(this, ${response.comment.id}, ${postId})">
+                                    <i class="fas fa-times"></i>
+                                </button>
                             </div>
-                            <div class="comment-bubble">
-                                <strong>${escapeHtml(response.comment.nama)}</strong>
-                                <p>${escapeHtml(response.comment.comment).replace(/\n/g, '<br>')}</p>
-                                <span class="comment-time">${response.comment.time_ago}</span>
+                            <div class="replies-list" id="replies-list-${response.comment.id}" style="margin-left: 45px; margin-top: 10px; border-left: 2px solid #e2e8f0; padding-left: 15px;"></div>
+                            <div class="reply-input-container" id="reply-input-container-${response.comment.id}" style="margin-left: 45px; display: none; margin-top: 8px; margin-bottom: 10px;">
+                                <div class="comment-input-area" style="padding-top: 6px; margin-top: 6px; border-top: none;">
+                                    <div class="comment-avatar" style="width: 24px; height: 24px; font-size: 0.75rem;">
+                                        ${response.comment.user_foto ? 
+                                            `<img src="<?= base_url('uploads/users/') ?>${response.comment.user_foto}" alt="">` : 
+                                            '<i class="fas fa-user"></i>'}
+                                    </div>
+                                    <input type="text" class="comment-input reply-input-field" placeholder="Balas @${escapeHtml(response.comment.nama)}..." id="replyInput-${response.comment.id}" style="font-size: 0.85rem; padding: 6px 12px;" onkeypress="handleReplyKeyPress(event, ${response.comment.id}, ${postId})">
+                                    <button class="comment-send" onclick="submitReply(${response.comment.id}, ${postId})" style="padding: 4px 10px;">
+                                        <i class="fas fa-paper-plane" style="font-size: 0.85rem;"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="delete-comment" onclick="deleteComment(this, ${response.comment.id}, ${postId})">
-                                <i class="fas fa-times"></i>
-                            </button>
                         </div>
                     `;
                     
-                    $('#comments-list-' + postId).append(commentHtml);
-                    commentInput.val('');
-                    
-                    const commentCountSpan = $('.comment-count-' + postId);
-                    let currentCount = parseInt(commentCountSpan.text().replace(/\./g, '')) || 0;
-                    commentCountSpan.text((currentCount + 1).toLocaleString());
-                    
                     showToast('Komentar berhasil ditambahkan!', 'success');
+                    setTimeout(() => location.reload(), 800);
                 } else {
                     showToast(response.error || 'Gagal menambahkan komentar', 'error');
                     if (response.redirect) {
@@ -1209,84 +1132,13 @@
         });
     }
     
-    // Open Comment Modal
-    window.openCommentModal = function(postId) {
-        currentPostId = postId;
-        $('#modalCommentText').val('');
-        $('#commentModal').addClass('show');
-    }
-    
-    window.closeCommentModal = function() {
-        $('#commentModal').removeClass('show');
-        currentPostId = null;
-    }
-    
-    // Submit from modal
-    $('#modalSubmitComment').click(function() {
-        if (!currentPostId) return;
-        
-        const comment = $('#modalCommentText').val().trim();
-        if (!comment) {
-            showToast('Komentar tidak boleh kosong!', 'error');
-            return;
-        }
-        
-        const submitBtn = $(this);
-        const originalText = submitBtn.html();
-        submitBtn.html('<i class="fas fa-spinner fa-spin"></i>').prop('disabled', true);
-        
-        $.ajax({
-            url: '<?= base_url("forum_alumni/add_comment") ?>',
-            type: 'POST',
-            data: { post_id: currentPostId, comment: comment },
-            dataType: 'json',
-            success: function(response) {
-                if (response.success) {
-                    const commentHtml = `
-                        <div class="comment-item" data-comment-id="${response.comment.id}">
-                            <div class="comment-avatar">
-                                ${response.comment.user_foto ? 
-                                    `<img src="<?= base_url('uploads/users/') ?>${response.comment.user_foto}" alt="">` : 
-                                    '<i class="fas fa-user"></i>'}
-                            </div>
-                            <div class="comment-bubble">
-                                <strong>${escapeHtml(response.comment.nama)}</strong>
-                                <p>${escapeHtml(response.comment.comment).replace(/\n/g, '<br>')}</p>
-                                <span class="comment-time">${response.comment.time_ago}</span>
-                            </div>
-                            <button class="delete-comment" onclick="deleteComment(this, ${response.comment.id}, ${currentPostId})">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    `;
-                    
-                    $('#comments-list-' + currentPostId).append(commentHtml);
-                    closeCommentModal();
-                    
-                    const commentCountSpan = $('.comment-count-' + currentPostId);
-                    let currentCount = parseInt(commentCountSpan.text().replace(/\./g, '')) || 0;
-                    commentCountSpan.text((currentCount + 1).toLocaleString());
-                    
-                    showToast('Komentar berhasil ditambahkan!', 'success');
-                } else {
-                    showToast(response.error || 'Gagal menambahkan komentar', 'error');
-                    if (response.redirect) {
-                        setTimeout(() => window.location.href = response.redirect, 1000);
-                    }
-                }
-            },
-            error: function() {
-                showToast('Terjadi kesalahan', 'error');
-            },
-            complete: function() {
-                submitBtn.html(originalText).prop('disabled', false);
-            }
-        });
-    });
-    
-    // Toggle Comments Section
+    // Toggle Comments Section and Focus Input
     window.toggleComments = function(postId) {
-        $('#comments-' + postId).toggleClass('show');
+        const commentsSection = $('#comments-' + postId);
+        const isOpen = commentsSection.toggleClass('show').hasClass('show');
+        if (isOpen) {
+            $('#commentInput-' + postId).focus();
+        }
     }
     
     // Load More Comments
@@ -1300,25 +1152,78 @@
                 if (response.comments) {
                     const commentsList = $('#comments-list-' + postId);
                     commentsList.empty();
+                    
+                    // Sembunyikan tombol "Lihat semua komentar" karena semuanya sudah dimuat
+                    $('#comments-' + postId).find('.view-more-comments').hide();
+                    
                     const currentUserId = '<?= $this->session->userdata('user_id') ?>';
                     
                     response.comments.forEach(comment => {
+                        // Build replies HTML
+                        let repliesHtml = '';
+                        if (comment.replies && comment.replies.length > 0) {
+                            comment.replies.forEach(reply => {
+                                repliesHtml += `
+                                    <div class="comment-item reply-item" data-comment-id="${reply.id}" style="margin-bottom: 10px;">
+                                        <div class="comment-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;">
+                                            ${reply.user_foto ? 
+                                                `<img src="<?= base_url('uploads/users/') ?>${reply.user_foto}" alt="">` : 
+                                                '<i class="fas fa-user"></i>'}
+                                        </div>
+                                        <div class="comment-bubble" style="padding: 6px 12px;">
+                                            <strong>${escapeHtml(reply.nama)}</strong>
+                                            <p>${escapeHtml(reply.comment).replace(/\n/g, '<br>')}</p>
+                                            <span class="comment-time" style="font-size: 0.65rem; color: #9ca3af;">${reply.time_ago}</span>
+                                        </div>
+                                        ${reply.user_id == currentUserId ? 
+                                            `<button class="delete-comment" onclick="deleteComment(this, ${reply.id}, ${postId})">
+                                                <i class="fas fa-times"></i>
+                                            </button>` : ''}
+                                    </div>
+                                `;
+                            });
+                        }
+
+                        // Build main comment HTML
                         const commentHtml = `
-                            <div class="comment-item" data-comment-id="${comment.id}">
-                                <div class="comment-avatar">
-                                    ${comment.user_foto ? 
-                                        `<img src="<?= base_url('uploads/users/') ?>${comment.user_foto}" alt="">` : 
-                                        '<i class="fas fa-user"></i>'}
+                            <div class="comment-item-container" id="comment-container-${comment.id}" style="margin-bottom: 15px;">
+                                <div class="comment-item" data-comment-id="${comment.id}">
+                                    <div class="comment-avatar">
+                                        ${comment.user_foto ? 
+                                            `<img src="<?= base_url('uploads/users/') ?>${comment.user_foto}" alt="">` : 
+                                            '<i class="fas fa-user"></i>'}
+                                    </div>
+                                    <div class="comment-bubble">
+                                        <strong>${escapeHtml(comment.nama)}</strong>
+                                        <p>${escapeHtml(comment.comment).replace(/\n/g, '<br>')}</p>
+                                        <div class="comment-meta">
+                                            <span class="comment-time">${comment.time_ago}</span>
+                                            <span class="comment-reply-btn" onclick="showReplyInput(${comment.id}, ${postId}, '${escapeHtml(comment.nama)}')">
+                                                <i class="fas fa-reply"></i> Balas
+                                            </span>
+                                        </div>
+                                    </div>
+                                    ${comment.user_id == currentUserId ? 
+                                        `<button class="delete-comment" onclick="deleteComment(this, ${comment.id}, ${postId})">
+                                            <i class="fas fa-times"></i>
+                                        </button>` : ''}
                                 </div>
-                                <div class="comment-bubble">
-                                    <strong>${escapeHtml(comment.nama)}</strong>
-                                    <p>${escapeHtml(comment.comment).replace(/\n/g, '<br>')}</p>
-                                    <span class="comment-time">${comment.time_ago}</span>
+                                <div class="replies-list" id="replies-list-${comment.id}" style="margin-left: 45px; margin-top: 10px; border-left: 2px solid #e2e8f0; padding-left: 15px;">
+                                    ${repliesHtml}
                                 </div>
-                                ${comment.user_id == currentUserId ? 
-                                    `<button class="delete-comment" onclick="deleteComment(this, ${comment.id}, ${postId})">
-                                        <i class="fas fa-times"></i>
-                                    </button>` : ''}
+                                <div class="reply-input-container" id="reply-input-container-${comment.id}" style="margin-left: 45px; display: none; margin-top: 8px; margin-bottom: 10px;">
+                                    <div class="comment-input-area" style="padding-top: 6px; margin-top: 6px; border-top: none;">
+                                        <div class="comment-avatar" style="width: 24px; height: 24px; font-size: 0.75rem;">
+                                            ${comment.user_foto ? 
+                                                `<img src="<?= base_url('uploads/users/') ?>${comment.user_foto}" alt="">` : 
+                                                '<i class="fas fa-user"></i>'}
+                                        </div>
+                                        <input type="text" class="comment-input reply-input-field" placeholder="Balas @${escapeHtml(comment.nama)}..." id="replyInput-${comment.id}" style="font-size: 0.85rem; padding: 6px 12px;" onkeypress="handleReplyKeyPress(event, ${comment.id}, ${postId})">
+                                        <button class="comment-send" onclick="submitReply(${comment.id}, ${postId})" style="padding: 4px 10px;">
+                                            <i class="fas fa-paper-plane" style="font-size: 0.85rem;"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         `;
                         commentsList.append(commentHtml);
@@ -1353,6 +1258,84 @@
         });
     }
     
+    // Show/Hide Reply Input
+    window.showReplyInput = function(commentId, postId, userName) {
+        const container = $('#reply-input-container-' + commentId);
+        if (container.is(':visible')) {
+            container.slideUp(200);
+        } else {
+            // Close other reply inputs first (optional, for cleaner UI)
+            $('.reply-input-container').slideUp(100);
+            
+            container.slideDown(200, function() {
+                const input = $('#replyInput-' + commentId);
+                input.focus();
+            });
+        }
+    }
+
+    // Handle key press on reply input
+    window.handleReplyKeyPress = function(e, commentId, postId) {
+        if (e.which === 13 && !e.shiftKey) {
+            e.preventDefault();
+            submitReply(commentId, postId);
+        }
+    }
+
+    // Submit Reply
+    window.submitReply = function(commentId, postId) {
+        const replyInput = $('#replyInput-' + commentId);
+        const comment = replyInput.val().trim();
+        
+        if (!comment) {
+            showToast('Komentar balasan tidak boleh kosong!', 'error');
+            return;
+        }
+        
+        const sendBtn = replyInput.closest('.comment-input-area').find('.comment-send');
+        const originalHtml = sendBtn.html();
+        sendBtn.html('<i class="fas fa-spinner fa-spin"></i>').prop('disabled', true);
+        
+        $.ajax({
+            url: '<?= base_url("forum_alumni/add_comment") ?>',
+            type: 'POST',
+            data: { post_id: postId, comment: comment, parent_id: commentId },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    const replyHtml = `
+                        <div class="comment-item reply-item" data-comment-id="${response.comment.id}" style="margin-bottom: 10px;">
+                            <div class="comment-avatar" style="width: 28px; height: 28px; font-size: 0.8rem;">
+                                ${response.comment.user_foto ? 
+                                    `<img src="<?= base_url('uploads/users/') ?>${response.comment.user_foto}" alt="">` : 
+                                    '<i class="fas fa-user"></i>'}
+                            </div>
+                            <div class="comment-bubble" style="padding: 6px 12px;">
+                                <strong>${escapeHtml(response.comment.nama)}</strong>
+                                <p>${escapeHtml(response.comment.comment).replace(/\n/g, '<br>')}</p>
+                                <span class="comment-time" style="font-size: 0.65rem; color: #9ca3af;">${response.comment.time_ago}</span>
+                            </div>
+                            <button class="delete-comment" onclick="deleteComment(this, ${response.comment.id}, ${postId})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                    
+                    showToast('Balasan komentar berhasil dikirim!', 'success');
+                    setTimeout(() => location.reload(), 800);
+                } else {
+                    showToast(response.error || 'Gagal mengirim balasan', 'error');
+                }
+            },
+            error: function(xhr, status, error) {
+                showToast('Terjadi kesalahan: ' + error, 'error');
+            },
+            complete: function() {
+                sendBtn.html(originalHtml).prop('disabled', false);
+            }
+        });
+    }
+
     // Delete Post
     window.deletePost = function(postId) {
         if (!confirm('Hapus postingan ini? Tindakan ini tidak dapat dibatalkan.')) return;
@@ -1376,17 +1359,7 @@
         }
     });
     
-    // Close modal on escape
-    $(document).keydown(function(e) {
-        if (e.key === 'Escape') {
-            if ($('#commentModal').hasClass('show')) {
-                closeCommentModal();
-            }
-            if ($('#likesModal').hasClass('show')) {
-                closeLikesModal();
-            }
-        }
-    });
+
     
     // Initialize
     document.addEventListener('DOMContentLoaded', function() {

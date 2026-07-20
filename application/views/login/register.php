@@ -214,6 +214,46 @@
             font-weight: 500;
         }
 
+        /* ========== CAPTCHA ========== */
+        .captcha-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .captcha-img-box {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #faf9f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .captcha-img-box img { display: block; }
+
+        .captcha-refresh {
+            width: 46px;
+            height: 46px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .captcha-refresh:hover {
+            border-color: #f97316;
+            color: #f97316;
+            transform: rotate(45deg);
+        }
+
         /* ========== TERMS CHECKBOX ========== */
         .form-check {
             margin-top: 8px;
@@ -473,6 +513,25 @@
                     </div>
                 </div>
 
+                <!-- CAPTCHA bawaan CodeIgniter 3 -->
+                <div class="mb-3">
+                    <label class="form-label">
+                        <i class="fas fa-shield-alt"></i>
+                        Kode Verifikasi (CAPTCHA) <span class="required">*</span>
+                    </label>
+                    <div class="captcha-wrap">
+                        <div class="captcha-img-box" id="captcha-img-box"><?= $captcha_image ?></div>
+                        <button type="button" class="captcha-refresh" id="captcha-refresh" title="Muat ulang captcha">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                    <input type="text" class="form-control mt-2" name="captcha" id="captcha" required
+                        placeholder="Masukkan kode di atas (peka huruf besar/kecil)" autocomplete="off">
+                    <div id="captchaError" style="display: none; color: #ef4444; font-size: 0.85rem; margin-top: 4px;">
+                        <i class="fas fa-times-circle me-1"></i>Kode CAPTCHA salah
+                    </div>
+                </div>
+
                 <!-- Checkbox Persetujuan -->
                 <div class="mb-3">
                     <div class="form-check">
@@ -597,6 +656,19 @@
     passwordInput.addEventListener('input', checkPasswordMatch);
     confirmInput.addEventListener('input', checkPasswordMatch);
 
+    // ==================== CAPTCHA ====================
+    function refreshCaptcha() {
+        fetch('<?= base_url('login/refresh_captcha') ?>')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('captcha-img-box').innerHTML = data.image;
+                document.getElementById('captcha').value = '';
+            })
+            .catch(() => {});
+    }
+
+    document.getElementById('captcha-refresh').addEventListener('click', refreshCaptcha);
+
     // ==================== AJAX SUBMIT ====================
     document.getElementById('registerForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -606,6 +678,11 @@
         const confirm = document.getElementById('confirm_password').value;
         const terms = document.getElementById('terms').checked;
         
+        if (password.length < 8 || !password.match(/[a-z]/) || !password.match(/[A-Z]/) || !password.match(/\d/) || !password.match(/[^a-zA-Z0-9]/)) {
+            showAlert('Password tidak memenuhi standar keamanan (wajib terdiri dari minimal 8 karakter, serta memiliki kombinasi huruf besar, huruf kecil, angka, dan simbol).', 'error');
+            return false;
+        }
+
         if (password !== confirm) {
             document.getElementById('confirmError').style.display = 'block';
             document.getElementById('confirm_password').className = 'form-control is-invalid';
@@ -613,7 +690,7 @@
         }
         
         if (!terms) {
-            alert('Anda harus menyetujui Syarat & Ketentuan untuk mendaftar.');
+            showAlert('Anda harus menyetujui Syarat & Ketentuan untuk mendaftar.', 'warning');
             return false;
         }
         
@@ -654,6 +731,40 @@ fetch('<?= base_url('login/proses_register') ?>', {
         showAlert(data.message, 'error');
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar Sekarang';
+        
+        // Reset previous validation states
+        document.querySelectorAll('.form-control, .form-select').forEach(el => {
+            el.classList.remove('is-invalid');
+        });
+        document.getElementById('captchaError').style.display = 'none';
+        
+        if (data.errors) {
+            let firstErrEl = null;
+            for (const field in data.errors) {
+                const inputEl = document.getElementsByName(field)[0] || document.getElementById(field);
+                if (inputEl) {
+                    inputEl.classList.add('is-invalid');
+                    if (!firstErrEl) {
+                        firstErrEl = inputEl;
+                    }
+                }
+            }
+            if (data.errors.captcha) {
+                document.getElementById('captchaError').style.display = 'block';
+            }
+            if (firstErrEl) {
+                setTimeout(() => {
+                    firstErrEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    firstErrEl.focus();
+                }, 100);
+            }
+        }
+
+        // CAPTCHA lama sudah tidak valid lagi (sudah dipakai/salah), tampilkan yang baru dari server
+        if (data.captcha) {
+            document.getElementById('captcha-img-box').innerHTML = data.captcha;
+            document.getElementById('captcha').value = '';
+        }
     }
 })
 .catch(error => {
@@ -661,6 +772,8 @@ fetch('<?= base_url('login/proses_register') ?>', {
     showAlert('Terjadi kesalahan pada server. Silakan coba lagi.', 'error');
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar Sekarang';
+    // Amankan: muat ulang captcha juga saat terjadi error koneksi
+    refreshCaptcha();
 });
     });
 

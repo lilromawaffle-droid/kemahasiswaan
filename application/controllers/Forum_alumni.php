@@ -50,7 +50,7 @@ class Forum_alumni extends CI_Controller {
         $data['posts'] = $this->ForumAlumniModel->get_posts(20);
         $data['user_data'] = array(
             'user_id' => $user_id,
-            'nama' => $display_name,
+            'nama' => $user_nama,
             'nama_asli' => $user_nama,
             'foto' => $user_foto,
             'role' => $user_role,
@@ -378,10 +378,13 @@ class Forum_alumni extends CI_Controller {
             return;
         }
         
+        $parent_id = $this->input->post('parent_id') ? (int)$this->input->post('parent_id') : null;
+        
         $comment_data = array(
-            'post_id' => $post_id,
-            'user_id' => $user_id,
-            'comment' => $comment,
+            'post_id'    => $post_id,
+            'user_id'    => $user_id,
+            'comment'    => $comment,
+            'parent_id'  => $parent_id,
             'created_at' => date('Y-m-d H:i:s')
         );
         
@@ -406,7 +409,16 @@ class Forum_alumni extends CI_Controller {
                 'time_ago' => $this->time_ago(date('Y-m-d H:i:s'))
             );
             
-            echo json_encode(['success' => true, 'comment' => $comment_data_result]);
+            // Ambil jumlah komentar terbaru langsung dari tabel komentar (selalu akurat)
+            $this->db->where('post_id', $post_id);
+            $new_comments_count = (int)$this->db->count_all_results('forum_alumni_comments');
+            
+            // Sync kolom comments_count agar konsisten
+            $this->db->set('comments_count', $new_comments_count);
+            $this->db->where('id', $post_id);
+            $this->db->update('forum_alumni_posts');
+            
+            echo json_encode(['success' => true, 'comment' => $comment_data_result, 'new_comments_count' => $new_comments_count]);
         } else {
             echo json_encode(['error' => 'Gagal menyimpan komentar ke database']);
         }
@@ -460,12 +472,7 @@ class Forum_alumni extends CI_Controller {
             return;
         }
         
-        $this->db->select('c.*, u.nama, u.foto as user_foto');
-        $this->db->from('forum_alumni_comments c');
-        $this->db->join('users u', 'u.id = c.user_id', 'left');
-        $this->db->where('c.post_id', $post_id);
-        $this->db->order_by('c.created_at', 'ASC');
-        $comments = $this->db->get()->result_array();
+        $comments = $this->ForumAlumniModel->get_post_comments($post_id);
         
         foreach ($comments as &$comment) {
             $comment['time_ago'] = $this->time_ago($comment['created_at']);
@@ -473,6 +480,15 @@ class Forum_alumni extends CI_Controller {
             if (strpos($comment['user_id'], 'guest_') === 0) {
                 $comment['nama'] = 'Tamu';
                 $comment['user_foto'] = null;
+            }
+            if (isset($comment['replies'])) {
+                foreach ($comment['replies'] as &$reply) {
+                    $reply['time_ago'] = $this->time_ago($reply['created_at']);
+                    if (strpos($reply['user_id'], 'guest_') === 0) {
+                        $reply['nama'] = 'Tamu';
+                        $reply['user_foto'] = null;
+                    }
+                }
             }
         }
         

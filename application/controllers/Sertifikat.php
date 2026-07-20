@@ -47,31 +47,60 @@ class Sertifikat extends CI_Controller
         redirect('sertifikat');
     }
 
-    // HAPUS PROSES UPLOAD FILE
-    // $file_sertifikat = $this->_upload_file('file_sertifikat', 'sertifikat');
-    // $file_penerima   = $this->_upload_file('file_penerima', 'penerima');
-
     $user_id = $this->session->userdata('user_id');
+    $id = $this->input->post('id');
+
     $data = [
-        'mahasiswa_id'       => $user_id,
-        'nim'                => $this->session->userdata('nim') ?? '-',
-        'nama_mahasiswa'     => $this->session->userdata('nama'),
-        'prodi'              => $this->session->userdata('prodi'),
         'nama_pic'           => $this->input->post('nama_pic', TRUE),
         'judul_kegiatan'     => $this->input->post('judul_kegiatan', TRUE),
         'deskripsi_kegiatan' => $this->input->post('deskripsi_kegiatan', TRUE),
         'tanggal_kegiatan'   => $this->input->post('tanggal_kegiatan'),
         'lokasi_kegiatan'    => $this->input->post('lokasi_kegiatan', TRUE),
         'catatan_tambahan'   => $this->input->post('catatan_tambahan', TRUE),
-        // HAPUS file_sertifikat dan file_penerima
     ];
 
-    $kode = $this->Sertifikat_model->insert($data, $user_id);
+    if ($id) {
+        // Mode Edit Pengajuan yang Ditolak
+        $existing = $this->Sertifikat_model->get_by_id($id);
+        if ($existing && $existing['mahasiswa_id'] == $user_id) {
+            $update_data = array_merge($data, [
+                'status'         => 'submitted',
+                'catatan_admin'  => NULL,
+                'updated_at'     => date('Y-m-d H:i:s')
+            ]);
+            $this->db->where('id', $id);
+            $this->db->update('pengajuan_sertifikat', $update_data);
 
-    if ($kode) {
-        $this->session->set_flashdata('success', 'Pengajuan pengajuan sertifikat berhasil dikirim! Menunggu persetujuan admin. Kode Pengajuan: <strong>' . $kode . '</strong>');
+            // Log update status
+            $this->db->insert('sertifikat_status_log', [
+                'pengajuan_id'    => $id,
+                'status_lama'     => 'rejected',
+                'status_baru'     => 'submitted',
+                'catatan'         => 'Pengajuan diperbaiki oleh mahasiswa',
+                'changed_by'      => $user_id,
+                'changed_by_role' => 'mahasiswa',
+                'changed_at'      => date('Y-m-d H:i:s'),
+            ]);
+
+            $this->session->set_flashdata('success', 'Pengajuan sertifikat berhasil diperbarui! Menunggu persetujuan admin.');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal memperbarui pengajuan. Data tidak ditemukan.');
+        }
     } else {
-        $this->session->set_flashdata('error', 'Gagal menyimpan pengajuan. Silakan coba lagi.');
+        // Mode Pengajuan Baru
+        $insert_data = array_merge($data, [
+            'mahasiswa_id'   => $user_id,
+            'nim'            => $this->session->userdata('nim') ?? '-',
+            'nama_mahasiswa' => $this->session->userdata('nama'),
+            'prodi'          => $this->session->userdata('prodi'),
+        ]);
+        $kode = $this->Sertifikat_model->insert($insert_data, $user_id);
+
+        if ($kode) {
+            $this->session->set_flashdata('success', 'Pengajuan pengajuan sertifikat berhasil dikirim! Menunggu persetujuan admin. Kode Pengajuan: <strong>' . $kode . '</strong>');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal menyimpan pengajuan. Silakan coba lagi.');
+        }
     }
     redirect('sertifikat');
 }
@@ -92,17 +121,86 @@ class Sertifikat extends CI_Controller
     // Hitung pending count untuk badge di sidebar
     $pending_count = $stats['submitted'] ?? 0;
 
-   $data = [
-    'title' => 'Manajemen Pengajuan Sertifikat',
-    'pengajuan_list' => $pengajuan_list,
-    'stats' => $stats,
-    'status_filter' => $status_filter,
-    'search' => $search,
-    'flash_success' => $this->session->flashdata('success'),
-    'flash_error' => $this->session->flashdata('error')
-];
+    // Fetch list of students for the new certificate modal
+    $this->db->select('id, nim, nama');
+    $this->db->where('role', 'mahasiswa');
+    $this->db->order_by('nama', 'ASC');
+    $mahasiswa_list = $this->db->get('users')->result_array();
+
+    // Scan folder custom template (tanpa butuh tabel DB)
+    $custom_dir   = FCPATH . 'templates/sertifikat/custom/';
+    $custom_files = [];
+    if (is_dir($custom_dir)) {
+        $idx = 1;
+        foreach (glob($custom_dir . '*.{png,jpg,jpeg}', GLOB_BRACE) as $filepath) {
+            $filename = basename($filepath);
+            $name = ucwords(str_replace(['_', '-'], ' ', pathinfo($filename, PATHINFO_FILENAME)));
+            $custom_files[] = [
+                'id'   => $idx++,
+                'name' => $name,
+                'file' => $filename,
+            ];
+        }
+    }
+
+    $data = [
+        'title' => 'Manajemen Pengajuan Sertifikat',
+        'pengajuan_list' => $pengajuan_list,
+        'stats' => $stats,
+        'status_filter' => $status_filter,
+        'search' => $search,
+        'mahasiswa_list' => $mahasiswa_list,
+        'custom_templates' => $custom_files,
+        'flash_success' => $this->session->flashdata('success'),
+        'flash_error' => $this->session->flashdata('error')
+    ];
 
     $this->load->view('sertifikat/admin', $data);
+}
+
+public function admin_tambah_pengajuan()
+{
+    $this->_check_admin();
+
+    $this->form_validation->set_rules('mahasiswa_id',     'Mahasiswa',        'required');
+    $this->form_validation->set_rules('nama_pic',         'Nama PIC',         'required|trim');
+    $this->form_validation->set_rules('judul_kegiatan',   'Judul Kegiatan',   'required|trim');
+    $this->form_validation->set_rules('tanggal_kegiatan', 'Tanggal Kegiatan', 'required');
+    $this->form_validation->set_rules('lokasi_kegiatan',  'Lokasi Kegiatan',  'required|trim');
+
+    if ($this->form_validation->run() == FALSE) {
+        $this->session->set_flashdata('error', validation_errors());
+        redirect('sertifikat/admin');
+        return;
+    }
+
+    $mahasiswa_id = $this->input->post('mahasiswa_id');
+    $m = $this->db->get_where('users', ['id' => $mahasiswa_id])->row();
+
+    if ($m) {
+        $insert_data = [
+            'mahasiswa_id'       => $mahasiswa_id,
+            'nim'                => $m->nim ?? '-',
+            'nama_mahasiswa'     => $m->nama,
+            'prodi'              => $m->prodi ?? '-',
+            'nama_pic'           => $this->input->post('nama_pic', TRUE),
+            'judul_kegiatan'     => $this->input->post('judul_kegiatan', TRUE),
+            'deskripsi_kegiatan' => $this->input->post('deskripsi_kegiatan', TRUE),
+            'tanggal_kegiatan'   => $this->input->post('tanggal_kegiatan'),
+            'lokasi_kegiatan'    => $this->input->post('lokasi_kegiatan', TRUE),
+            'catatan_tambahan'   => $this->input->post('catatan_tambahan', TRUE),
+            'status'             => 'submitted',
+        ];
+        $kode = $this->Sertifikat_model->insert($insert_data, $mahasiswa_id);
+        if ($kode) {
+            $this->session->set_flashdata('success', 'Pengajuan sertifikat atas nama ' . $m->nama . ' berhasil dibuat!');
+        } else {
+            $this->session->set_flashdata('error', 'Gagal menyimpan pengajuan.');
+        }
+    } else {
+        $this->session->set_flashdata('error', 'Mahasiswa tidak ditemukan.');
+    }
+    redirect('sertifikat/admin');
 }
 
     // AJAX: approve atau reject
@@ -142,7 +240,69 @@ public function update_status()
             return;
         }
         $extra['nomor_sertifikat'] = $nomor;
-        $extra['qr_code']          = $this->input->post('qr_code', TRUE);
+        
+
+
+        // Handle Signature Upload
+        if (empty($_FILES['signature_file']['name'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Gambar tanda tangan wajib diunggah.']);
+            return;
+        }
+
+        $allowed_types = ['image/png', 'image/jpeg', 'image/jpg'];
+        $sig_file_type = $_FILES['signature_file']['type'];
+        if (!in_array($sig_file_type, $allowed_types)) {
+            echo json_encode(['status' => 'error', 'message' => 'Tipe file tanda tangan tidak didukung. Gunakan PNG/JPG.']);
+            return;
+        }
+
+        $sig_dir = FCPATH . 'uploads/sertifikat/signatures/';
+        if (!is_dir($sig_dir)) {
+            mkdir($sig_dir, 0755, true);
+        }
+
+        $sig_ext       = strtolower(pathinfo($_FILES['signature_file']['name'], PATHINFO_EXTENSION));
+        $sig_safe_name = 'sig_' . $id . '_' . date('YmdHis') . '_' . uniqid() . '.' . $sig_ext;
+        $sig_dest      = $sig_dir . $sig_safe_name;
+
+        if (!move_uploaded_file($_FILES['signature_file']['tmp_name'], $sig_dest)) {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan file tanda tangan ke server.']);
+            return;
+        }
+        $extra['signature_image'] = 'uploads/sertifikat/signatures/' . $sig_safe_name;
+
+        // Handle QR Code
+        $qr_method = $this->input->post('qr_method', TRUE);
+        if ($qr_method === 'browse') {
+            if (empty($_FILES['qr_file']['name'])) {
+                echo json_encode(['status' => 'error', 'message' => 'File QR Code wajib diunggah.']);
+                return;
+            }
+
+            $qr_file_type = $_FILES['qr_file']['type'];
+            if (!in_array($qr_file_type, $allowed_types)) {
+                echo json_encode(['status' => 'error', 'message' => 'Tipe file QR Code tidak didukung. Gunakan PNG/JPG.']);
+                return;
+            }
+
+            $upload_dir = FCPATH . 'uploads/sertifikat/qr_codes/';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+
+            $ext       = strtolower(pathinfo($_FILES['qr_file']['name'], PATHINFO_EXTENSION));
+            $safe_name = 'qr_' . $id . '_' . date('YmdHis') . '_' . uniqid() . '.' . $ext;
+            $dest      = $upload_dir . $safe_name;
+
+            if (!move_uploaded_file($_FILES['qr_file']['tmp_name'], $dest)) {
+                echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan file QR Code ke server.']);
+                return;
+            }
+
+            $extra['qr_code'] = 'uploads/sertifikat/qr_codes/' . $safe_name;
+        } else {
+            $extra['qr_code'] = $this->input->post('qr_code', TRUE);
+        }
     }
 
     $admin_id = $this->session->userdata('user_id');
@@ -189,7 +349,36 @@ public function update_status()
             'role'         => $role,
             'prodi'        => $this->session->userdata('prodi'),
             'role_display' => $map[$role] ?? ucfirst($role),
+            'foto'         => $this->session->userdata('foto'),
+            'logged_in'    => true,
         ];
+    }
+
+    public function admin_hapus($id)
+    {
+        $this->_check_admin();
+        $id = (int)$id;
+
+        $existing = $this->Sertifikat_model->get_by_id($id);
+        if ($existing) {
+            // Hapus file fisik sertifikat jika ada
+            if (!empty($existing['file_sertifikat']) && file_exists(FCPATH . $existing['file_sertifikat'])) {
+                @unlink(FCPATH . $existing['file_sertifikat']);
+            }
+            
+            // Hapus log status terkait
+            $this->db->where('pengajuan_id', $id);
+            $this->db->delete('sertifikat_status_log');
+
+            // Hapus dari database
+            $this->db->where('id', $id);
+            $this->db->delete('pengajuan_sertifikat');
+
+            $this->session->set_flashdata('success', 'Pengajuan sertifikat berhasil dihapus.');
+        } else {
+            $this->session->set_flashdata('error', 'Pengajuan sertifikat tidak ditemukan.');
+        }
+        redirect('sertifikat/admin');
     }
 
     private function _check_admin()
@@ -352,13 +541,17 @@ public function download_export($id)
      */
     public function generate()
     {
-        $this->_check_admin();
+        // Allow both admin/kemahasiswaan and mahasiswa roles
+        $role = $this->session->userdata('role');
+        $user_id = $this->session->userdata('user_id');
 
-        // Ambil semua data yang sudah approved
         $this->db->where('status', 'approved');
+        if ($role === 'mahasiswa') {
+            $this->db->where('mahasiswa_id', $user_id);
+        }
         $this->db->order_by('approved_at', 'DESC');
         $data['sertifikat_list'] = $this->db->get('pengajuan_sertifikat')->result_array();
-        $data['title']           = 'Generate Sertifikat';
+        $data['title']           = 'Cetak Sertifikat';
 
         // Scan folder custom template (tanpa butuh tabel DB)
         $custom_dir   = FCPATH . 'templates/sertifikat/custom/';
@@ -487,5 +680,155 @@ public function download_export($id)
         $data['nomor']       = $nomor_sertifikat;
 
         $this->load->view('sertifikat/verifikasi', $data);
+    }
+
+    /**
+     * AJAX: Import penerima sertifikat dari Excel
+     */
+    public function import_excel()
+    {
+        header('Content-Type: application/json');
+        $this->_check_admin_ajax();
+
+        $this->form_validation->set_rules('nama_pic', 'Nama PIC', 'required|trim');
+        $this->form_validation->set_rules('judul_kegiatan', 'Judul Kegiatan', 'required|trim');
+        $this->form_validation->set_rules('tanggal_kegiatan', 'Tanggal Kegiatan', 'required');
+        $this->form_validation->set_rules('lokasi_kegiatan', 'Lokasi Kegiatan', 'required|trim');
+        $this->form_validation->set_rules('data_penerima', 'Data Penerima', 'required');
+
+        if ($this->form_validation->run() == FALSE) {
+            echo json_encode(['status' => 'error', 'message' => validation_errors()]);
+            return;
+        }
+
+        $nama_pic = $this->input->post('nama_pic', TRUE);
+        $judul_kegiatan = $this->input->post('judul_kegiatan', TRUE);
+        $deskripsi_kegiatan = $this->input->post('deskripsi_kegiatan', TRUE);
+        $tanggal_kegiatan = $this->input->post('tanggal_kegiatan');
+        $lokasi_kegiatan = $this->input->post('lokasi_kegiatan', TRUE);
+        $import_status = $this->input->post('import_status', TRUE) ?: 'approved';
+        $nomor_sertifikat_start = $this->input->post('nomor_sertifikat_start', TRUE);
+        $data_penerima = json_decode($this->input->post('data_penerima'), true);
+
+        if (empty($data_penerima)) {
+            echo json_encode(['status' => 'error', 'message' => 'Data penerima tidak valid atau kosong.']);
+            return;
+        }
+
+        $success_count = 0;
+        $num_val = 0;
+        $num_len = 0;
+        $num_str = '';
+        $has_numbering = false;
+
+        if ($import_status === 'approved' && $nomor_sertifikat_start && preg_match('/(\d+)/', $nomor_sertifikat_start, $matches)) {
+            $num_str = $matches[1];
+            $num_val = (int)$num_str;
+            $num_len = strlen($num_str);
+            $has_numbering = true;
+        }
+
+        $this->db->trans_start();
+
+        foreach ($data_penerima as $index => $row) {
+            $nama = trim($row['nama']);
+            $nim = trim($row['nim']);
+            $jurusan = isset($row['jurusan']) ? trim($row['jurusan']) : '';
+            $jabatan = isset($row['jabatan']) ? trim($row['jabatan']) : '';
+
+            // Cari user berdasarkan NIM
+            $m = $this->db->get_where('users', ['nim' => $nim])->row();
+            if (!$m) {
+                // Buat user otomatis
+                $username_prefix = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $nama)) . '_' . $nim;
+                $user_data = [
+                    'username'   => $username_prefix,
+                    'nama'       => $nama,
+                    'nim'        => $nim,
+                    'prodi'      => $jurusan ?: '-',
+                    'email'      => $nim . '@student.telkomuniversity.ac.id',
+                    'password'   => password_hash($nim, PASSWORD_DEFAULT),
+                    'role'       => 'mahasiswa',
+                    'status'     => 'aktif',
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ];
+                $this->db->insert('users', $user_data);
+                $mahasiswa_id = $this->db->insert_id();
+            } else {
+                $mahasiswa_id = $m->id;
+            }
+
+            // Generate nomor sertifikat jika approved
+            $nomor_sertifikat = null;
+            $qr_code = null;
+            if ($import_status === 'approved') {
+                if ($has_numbering) {
+                    $current_num_str = str_pad($num_val + $index, $num_len, '0', STR_PAD_LEFT);
+                    // Ganti kemunculan pertama angka di template
+                    $nomor_sertifikat = substr_replace(
+                        $nomor_sertifikat_start, 
+                        $current_num_str, 
+                        strpos($nomor_sertifikat_start, $num_str), 
+                        $num_len
+                    );
+                } else {
+                    $nomor_sertifikat = 'SERT/' . $nim . '/' . date('Y');
+                }
+                $qr_code = base_url('sertifikat/verifikasi/') . $nomor_sertifikat;
+            }
+
+            // Simpan ke pengajuan_sertifikat
+            $insert_data = [
+                'mahasiswa_id'       => $mahasiswa_id,
+                'nim'                => $nim,
+                'nama_mahasiswa'     => $nama,
+                'prodi'              => $jabatan ?: ($jurusan ?: '-'), // Prodi di DB menyimpan Jabatan/Prodi mahasiswa
+                'nama_pic'           => $nama_pic,
+                'judul_kegiatan'     => $judul_kegiatan,
+                'deskripsi_kegiatan' => $deskripsi_kegiatan,
+                'tanggal_kegiatan'   => $tanggal_kegiatan,
+                'lokasi_kegiatan'    => $lokasi_kegiatan,
+                'status'             => $import_status,
+                'nomor_sertifikat'   => $nomor_sertifikat,
+                'qr_code'            => $qr_code,
+            ];
+
+            $kode = $this->Sertifikat_model->insert($insert_data, $mahasiswa_id);
+            if ($kode) {
+                if ($import_status === 'approved') {
+                    // Update ke approved dan set tanggal approved
+                    $this->db->where('kode_pengajuan', $kode);
+                    $this->db->update('pengajuan_sertifikat', [
+                        'status' => 'approved',
+                        'approved_at' => date('Y-m-d H:i:s'),
+                        'reviewed_by' => $this->session->userdata('user_id')
+                    ]);
+                    
+                    // Buka data untuk log
+                    $new_sert = $this->db->get_where('pengajuan_sertifikat', ['kode_pengajuan' => $kode])->row();
+                    
+                    // Log
+                    $this->db->insert('sertifikat_status_log', [
+                        'pengajuan_id'    => $new_sert->id,
+                        'status_lama'     => 'submitted',
+                        'status_baru'     => 'approved',
+                        'catatan'         => 'Disetujui otomatis melalui import Excel admin',
+                        'changed_by'      => $this->session->userdata('user_id'),
+                        'changed_by_role' => 'kemahasiswaan',
+                        'changed_at'      => date('Y-m-d H:i:s'),
+                    ]);
+                }
+                $success_count++;
+            }
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengimport data sertifikat.']);
+        } else {
+            echo json_encode(['status' => 'success', 'message' => "Berhasil mengimport {$success_count} data penerima sertifikat!"]);
+        }
     }
 }

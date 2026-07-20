@@ -31,83 +31,6 @@
             --orange-grad: linear-gradient(135deg, #f97316 0%, #fdba74 100%);
         }
 
-        .header-glass {
-            position: absolute;
-            top: 24px;
-            left: 0;
-            right: 0;
-            z-index: 50;
-        }
-
-        .navbar-glass {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 12px 32px;
-            border: 1px solid rgba(255,255,255,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--orange-grad);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.3rem;
-        }
-
-        .logo-text h5 {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-        }
-
-        .logo-text span {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.85);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            position: relative;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border-bottom: 2px solid transparent;
-            padding-bottom: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a.active, .nav-links a:hover {
-            border-bottom-color: #f97316;
-        }
-
-
-        .mobile-toggle { display: none; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 14px; font-size: 1.4rem; color: white; cursor: pointer; }
-        .btn-mytelu-custom { background: #f97316; padding: 8px 28px; border-radius: 40px; font-weight: 700; color: white; transition: 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
-        .btn-mytelu-custom:hover { background: #ea580c; color: white; transform: translateY(-2px); box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); }
-        .user-avatar-small { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-
         .edit-container {
             max-width: 900px;
             margin: 120px auto 50px;
@@ -330,7 +253,6 @@
             color: #dc2626;
         }
 
-        /* Alert message */
         .alert-fixed {
             position: fixed;
             top: 100px;
@@ -351,6 +273,22 @@
             }
         }
 
+        /* ===== Password toggle di modal ganti password ===== */
+        .password-toggle-btn {
+            background: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-left: none;
+            cursor: pointer;
+            color: #6b7280;
+            transition: color 0.2s ease;
+        }
+        .password-toggle-btn:hover {
+            color: #f97316;
+        }
+        .password-toggle-btn:focus {
+            box-shadow: none;
+        }
+
         @media (max-width: 768px) {
             .edit-container {
                 margin-top: 140px;
@@ -360,21 +298,6 @@
                 padding: 24px;
             }
             
-            .navbar-glass {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .nav-links {
-                display: none;
-                flex-direction: column;
-                align-items: center;
-                margin-top: 12px;
-                gap: 16px;
-            }
-            .nav-links.open { display: flex !important; }
-            .mobile-toggle { display: block; align-self: flex-end; }
-
             .btn-save, .btn-cancel {
                 width: 100%;
                 margin-bottom: 12px;
@@ -397,6 +320,11 @@
 
 <main>
     <div class="edit-container">
+        <?php if (validation_errors()): ?>
+        <div style="background:#fee2e2;color:#991b1b;padding:16px;margin-bottom:16px;border-radius:12px;">
+            <?= validation_errors() ?>
+        </div>
+        <?php endif; ?>
         <!-- Alert dari PHP flashdata -->
         <?php if ($this->session->flashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert" style="border-radius: 16px;">
@@ -425,22 +353,29 @@
                 <div class="photo-preview" onclick="document.getElementById('fotoInput').click()">
                     <?php if (!empty($user->foto) && file_exists('uploads/users/' . $user->foto)): ?>
                         <img src="<?= base_url('uploads/users/' . $user->foto) ?>" alt="Profile Photo" id="photoPreview">
+                        <i class="fas fa-user-graduate" id="photoIcon" style="display: none;"></i>
                     <?php else: ?>
                         <i class="fas fa-user-graduate" id="photoIcon"></i>
                         <img src="" alt="Profile Photo" id="photoPreview" style="display: none;">
                     <?php endif; ?>
                 </div>
                 
-                <form action="<?= base_url('profile/update_photo') ?>" method="POST" enctype="multipart/form-data" id="photoForm" style="display: inline-block;">
-                    <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
-                    <button type="button" class="upload-btn" onclick="uploadPhoto()">
-                        <i class="fas fa-camera me-2"></i>Ganti Foto
+                <div class="d-flex justify-content-center gap-2 mb-2">
+                    <form action="<?= base_url('profile/update_photo') ?>" method="POST" enctype="multipart/form-data" id="photoForm" style="margin: 0;">
+                        <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
+                        <button type="button" class="upload-btn" onclick="uploadPhoto()">
+                            <i class="fas fa-camera me-2"></i>Ganti Foto
+                        </button>
+                    </form>
+                    
+                    <button type="button" class="upload-btn" id="removePhotoBtn" onclick="removePhoto()" style="background: #fee2e2; border-color: #fca5a5; color: #dc2626; <?= (!empty($user->foto) && file_exists('uploads/users/' . $user->foto)) ? '' : 'display: none;' ?>">
+                        <i class="fas fa-trash-alt me-2"></i>Hapus
                     </button>
-                </form>
-                <p class="text-muted mt-2" style="font-size: 0.7rem;">Format: JPG, PNG, GIF (Max 2MB) | Klik foto untuk preview</p>
+                </div>
+                <p class="text-muted" style="font-size: 0.7rem;">Format: JPG, PNG, GIF (Max 2MB) | Klik foto untuk preview</p>
             </div>
             
-            <!-- Edit Form - Menggunakan form submit biasa (lebih reliable) -->
+            <!-- Edit Form -->
             <form action="<?= base_url('profile/update') ?>" method="POST" id="editProfileForm">
                 <div class="row g-3">
                     <div class="col-12">
@@ -529,7 +464,10 @@
                         <label class="form-label fw-bold">Password Saat Ini</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
-                            <input type="password" class="form-control border-start-0" name="current_password" id="currentPassword" required style="border-radius: 0 12px 12px 0;">
+                            <input type="password" class="form-control border-start-0" name="current_password" id="currentPassword" required>
+                            <button type="button" class="input-group-text password-toggle-btn" data-target="currentPassword" style="border-radius: 0 12px 12px 0;">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                         <div class="invalid-feedback" id="currentPasswordError"></div>
                     </div>
@@ -537,7 +475,10 @@
                         <label class="form-label fw-bold">Password Baru</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="fas fa-key text-muted"></i></span>
-                            <input type="password" class="form-control border-start-0" name="new_password" id="newPassword" required minlength="8" style="border-radius: 0 12px 12px 0;">
+                            <input type="password" class="form-control border-start-0" name="new_password" id="newPassword" required minlength="8">
+                            <button type="button" class="input-group-text password-toggle-btn" data-target="newPassword" style="border-radius: 0 12px 12px 0;">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                         <small class="text-muted">Minimal 8 karakter, gunakan kombinasi huruf, angka, dan simbol</small>
                         <div class="invalid-feedback" id="newPasswordError"></div>
@@ -546,7 +487,10 @@
                         <label class="form-label fw-bold">Konfirmasi Password Baru</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i class="fas fa-check-circle text-muted"></i></span>
-                            <input type="password" class="form-control border-start-0" name="confirm_password" id="confirmPassword" required style="border-radius: 0 12px 12px 0;">
+                            <input type="password" class="form-control border-start-0" name="confirm_password" id="confirmPassword" required>
+                            <button type="button" class="input-group-text password-toggle-btn" data-target="confirmPassword" style="border-radius: 0 12px 12px 0;">
+                                <i class="fas fa-eye"></i>
+                            </button>
                         </div>
                         <div class="invalid-feedback" id="confirmPasswordError"></div>
                     </div>
@@ -566,14 +510,30 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // Variabel untuk status
     let isUploading = false;
+    
+    // Toggle show/hide password
+    document.querySelectorAll('.password-toggle-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var targetId = this.getAttribute('data-target');
+            var input = document.getElementById(targetId);
+            var icon = this.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
     
     // Preview photo before upload
     document.getElementById('fotoInput')?.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (file) {
-            // Validasi tipe file
             const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
             if (!allowedTypes.includes(file.type)) {
                 Swal.fire({
@@ -586,7 +546,6 @@
                 return;
             }
             
-            // Validasi ukuran (max 2MB)
             if (file.size > 2 * 1024 * 1024) {
                 Swal.fire({
                     icon: 'error',
@@ -608,12 +567,10 @@
             };
             reader.readAsDataURL(file);
             
-            // Auto upload setelah preview
             uploadPhoto();
         }
     });
     
-    // Upload photo function
     function uploadPhoto() {
         const input = document.getElementById('fotoInput');
         const file = input.files[0];
@@ -674,32 +631,85 @@
             input.value = '';
         });
     }
+
+    // Hapus foto function
+    function removePhoto() {
+        Swal.fire({
+            title: 'Hapus Foto Profil?',
+            text: 'Foto profil akan dihapus dan kembali ke avatar default.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Menghapus...',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                fetch('<?= base_url("profile/remove_photo_ajax") ?>', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: data.message,
+                            confirmButtonColor: '#f97316',
+                            timer: 1500
+                        }).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: data.message || 'Terjadi kesalahan saat menghapus foto.',
+                            confirmButtonColor: '#f97316'
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan koneksi. Silakan coba lagi.',
+                        confirmButtonColor: '#f97316'
+                    });
+                });
+            }
+        });
+    }
     
-    // Loading state untuk form submit biasa
     document.getElementById('editProfileForm')?.addEventListener('submit', function(e) {
         const saveBtn = document.getElementById('saveBtn');
         saveBtn.disabled = true;
         saveBtn.classList.add('loading');
         
-        // Tampilkan loading message
         let loadingToast = document.createElement('div');
         loadingToast.className = 'alert-fixed alert alert-info';
         loadingToast.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Menyimpan perubahan...';
         document.body.appendChild(loadingToast);
         
-        // Hapus loading toast setelah 3 detik (akan tergantikan redirect)
         setTimeout(() => {
             if (loadingToast) loadingToast.remove();
         }, 3000);
     });
     
-    // Ganti Password dengan AJAX
-    function submitChangePassword() {
-        const currentPassword = document.getElementById('currentPassword')?.value;
-        const newPassword = document.getElementById('newPassword')?.value;
-        const confirmPassword = document.getElementById('confirmPassword')?.value;
-        
-        // Reset error
+    // Ganti Password dengan AJAX (tetap di dalam card/modal, cursor auto-focus ke field error)
+    function resetChangePasswordErrors() {
         document.querySelectorAll('#changePasswordForm .invalid-feedback').forEach(el => {
             el.textContent = '';
             el.style.display = 'none';
@@ -707,13 +717,23 @@
         document.querySelectorAll('#changePasswordForm .form-control').forEach(el => {
             el.classList.remove('is-invalid');
         });
+    }
+
+    function submitChangePassword() {
+        const currentPassword = document.getElementById('currentPassword')?.value;
+        const newPassword = document.getElementById('newPassword')?.value;
+        const confirmPassword = document.getElementById('confirmPassword')?.value;
         
-        // Validasi sederhana
+        resetChangePasswordErrors();
+        
         let hasError = false;
+        let firstInvalidField = null;
+
         if (!currentPassword) {
             document.getElementById('currentPasswordError').textContent = 'Password saat ini harus diisi!';
             document.getElementById('currentPasswordError').style.display = 'block';
             document.getElementById('currentPassword').classList.add('is-invalid');
+            firstInvalidField = firstInvalidField || 'currentPassword';
             hasError = true;
         }
         
@@ -721,11 +741,13 @@
             document.getElementById('newPasswordError').textContent = 'Password baru harus diisi!';
             document.getElementById('newPasswordError').style.display = 'block';
             document.getElementById('newPassword').classList.add('is-invalid');
+            firstInvalidField = firstInvalidField || 'newPassword';
             hasError = true;
         } else if (newPassword.length < 8) {
             document.getElementById('newPasswordError').textContent = 'Password minimal 8 karakter!';
             document.getElementById('newPasswordError').style.display = 'block';
             document.getElementById('newPassword').classList.add('is-invalid');
+            firstInvalidField = firstInvalidField || 'newPassword';
             hasError = true;
         }
         
@@ -733,10 +755,14 @@
             document.getElementById('confirmPasswordError').textContent = 'Password tidak cocok!';
             document.getElementById('confirmPasswordError').style.display = 'block';
             document.getElementById('confirmPassword').classList.add('is-invalid');
+            firstInvalidField = firstInvalidField || 'confirmPassword';
             hasError = true;
         }
         
-        if (hasError) return false;
+        if (hasError) {
+            if (firstInvalidField) document.getElementById(firstInvalidField).focus();
+            return false;
+        }
         
         const formData = new FormData();
         formData.append('current_password', currentPassword);
@@ -778,22 +804,26 @@
                 });
             } else {
                 let errorMessage = data.message || 'Gagal mengubah password.';
+                let firstErrorField = null;
                 
                 if (data.errors) {
                     if (data.errors.current_password) {
                         document.getElementById('currentPasswordError').textContent = data.errors.current_password;
                         document.getElementById('currentPasswordError').style.display = 'block';
                         document.getElementById('currentPassword').classList.add('is-invalid');
+                        firstErrorField = firstErrorField || 'currentPassword';
                     }
                     if (data.errors.new_password) {
                         document.getElementById('newPasswordError').textContent = data.errors.new_password;
                         document.getElementById('newPasswordError').style.display = 'block';
                         document.getElementById('newPassword').classList.add('is-invalid');
+                        firstErrorField = firstErrorField || 'newPassword';
                     }
                     if (data.errors.confirm_password) {
                         document.getElementById('confirmPasswordError').textContent = data.errors.confirm_password;
                         document.getElementById('confirmPasswordError').style.display = 'block';
                         document.getElementById('confirmPassword').classList.add('is-invalid');
+                        firstErrorField = firstErrorField || 'confirmPassword';
                     }
                 }
                 
@@ -802,6 +832,10 @@
                     title: 'Gagal!',
                     text: errorMessage,
                     confirmButtonColor: '#f97316'
+                }).then(() => {
+                    if (firstErrorField) {
+                        document.getElementById(firstErrorField).focus();
+                    }
                 });
             }
         })
@@ -821,7 +855,6 @@
         return false;
     }
     
-    // Confirm delete account
     function confirmDelete() {
         Swal.fire({
             title: 'Hapus Akun?',
@@ -859,7 +892,6 @@
         });
     }
     
-    // Auto dismiss alerts after 5 seconds
     setTimeout(() => {
         document.querySelectorAll('.alert:not(.alert-fixed)').forEach(alert => {
             if (alert) {

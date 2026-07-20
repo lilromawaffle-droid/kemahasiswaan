@@ -1279,19 +1279,39 @@ class Dashboard_model extends CI_Model
     /**
      * Cek login user
      * @param string $username Username
-     * @param string $password Password (sudah di MD5)
+     * @param string $password Password (plain text)
      * @return object|null
      */
     public function cek_login($username, $password)
     {
         try {
             $this->db->where('username', $username);
-            $this->db->where('password', $password);
             $this->db->where('status', 'aktif');
             $query = $this->db->get('users');
             
             if ($query->num_rows() > 0) {
-                return $query->row();
+                $user = $query->row();
+                
+                // 1. Cek dengan password_verify (Bcrypt + Salt)
+                if (password_verify($password, $user->password)) {
+                    return $user;
+                }
+                
+                // 2. Fallback untuk password MD5 lama & auto-upgrade ke Bcrypt
+                if ($user->password === md5($password)) {
+                    $new_hash = password_hash($password, PASSWORD_DEFAULT);
+                    $this->db->where('id', $user->id);
+                    $this->db->update('users', array('password' => $new_hash));
+                    return $user;
+                }
+                
+                // 3. Fallback jika ada password plain text (tanpa hash) di DB & auto-upgrade ke Bcrypt
+                if ($user->password === $password) {
+                    $new_hash = password_hash($password, PASSWORD_DEFAULT);
+                    $this->db->where('id', $user->id);
+                    $this->db->update('users', array('password' => $new_hash));
+                    return $user;
+                }
             }
             return null;
             

@@ -288,71 +288,61 @@ class Berita extends CI_Controller
      * Add komentar - REVISED
      * Komentar langsung diset approved agar langsung tampil
      */
-    public function add_komentar()
-    {
-        // Set JSON response header
-        $this->output->set_content_type('application/json');
-        
-        $this->form_validation->set_rules('berita_id', 'ID Berita', 'required|numeric');
-        $this->form_validation->set_rules('nama', 'Nama', 'required|min_length[3]|max_length[100]');
-        $this->form_validation->set_rules('email', 'Email', 'valid_email');
-        $this->form_validation->set_rules('komentar', 'Komentar', 'required|min_length[5]');
-        
-        if ($this->form_validation->run() == FALSE) {
-            $this->output->set_output(json_encode([
-                'status' => 'error',
-                'message' => strip_tags(validation_errors())
-            ]));
-            return;
-        }
-        
-        // Check if berita exists
-        $berita_id = $this->input->post('berita_id');
-        $berita = $this->Berita_model->get_berita_by_id($berita_id);
-        
-        if (!$berita) {
-            $this->output->set_output(json_encode([
-                'status' => 'error',
-                'message' => 'Berita tidak ditemukan.'
-            ]));
-            return;
-        }
-        
-        // Prepare data
-        $data = [
-            'berita_id' => $berita_id,
-            'nama' => htmlspecialchars($this->input->post('nama')),
-            'email' => htmlspecialchars($this->input->post('email')),
-            'komentar' => nl2br(htmlspecialchars($this->input->post('komentar'))),
-            'status' => 'approved', // Langsung approved agar tampil
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-        
-        $komentar_id = $this->Berita_model->add_komentar($data);
-        
-        if ($komentar_id) {
-            // Get the newly added comment
-            $komentar_baru = $this->Berita_model->get_komentar_by_id($komentar_id);
-            
-            $this->output->set_output(json_encode([
-                'status' => 'success',
-                'message' => 'Komentar berhasil ditambahkan!',
-                'komentar' => [
-                    'id' => $komentar_baru['id'],
-                    'nama' => $komentar_baru['nama'],
-                    'email' => $komentar_baru['email'],
-                    'komentar' => $komentar_baru['komentar'],
-                    'created_at' => date('d F Y H:i', strtotime($komentar_baru['created_at'])),
-                    'created_at_raw' => $komentar_baru['created_at']
-                ]
-            ]));
-        } else {
-            $this->output->set_output(json_encode([
-                'status' => 'error',
-                'message' => 'Gagal menyimpan komentar. Silakan coba lagi.'
-            ]));
-        }
+public function add_komentar()
+{
+    // Set JSON response header
+    $this->output->set_content_type('application/json');
+    
+    $this->form_validation->set_rules('berita_id', 'ID Berita', 'required|numeric');
+    $this->form_validation->set_rules('nama', 'Nama', 'required|min_length[3]|max_length[100]');
+    $this->form_validation->set_rules('email', 'Email', 'valid_email');
+    $this->form_validation->set_rules('komentar', 'Komentar', 'required|min_length[5]');
+    
+    if ($this->form_validation->run() == FALSE) {
+        $this->output->set_output(json_encode([
+            'status' => 'error',
+            'message' => strip_tags(validation_errors())
+        ]));
+        return;
     }
+    
+    // Check if berita exists
+    $berita_id = $this->input->post('berita_id');
+    $berita = $this->Berita_model->get_berita_by_id($berita_id);
+    
+    if (!$berita) {
+        $this->output->set_output(json_encode([
+            'status' => 'error',
+            'message' => 'Berita tidak ditemukan.'
+        ]));
+        return;
+    }
+    
+    // Prepare data
+    $data = [
+        'berita_id' => $berita_id,
+        'nama' => htmlspecialchars($this->input->post('nama')),
+        'email' => htmlspecialchars($this->input->post('email')),
+        'komentar' => nl2br(htmlspecialchars($this->input->post('komentar'))),
+        'status' => 'pending', // Menunggu approval admin
+        'created_at' => date('Y-m-d H:i:s')
+    ];
+    
+    $komentar_id = $this->Berita_model->add_komentar($data);
+    
+    if ($komentar_id) {
+        $this->output->set_output(json_encode([
+            'status' => 'success',
+            'message' => 'Komentar berhasil dikirim. Menunggu approval admin sebelum tampil.',
+            'pending' => true
+        ]));
+    } else {
+        $this->output->set_output(json_encode([
+            'status' => 'error',
+            'message' => 'Gagal menyimpan komentar. Silakan coba lagi.'
+        ]));
+    }
+}
 
     // ==================== ADMIN CRUD ====================
 
@@ -685,19 +675,39 @@ class Berita extends CI_Controller
      */
     public function update_komentar($id)
     {
+        $this->output->set_content_type('application/json');
+        
         if (!$this->session->userdata('logged_in') || $this->session->userdata('role') != 'admin') {
-            redirect('login');
+            $this->output->set_output(json_encode([
+                'status' => 'error',
+                'message' => 'Anda tidak memiliki akses.'
+            ]));
+            return;
         }
         
         $status = $this->input->post('status');
         
         if ($status && in_array($status, ['approved', 'pending', 'spam'])) {
             $this->db->where('id', $id);
-            $this->db->update('berita_komentar', ['status' => $status]);
-            $this->session->set_flashdata('success', 'Status komentar berhasil diupdate.');
+            $success = $this->db->update('berita_komentar', ['status' => $status]);
+            
+            if ($success) {
+                $this->output->set_output(json_encode([
+                    'status' => 'success',
+                    'message' => 'Status komentar berhasil diupdate.'
+                ]));
+            } else {
+                $this->output->set_output(json_encode([
+                    'status' => 'error',
+                    'message' => 'Gagal mengupdate status komentar.'
+                ]));
+            }
+        } else {
+            $this->output->set_output(json_encode([
+                'status' => 'error',
+                'message' => 'Status tidak valid.'
+            ]));
         }
-        
-        redirect('berita/komentar');
     }
 
     /**

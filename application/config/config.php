@@ -28,6 +28,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 //     . rtrim(dirname($_SERVER['SCRIPT_NAME']), '/.\\') . '/';
 
 $config['base_url'] = 'https://kmhfik.forzasoftwarehouse.com/';
+// $config['base_url'] = 'https://192.30.136.3:5001/';
 
 /*
 |--------------------------------------------------------------------------

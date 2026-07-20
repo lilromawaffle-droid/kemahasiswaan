@@ -1,0 +1,11 @@
+Id,Name,Price,Photo,Carbo,Protein
+1,Nasi Goreng Spesial,25000,nasi_goreng.png,80,15
+2,Sate Ayam Madura,18000,sate_ayam.png,20,25
+3,Rendang Sapi,45000,rendang_sapi.png,10,30
+4,Gado-Gado,15000,gado_gado.png,45,10
+5,Soto Ayam,20000,soto_ayam.png,30,15
+6,Bakso Sapi,15000,bakso_sapi.png,40,20
+7,Ayam Betutu,35000,ayam_betutu.png,5,28
+8,Pempek Palembang,20000,pempek.png,50,12
+9,Mie Ayam Pangsit,17000,mie_ayam.png,65,18
+10,Bubur Ayam,12000,bubur_ayam.png,55,10

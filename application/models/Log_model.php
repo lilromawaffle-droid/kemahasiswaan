@@ -35,7 +35,7 @@ class Log_model extends CI_Model {
      * Deteksi IP address asli pengunjung.
      * Mendukung proxy/reverse proxy melalui header X-Forwarded-For & X-Real-IP.
      */
-    private function _get_real_ip() {
+    public function get_real_ip() {
         // Cek header proxy terlebih dahulu (untuk hosting dengan Nginx/Apache proxy)
         if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             // X-Forwarded-For bisa berisi beberapa IP (chain), ambil yang pertama
@@ -73,13 +73,50 @@ class Log_model extends CI_Model {
      * Insert log aktivitas baru
      */
     public function insert_log($user_id, $nama, $role, $action) {
+        $this->load->library('user_agent');
+        
+        // Dapatkan nama browser
+        $agent = 'Unknown Browser';
+        if ($this->agent->is_browser()) {
+            $agent = $this->agent->browser() . ' ' . $this->agent->version();
+        } elseif ($this->agent->is_robot()) {
+            $agent = $this->agent->robot();
+        } elseif ($this->agent->is_mobile()) {
+            $agent = $this->agent->mobile();
+        }
+
+        // Deteksi OS (Platform)
+        $os = $this->agent->platform(); 
+
+        // Fix untuk Windows 11 (Browser mengirimkan "Windows NT 10.0" untuk Win 10 dan Win 11)
+        // Kita gunakan Client Hints header (didukung Chrome/Edge modern) untuk mendeteksinya
+        if (isset($_SERVER['HTTP_SEC_CH_UA_PLATFORM']) && isset($_SERVER['HTTP_SEC_CH_UA_PLATFORM_VERSION'])) {
+            $ch_platform = trim($_SERVER['HTTP_SEC_CH_UA_PLATFORM'], '"');
+            $ch_version = trim($_SERVER['HTTP_SEC_CH_UA_PLATFORM_VERSION'], '"');
+            
+            if ($ch_platform === 'Windows') {
+                $major_version = (int) explode('.', $ch_version)[0];
+                if ($major_version >= 13) {
+                    $os = 'Windows 11';
+                } else {
+                    $os = 'Windows 10';
+                }
+            }
+        } elseif ($os === 'Windows 10') {
+            // Jika browser tidak mengirim Client Hints (seperti Firefox), 
+            // kita beri label gabungan karena secara teknis tidak bisa dibedakan murni dari User-Agent
+            $os = 'Windows 10 / 11'; 
+        }
+
+        $browser_os = $agent . ' on ' . $os;
+
         $data = array(
             'user_id'    => $user_id,
             'nama'       => $nama,
             'role'       => $role,
             'action'     => $action,
-            'ip_address' => $this->_get_real_ip(),
-            'user_agent' => $this->input->user_agent(),
+            'ip_address' => $this->get_real_ip(),
+            'user_agent' => $browser_os,
             'created_at' => date('Y-m-d H:i:s')
         );
         return $this->db->insert($this->table, $data);

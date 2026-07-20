@@ -247,12 +247,37 @@
                 padding: 1.5rem;
             }
         }
+        /* === MOBILE TOPBAR === */
+        * { box-sizing: border-box; } html, body { overflow-x: hidden; max-width: 100%; }
+        .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1100; background: linear-gradient(135deg, #2C3E50, #1a2632); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 0.75rem; gap: 0.5rem; }
+        .hamburger-btn { display: none; background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 8px; width: 38px; height: 38px; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; }
+        .hamburger-btn:hover { background: rgba(230,126,34,0.6); }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; justify-content: flex-end; }
+        .topbar-username { display: flex; align-items: center; gap: 0.35rem; color: rgba(255,255,255,0.9); font-size: 0.78rem; font-weight: 500; flex: 1; min-width: 0; }
+        .topbar-username i { color: #E67E22; font-size: 1rem; flex-shrink: 0; }
+        .topbar-username .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+        .topbar-logout { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 0.38rem 0.8rem; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; flex-shrink: 0; }
+        .topbar-logout:hover { background: #c0392b; color: white; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
+        @media (max-width: 768px) {
+            .mobile-topbar { display: block; } .hamburger-btn { display: flex; }
+            .admin-sidebar { display: block !important; position: fixed !important; left: -280px !important; z-index: 1000; transition: left 0.3s ease; width: 280px !important; }
+            .admin-sidebar.open { left: 0 !important; }
+            .admin-main { margin-left: 0 !important; padding: 1rem !important; padding-top: 4.5rem !important; max-width: 100vw; overflow-x: hidden; }
+            .admin-header { flex-direction: column !important; align-items: stretch !important; gap: 0.75rem; }
+            .admin-header h1 { font-size: 1.3rem !important; word-break: break-word; }
+            .admin-header .user-info > span, .admin-header .user-info .logout-btn { display: none; }
+        }
     </style>
 </head>
 <body>
+    <div class="mobile-topbar" id="mobileTopbar"><div class="topbar-inner"><button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()"><i class="fas fa-bars" id="hamburgerIcon"></i></button><div class="topbar-right"><span class="topbar-username"><i class="fas fa-user-circle"></i><span class="name-text"><?= $this->session->userdata('nama') ?></span></span><a href="<?= base_url('login/logout') ?>" class="topbar-logout"><i class="fas fa-sign-out-alt"></i>Logout</a></div></div></div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="admin-wrapper">
         <!-- Sidebar -->
-        <div class="admin-sidebar">
+        <div class="admin-sidebar" id="adminSidebar">
             <div class="sidebar-header">
                 <h3>Admin FIK</h3>
                 <p>Manajemen Berita & Konten</p>
@@ -281,6 +306,10 @@
                 <a href="<?= base_url('admin/proposal') ?>">
                     <i class="fas fa-file-alt"></i>
                     <span>Proposal</span>
+                </a>
+                <a href="<?= base_url('admin/beasiswa') ?>">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Beasiswa</span>
                 </a>
                 <a href="<?= base_url('sertifikat/admin') ?>">
                     <i class="fas fa-certificate"></i>
@@ -543,6 +572,8 @@
                 btn.disabled = true;
             }
         });
+        function toggleSidebar(){const s=document.getElementById('adminSidebar'),o=document.getElementById('sidebarOverlay'),i=document.getElementById('hamburgerIcon'),open=s.classList.toggle('open');o.classList.toggle('active',open);i.className=open?'fas fa-times':'fas fa-bars';}
+        document.querySelectorAll('.sidebar-menu a').forEach(l=>l.addEventListener('click',()=>{if(window.innerWidth<=768){document.getElementById('adminSidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('active');document.getElementById('hamburgerIcon').className='fas fa-bars';}}));
     </script>
 </body>
 </html>

@@ -36,23 +36,6 @@
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* Header Glass */
-        .header-glass { position: absolute; top: 24px; left: 0; right: 0; z-index: 50; transition: all 0.3s ease; }
-        .navbar-glass { background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(20px); border-radius: 60px; padding: 12px 32px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; transition: all 0.3s ease; }
-        .navbar-glass.scrolled { background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(25px); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .logo-area { display: flex; align-items: center; gap: 16px; }
-        .logo-icon { width: 48px; height: 48px; background: linear-gradient(145deg, var(--orange), var(--orange-dark)); border-radius: 18px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.4rem; }
-        .logo-text h5 { font-size: 0.9rem; font-weight: 800; color: white; margin: 0; }
-        .logo-text span { font-size: 0.7rem; color: rgba(255,255,255,0.85); }
-        .nav-links { display: flex; gap: 2rem; align-items: center; position: relative; }
-        .nav-links a { color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; position: relative; padding-bottom: 4px; transition: all 0.3s ease; }
-        .nav-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0%; height: 2px; background: var(--orange); transition: 0.3s ease; }
-        .nav-links a.active::after, .nav-links a:hover::after { width: 100%; }
-        .btn-mytelu-custom { background: linear-gradient(105deg, var(--orange), var(--orange-dark)); padding: 8px 28px; border-radius: 40px; font-weight: 700; color: white; transition: 0.3s; text-decoration: none; display: flex; align-items: center; gap: 10px; }
-        .btn-mytelu-custom:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(249, 115, 22, 0.4); color: white; }
-        .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .mobile-toggle { display: none; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 14px; font-size: 1.4rem; color: white; cursor: pointer; }
-
         /* Hero Section */
         .hero-beasiswa { background: linear-gradient(135deg, #f97316 0%, #fdba74 100%); padding: 160px 0 100px; position: relative; overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% 88%, 0 100%); }
         .hero-beasiswa::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 30%, rgba(255,255,200,0.2) 2px, transparent 2.5px); background-size: 32px 32px; pointer-events: none; }
@@ -144,10 +127,6 @@
         .footer-bottom { text-align: center; padding-top: 20px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
 
         @media (max-width: 768px) {
-            .navbar-glass { flex-direction: column; align-items: stretch; }
-            .nav-links { display: none; flex-direction: column; margin-top: 16px; width: 100%; }
-            .nav-links.open { display: flex !important; }
-            .mobile-toggle { display: block; }
             .hero-beasiswa { padding: 120px 0 60px; }
             .hero-beasiswa h1 { font-size: 2rem; }
             .form-section { padding: 24px; }

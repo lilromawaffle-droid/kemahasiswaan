@@ -106,159 +106,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* ========== HEADER GLASS ========== */
-        .header-glass {
-            position: absolute;
-            top: 24px;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-glass {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(20px);
-            border-radius: 60px;
-            padding: 12px 32px;
-            border: 1px solid rgba(255,255,255,0.15);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            transition: all 0.3s ease;
-        }
-
-        .navbar-glass.scrolled {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(25px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(145deg, var(--orange), var(--orange-dark));
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.4rem;
-            box-shadow: 0 6px 12px rgba(249,115,22,0.3);
-        }
-
-        .logo-text h5 {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: white;
-            margin: 0;
-            letter-spacing: -0.3px;
-        }
-
-        .logo-text span {
-            font-size: 0.7rem;
-            color: rgba(255,255,255,0.85);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            position: relative;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            position: relative;
-            padding-bottom: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background: var(--orange);
-            transition: 0.3s ease;
-        }
-
-        .nav-links a.active::after,
-        .nav-links a:hover::after {
-            width: 100%;
-        }
-
-        /* Dropdown Layanan - Dashboard Style */
-        .dropdown-wrapper { position: relative; }
-        .dropdown-wrapper > a { display: flex; align-items: center; gap: 8px; padding: 6px 0; color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; border-bottom: 2px solid transparent; padding-bottom: 4px; transition: all 0.3s ease; }
-        .dropdown-wrapper > a i { font-size: 0.7rem; transition: transform 0.3s ease; }
-        .dropdown-wrapper.open > a i { transform: rotate(180deg); }
-        .dropdown-wrapper > a.active, .dropdown-wrapper > a:hover { border-bottom-color: #f97316; }
-        .dropdown-menu-custom { position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%) translateY(-12px); background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(30px); border-radius: 24px; padding: 16px 20px; min-width: 820px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); opacity: 0; visibility: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; }
-        .dropdown-wrapper.open .dropdown-menu-custom { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-        .dropdown-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .dropdown-item { padding: 24px 16px; text-align: center; border-radius: 16px; transition: all 0.3s ease; cursor: pointer; text-decoration: none; color: #1f2937; background: rgba(249, 115, 22, 0.02); min-height: 160px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .dropdown-item:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(249, 115, 22, 0.15); background: #fff7ed; }
-        .dropdown-item .d-icon-wrapper { width: 56px; height: 56px; margin: 0 auto 12px; border-radius: 16px; display: flex; align-items: center; justify-content: center; background: #f8fafc; }
-        .dropdown-item .d-icon-wrapper i { font-size: 1.6rem; color: #f97316; }
-        .dropdown-item .d-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; color: #1f2937; }
-        .dropdown-item .d-desc { font-size: 0.75rem; color: #6b7280; line-height: 1.5; font-weight: 400; max-width: 140px; margin: 0 auto; }
-
-        .btn-mytelu-custom {
-            background: linear-gradient(105deg, var(--orange), var(--orange-dark));
-            padding: 8px 28px;
-            border-radius: 40px;
-            font-weight: 700;
-            color: white;
-            transition: 0.3s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-mytelu-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 20px rgba(249, 115, 22, 0.4);
-            color: white;
-        }
-
-        .user-avatar-small {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .mobile-toggle {
-            display: none;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 12px;
-            padding: 8px 14px;
-            font-size: 1.4rem;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-toggle:hover {
-            background: rgba(255,255,255,0.25);
-        }
-
         /* ========== BACK BUTTON ========== */
         .back-button {
             display: inline-flex;
@@ -1024,17 +871,6 @@
         }
 
         @media (max-width: 768px) {
-            .navbar-glass { flex-direction: column; align-items: stretch; }
-            .nav-links { display: none; flex-direction: column; align-items: center; margin-top: 12px; gap: 16px; }
-            .nav-links.open { display: flex !important; }
-            .mobile-toggle { display: block; align-self: flex-end; }
-            .dropdown-menu-custom { min-width: unset; width: 95vw; max-width: 380px; left: 50%; padding: 10px; }
-            .dropdown-grid { grid-template-columns: 1fr 1fr; gap: 4px; }
-            .dropdown-item { padding: 12px 8px; min-height: 100px; }
-            .dropdown-item .d-icon-wrapper { width: 36px; height: 36px; margin-bottom: 6px; }
-            .dropdown-item .d-icon-wrapper i { font-size: 1rem; }
-            .dropdown-item .d-title { font-size: 0.7rem; white-space: normal; }
-            .dropdown-item .d-desc { font-size: 0.6rem; max-width: unset; }
             .hero-sertifikat {
                 padding: 120px 0 60px;
             }
@@ -1070,6 +906,108 @@
     transform: translateY(-2px);
     color: white;
 }
+
+        /* ========== NOTIFICATIONS PANEL ========== */
+        .notifications-container {
+            margin-top: 30px;
+        }
+        .alert-notification {
+            position: relative;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .alert-approved-card {
+            border-left: 6px solid #10b981;
+            background: linear-gradient(90deg, #f0fdf4 0%, #ffffff 100%);
+        }
+        .alert-rejected-card {
+            border-left: 6px solid #ef4444;
+            background: linear-gradient(90deg, #fef2f2 0%, #ffffff 100%);
+        }
+        .alert-notification:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+        .notif-icon-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .bg-success-light {
+            background: #d1fae5;
+        }
+        .bg-danger-light {
+            background: #fee2e2;
+        }
+        .notif-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .notif-desc {
+            font-size: 0.95rem;
+            color: #475569;
+            line-height: 1.5;
+        }
+        .alert-reason-box {
+            background: rgba(239, 68, 68, 0.05);
+            border-left: 3px solid #ef4444;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #991b1b;
+        }
+        .btn-close-notif {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+        }
+        .btn-close-notif:hover {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        /* JS Disable and Error styling */
+        .locked-by-js {
+            background-color: #f8fafc !important;
+            color: #94a3b8 !important;
+            cursor: not-allowed !important;
+            border-color: #cbd5e1 !important;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        .field-wrong-js {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15) !important;
+            background-color: #fff5f5 !important;
+        }
+        .wrong-feedback-js {
+            color: #ef4444;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
     </style>
 </head>
 <body>
@@ -1125,6 +1063,8 @@
             <h2>Pengajuan Sertifikat</h2>
             <p class="text-muted mt-3">Ajukan sertifikat untuk kegiatan yang telah dilaksanakan dengan mudah</p>
         </div>
+
+
 
         <!-- ===== INFO CARDS ===== -->
         <div class="row g-4 mb-5">
@@ -1204,12 +1144,14 @@
     <h2><i class="fas fa-pen-alt me-3"></i>Formulir Pengajuan Sertifikat</h2>
     
     <form id="sertifikatForm" method="post" action="<?= base_url('sertifikat/kirim') ?>">
+        <!-- Hidden input for editing rejected submissions -->
+        <input type="hidden" name="id" id="pengajuan_id" value="">
         <div class="row g-4">
             <!-- Nama PIC -->
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Nama PIC <span class="required">*</span></label>
-                    <input type="text" class="form-control" name="nama_pic" required>
+                    <input type="text" class="form-control" name="nama_pic" id="nama_pic" required>
                 </div>
             </div>
             
@@ -1226,7 +1168,7 @@
             <div class="col-12">
                 <div class="mb-3">
                     <label class="form-label">Judul Kegiatan <span class="required">*</span></label>
-                    <input type="text" class="form-control" name="judul_kegiatan" required>
+                    <input type="text" class="form-control" name="judul_kegiatan" id="judul_kegiatan" required>
                 </div>
             </div>
             
@@ -1234,7 +1176,7 @@
             <div class="col-12">
                 <div class="mb-3">
                     <label class="form-label">Deskripsi Kegiatan</label>
-                    <textarea class="form-control" name="deskripsi_kegiatan" rows="3"></textarea>
+                    <textarea class="form-control" name="deskripsi_kegiatan" id="deskripsi_kegiatan" rows="3"></textarea>
                 </div>
             </div>
             
@@ -1242,7 +1184,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Tanggal Kegiatan <span class="required">*</span></label>
-                    <input type="date" class="form-control" name="tanggal_kegiatan" required>
+                    <input type="date" class="form-control" name="tanggal_kegiatan" id="tanggal_kegiatan" required>
                 </div>
             </div>
             
@@ -1250,7 +1192,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label class="form-label">Lokasi Kegiatan <span class="required">*</span></label>
-                    <input type="text" class="form-control" name="lokasi_kegiatan" required>
+                    <input type="text" class="form-control" name="lokasi_kegiatan" id="lokasi_kegiatan" required>
                 </div>
             </div>
             
@@ -1258,7 +1200,7 @@
             <div class="col-12">
                 <div class="mb-3">
                     <label class="form-label">Catatan Tambahan</label>
-                    <textarea class="form-control" name="catatan_tambahan" rows="2"></textarea>
+                    <textarea class="form-control" name="catatan_tambahan" id="catatan_tambahan" rows="2"></textarea>
                 </div>
             </div>
             
@@ -1310,17 +1252,36 @@
                                 <i class="fas fa-file-excel me-2" style="color: #065f46;"></i>
                                 <strong>File Export:</strong> Data pengajuan telah tersedia
                             </div>
-                            <a href="<?= base_url('sertifikat/download_export/' . $r['id']) ?>" class="btn-download-excel" style="background: #10b981; color: white; padding: 6px 16px; border-radius: 20px; text-decoration: none; font-size: 0.8rem; transition: all 0.3s;">
-                                <i class="fas fa-download me-1"></i> Download Excel
-                            </a>
+                            <div class="d-flex gap-2 flex-wrap">
+                                <a href="<?= base_url('sertifikat/generate?id=' . $r['id']) ?>" class="btn-download-excel" style="background: #f97316; color: white; padding: 6px 16px; border-radius: 20px; text-decoration: none; font-size: 0.8rem; transition: all 0.3s;">
+                                    <i class="fas fa-print me-1"></i> Cetak Sertifikat
+                                </a>
+                                <a href="<?= base_url('sertifikat/download_export/' . $r['id']) ?>" class="btn-download-excel" style="background: #10b981; color: white; padding: 6px 16px; border-radius: 20px; text-decoration: none; font-size: 0.8rem; transition: all 0.3s;">
+                                    <i class="fas fa-download me-1"></i> Download Excel
+                                </a>
+                            </div>
                         </div>
                         <?php endif; ?>
                         
                         <?php if (isset($r['status']) && $r['status'] == 'rejected' && !empty($r['catatan_admin'])): ?>
-                        <div class="mt-3 p-2" style="background: #fee2e2; border-radius: 12px;">
-                            <i class="fas fa-comment me-2" style="color: #991b1b;"></i>
-                            <strong>Alasan:</strong> <?= htmlspecialchars($r['catatan_admin']) ?>
-                        </div>
+                            <?php
+                            $catatan_text = $r['catatan_admin'];
+                            $wrong_fields_json = '[]';
+                            $decoded = json_decode($r['catatan_admin'], true);
+                            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                                $catatan_text = $decoded['catatan'] ?? '';
+                                $wrong_fields_json = json_encode($decoded['wrong_fields'] ?? []);
+                            }
+                            ?>
+                            <div class="mt-3 p-3 d-flex justify-content-between align-items-center flex-wrap gap-2" style="background: #fee2e2; border-radius: 12px; border-left: 4px solid #ef4444;">
+                                <div>
+                                    <i class="fas fa-comment me-2" style="color: #991b1b;"></i>
+                                    <strong>Alasan:</strong> <?= htmlspecialchars($catatan_text) ?>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-danger btn-download-excel" style="background: #ef4444; border: none;" onclick="perbaikiPengajuan(<?= htmlspecialchars(json_encode($r)) ?>, <?= htmlspecialchars($wrong_fields_json) ?>)">
+                                    <i class="fas fa-edit me-1"></i> Perbaiki Pengajuan
+                                </button>
+                            </div>
                         <?php endif; ?>
                     </div>
                     <span class="badge-status <?= $badge_class ?>"><?= $badge_text ?></span>
@@ -1589,6 +1550,131 @@
             }
         });
     });
+
+    // Handle dismissible notifications
+    window.dismissNotification = function(id) {
+        const el = document.getElementById('notif-' + id);
+        if (el) {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(-10px)';
+            el.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                el.remove();
+                const remaining = document.querySelectorAll('.alert-notification');
+                if (remaining.length === 0) {
+                    const container = document.querySelector('.notifications-container');
+                    if (container) container.remove();
+                }
+            }, 300);
+            
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_sertifikat_notifs') || '[]');
+            if (!dismissed.includes(id)) {
+                dismissed.push(id);
+                localStorage.setItem('dismissed_sertifikat_notifs', JSON.stringify(dismissed));
+            }
+        }
+    };
+
+    // Filter out dismissed notifications on load
+    let dismissedNotifs = JSON.parse(localStorage.getItem('dismissed_sertifikat_notifs') || '[]');
+    dismissedNotifs.forEach(id => {
+        const el = document.getElementById('notif-' + id);
+        if (el) {
+            el.remove();
+        }
+    });
+    const remainingNotifs = document.querySelectorAll('.alert-notification');
+    if (remainingNotifs.length === 0) {
+        const container = document.querySelector('.notifications-container');
+        if (container) container.remove();
+    }
+
+    // JS Disable and Error helpers
+    function blockFocus(e) {
+        if (this.classList.contains('locked-by-js')) {
+            this.blur();
+        }
+    }
+    function blockKeydown(e) {
+        if (this.classList.contains('locked-by-js')) {
+            e.preventDefault();
+        }
+    }
+    function blockClick(e) {
+        if (this.classList.contains('locked-by-js')) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }
+
+    window.perbaikiPengajuan = function(data, wrongFields) {
+        // Set hidden ID
+        document.getElementById('pengajuan_id').value = data.id;
+        
+        // Fill form fields
+        document.getElementById('nama_pic').value = data.nama_pic || '';
+        document.getElementById('judul_kegiatan').value = data.judul_kegiatan || '';
+        document.getElementById('tanggal_kegiatan').value = data.tanggal_kegiatan || '';
+        document.getElementById('lokasi_kegiatan').value = data.lokasi_kegiatan || '';
+        document.getElementById('deskripsi_kegiatan').value = data.deskripsi_kegiatan || '';
+        document.getElementById('catatan_tambahan').value = data.catatan_tambahan || '';
+        
+        // Remove existing error helpers / stylings first
+        document.querySelectorAll('.wrong-feedback-js').forEach(el => el.remove());
+        
+        const inputs = ['nama_pic', 'judul_kegiatan', 'tanggal_kegiatan', 'lokasi_kegiatan', 'deskripsi_kegiatan', 'catatan_tambahan'];
+        
+        inputs.forEach(f => {
+            const input = document.getElementById(f);
+            if (!input) return;
+            
+            // Clean up old listeners and classes
+            input.classList.remove('field-wrong-js');
+            input.classList.remove('locked-by-js');
+            input.removeEventListener('focus', blockFocus);
+            input.removeEventListener('keydown', blockKeydown);
+            input.removeEventListener('click', blockClick);
+            
+            if (wrongFields.includes(f)) {
+                // Wrong field - editable
+                input.classList.add('field-wrong-js');
+                
+                // Add feedback message under the field
+                const feedback = document.createElement('div');
+                feedback.className = 'wrong-feedback-js';
+                feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Bagian ini ditandai salah oleh admin, mohon perbaiki.';
+                input.parentNode.appendChild(feedback);
+            } else {
+                // Correct field - locked by JS
+                input.classList.add('locked-by-js');
+                input.addEventListener('focus', blockFocus);
+                input.addEventListener('keydown', blockKeydown);
+                input.addEventListener('click', blockClick);
+            }
+        });
+        
+        // Scroll to form-pengajuan
+        const formSection = document.getElementById('form-pengajuan');
+        if (formSection) {
+            formSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Focus the first wrong field (unlocked)
+        setTimeout(() => {
+            const firstWrong = document.querySelector('input.field-wrong-js, textarea.field-wrong-js');
+            if (firstWrong) {
+                firstWrong.focus();
+            }
+        }, 800);
+    };
+
+    // Trigger SweetAlert2 for php flash messages if they exist
+    <?php if (!empty($flash_success)): ?>
+        showAlert(<?= json_encode($flash_success) ?>, 'success');
+    <?php endif; ?>
+    <?php if (!empty($flash_error)): ?>
+        showAlert(<?= json_encode($flash_error) ?>, 'error');
+    <?php endif; ?>
 </script>
 
 </body>

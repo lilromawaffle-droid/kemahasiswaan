@@ -231,7 +231,8 @@ class User_model extends CI_Model {
      * @param string|null $details
      * @return bool
      */
-    public function log_activity($user_id, $activity, $details = null) {
+public function log_activity($user_id, $activity, $details) {
+    try {
         $data = array(
             'user_id' => $user_id,
             'activity' => $activity,
@@ -240,8 +241,11 @@ class User_model extends CI_Model {
             'user_agent' => $this->input->user_agent(),
             'created_at' => date('Y-m-d H:i:s')
         );
-        return $this->db->insert('user_activities', $data);
+        $this->db->insert('user_activities', $data);
+    } catch (Exception $e) {
+        log_message('error', 'Gagal mencatat log activity: ' . $e->getMessage());
     }
+}
 
     /**
      * Delete old activities (older than specified days)

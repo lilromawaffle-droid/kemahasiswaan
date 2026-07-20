@@ -210,8 +210,7 @@
                 margin-bottom: 1.2rem;
             }
             .admin-header h1 { font-size: 1.2rem; flex: 1; }
-            .admin-header .user-info span { display: none; }
-            .logout-btn { padding: .4rem .9rem; font-size: .8rem; }
+            .admin-header .user-info { display: none !important; }
 
             .form-row { grid-template-columns: 1fr; }
 
@@ -232,9 +231,42 @@
 
             .breadcrumb-bar { font-size: .78rem; }
         }
+        /* === MOBILE TOPBAR === */
+        .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1100; background: linear-gradient(135deg, #2C3E50, #1a2632); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 0.75rem; gap: 0.5rem; }
+        .hamburger-btn { display: none; background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 8px; width: 38px; height: 38px; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; }
+        .hamburger-btn:hover { background: rgba(230,126,34,0.6); }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; justify-content: flex-end; }
+        .topbar-username { display: flex; align-items: center; gap: 0.35rem; color: rgba(255,255,255,0.9); font-size: 0.78rem; font-weight: 500; flex: 1; min-width: 0; }
+        .topbar-username i { color: #E67E22; font-size: 1rem; flex-shrink: 0; }
+        .topbar-username .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+        .topbar-logout { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 0.38rem 0.8rem; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; flex-shrink: 0; }
+        .topbar-logout:hover { background: #c0392b; color: white; }
+        @media (max-width: 768px) {
+            .mobile-topbar { display: block; }
+            .hamburger-btn { display: flex; }
+            .admin-main { padding-top: 4.5rem !important; }
+        }
     </style>
 </head>
 <body>
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar" id="mobileTopbar">
+        <div class="topbar-inner">
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                <i class="fas fa-bars" id="hamburgerIcon"></i>
+            </button>
+            <div class="topbar-right">
+                <span class="topbar-username">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="name-text"><?= $this->session->userdata('nama') ?></span>
+                </span>
+                <a href="<?= base_url('login/logout') ?>" class="topbar-logout">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            </div>
+        </div>
+    </div>
 <div class="admin-wrapper">
 
     <!-- Sidebar Overlay (mobile) -->
@@ -248,33 +280,69 @@
         </div>
         
         <div class="sidebar-menu">
-            <a href="<?= base_url('admin/proposal') ?>">
-                <i class="fas fa-file-alt"></i>
-                <span>Proposal</span>
-            </a>
-            <a href="<?= base_url('sertifikat/admin') ?>">
-                <i class="fas fa-certificate"></i>
-                <span>Sertifikat</span>
-            </a>
-            <a href="<?= base_url('tak_admin') ?>">
-                <i class="fas fa-file-signature"></i>
-                <span>TAK</span>
-            </a>
-            <a href="<?= base_url('berita/admin') ?>">
-                <i class="fas fa-newspaper"></i>
-                <span>Berita</span>
-            </a>
-            <a href="<?= base_url('admin/organisasi') ?>" class="active">
-                <i class="fas fa-users"></i>
-                <span>Organisasi</span>
-            </a>
-            
-            <div class="menu-divider"></div>
-            
-            <a href="<?= base_url('dashboard') ?>">
-                <i class="fas fa-arrow-left"></i>
-                <span>Kembali ke Dashboard</span>
-            </a>
+                <a href="<?= base_url('admin/edit_hero') ?>" class="<?= ($this->uri->segment(2) == 'edit_hero') ? 'active' : '' ?>">
+                    <i class="fas fa-desktop"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="<?= base_url('admin/proposal') ?>">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Proposal</span>
+                </a>
+
+                <a href="<?= base_url('admin/beasiswa') ?>">
+                    <i class="fas fa-graduation-cap"></i><span>Beasiswa</span>
+                </a>
+
+                <a href="<?= base_url('sertifikat/admin') ?>">
+                    <i class="fas fa-certificate"></i>
+                    <span>Sertifikat</span>
+                </a>
+                <a href="<?= base_url('tak_admin') ?>">
+                    <i class="fas fa-file-signature"></i>
+                    <span>TAK</span>
+                </a>
+                <a href="<?= base_url('berita/admin') ?>">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Berita</span>
+                </a>
+                <a href="<?= base_url('admin/organisasi') ?>" class="active">
+                    <i class="fas fa-users"></i>
+                    <span>Organisasi</span>
+                </a>
+
+                <a href="<?= base_url('admin/direktorat') ?>">
+                    <i class="fas fa-building"></i>
+                    <span>Direktorat</span>
+                </a>
+
+                <a href="<?= base_url('admin/mitra') ?>">
+                    <i class="fas fa-handshake"></i>
+                    <span>Mitra & Recog</span>
+                </a>
+
+                <a href="<?= base_url('admin/testimoni') ?>">
+                    <i class="fas fa-comments"></i>
+                    <span>Testimoni Alumni</span>
+                </a>
+
+                <a href="<?= base_url('admin/tentang_kami') ?>" >
+                    <i class="fas fa-info-circle"></i><span>Tentang Kami</span>
+                </a>
+
+                <div class="menu-divider"></div>
+
+                <a href="<?= base_url('admin/history_log') ?>">
+                    <i class="fas fa-history"></i>
+                    <span>History Log</span>
+                </a>
+
+                <div class="menu-divider"></div>
+
+                <a href="<?= base_url('dashboard') ?>">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Kembali ke Dashboard</span>
+                </a>
         </div>
     </div>
 
@@ -283,9 +351,6 @@
 
         <!-- Header -->
         <div class="admin-header">
-            <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
-                <i class="fas fa-bars"></i>
-            </button>
             <h1><i class="fas fa-<?= isset($org) ? 'edit' : 'plus-circle' ?>" style="color:#E67E22; font-size:1.4rem;"></i> <?= $title ?></h1>
             <div class="user-info">
                 <span><i class="fas fa-user-circle me-2" style="color: #E67E22;"></i> <?= $this->session->userdata('nama') ?></span>
@@ -550,12 +615,32 @@ document.getElementById('aktif').addEventListener('change', function() {
 
 // ── Sidebar Toggle (Mobile) ──
 function toggleSidebar() {
-    document.getElementById('adminSidebar').classList.toggle('open');
-    document.getElementById('sidebarOverlay').classList.toggle('show');
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const icon = document.getElementById('hamburgerIcon');
+    const isOpen = sidebar.classList.toggle('open');
+    if (overlay) { 
+        overlay.classList.toggle('show', isOpen); 
+        overlay.classList.toggle('active', isOpen); 
+    }
+    if (icon) {
+        icon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+    }
 }
 function closeSidebar() {
-    document.getElementById('adminSidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('show');
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const icon = document.getElementById('hamburgerIcon');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) { 
+        overlay.classList.remove('show'); 
+        overlay.classList.remove('active'); 
+    }
+    if (icon) icon.className = 'fas fa-bars';
+}
+</script>
+</body>
+</html>
 }
 </script>
 </body>

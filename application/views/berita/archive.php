@@ -18,21 +18,6 @@
     .bg-orange-grad::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 30%, rgba(255,255,200,0.2) 2px, transparent 2.5px); background-size: 32px 32px; pointer-events: none; }
     .container-custom { width: min(100% - 3rem, 1280px); margin-inline: auto; }
 
-    /* HEADER */
-    .header-glass { position: absolute; top: 24px; left: 0; right: 0; z-index: 50; }
-    .navbar-glass { background: rgba(0, 0, 0, 0.55); backdrop-filter: blur(20px); border-radius: 60px; padding: 12px 32px; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-    .logo-area { display: flex; align-items: center; gap: 16px; }
-    .logo-icon { width: 48px; height: 48px; background: #2d3e50; border-radius: 14px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.3rem; }
-    .logo-text h5 { font-size: 0.9rem; font-weight: 800; color: white; margin: 0; }
-    .logo-text span { font-size: 0.7rem; color: rgba(255,255,255,0.85); }
-    .nav-links { display: flex; gap: 2rem; align-items: center; }
-    .nav-links a { color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; border-bottom: 2px solid transparent; padding-bottom: 4px; transition: all 0.3s ease; }
-    .nav-links a.active, .nav-links a:hover { border-bottom-color: #f97316; }
-    .btn-mytelu-custom { background: #f97316; padding: 8px 28px; border-radius: 40px; font-weight: 700; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-    .btn-mytelu-custom:hover { background: #ea580c; transform: translateY(-2px); }
-    .user-avatar-small { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: white; }
-    .mobile-toggle { display: none; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 8px 14px; font-size: 1.4rem; color: white; cursor: pointer; }
-
     /* HERO */
     .hero-berita { background: linear-gradient(135deg, #f97316 0%, #fdba74 100%); padding: 160px 0 80px; text-align: center; color: white; position: relative; }
     .hero-berita::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(circle at 20% 30%, rgba(255,255,200,0.2) 2px, transparent 2.5px); background-size: 32px 32px; pointer-events: none; }
@@ -87,10 +72,6 @@
     .footer-bottom { text-align: center; padding-top: 30px; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
 
     @media (max-width: 768px) {
-      .navbar-glass { flex-direction: column; align-items: stretch; }
-      .nav-links { display: none; flex-direction: column; margin-top: 12px; gap: 16px; }
-      .nav-links.open { display: flex !important; }
-      .mobile-toggle { display: block; }
       .hero-berita { padding: 120px 0 60px; }
       .hero-berita h1 { font-size: 2rem; }
       .kategori-tabs { justify-content: center; }

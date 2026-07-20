@@ -11,8 +11,10 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
-    <style>
+    <style>a
         body {
             font-family: 'Montserrat', sans-serif;
             background-color: #f8f9fa;
@@ -169,6 +171,7 @@
             justify-content: center;
             font-weight: 700;
             color: #adb5bd;
+            flex-shrink: 0;
         }
 
         .step-btn.active {
@@ -449,7 +452,7 @@
             align-items: center;
             text-align: center;
             font-family: 'Montserrat', sans-serif;
-            margin-top: 10px;
+            margin-top: 1.5cqw;
         }
         #cert-signature-wrap .sig-role {
             font-size: 1.8cqw;
@@ -457,16 +460,17 @@
             letter-spacing: 0.5px;
             color: #d35400;
             text-transform: uppercase;
-            margin-bottom: 4px;
+            margin-bottom: 0.6cqw;
         }
         /* Ruang kosong buat tempel gambar tanda tangan (upload logo/ttd manual) */
         #cert-signature-wrap .sig-space {
-            width: 220px;
-            height: 70px;
+            width: 30cqw;
+            height: 10cqw;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            margin: 0.5cqw 0;
         }
         #cert-signature-wrap .sig-space img {
             max-width: 100%;
@@ -478,12 +482,46 @@
             font-weight: 700;
             color: #2C3E50;
             white-space: nowrap;
-            margin-top: 2px;
+            margin-top: 0.3cqw;
         }
         #cert-signature-wrap .sig-nip {
             font-size: 1.5cqw;
             color: #6b7280;
-            margin-top: 1px;
+            margin-top: 0.25cqw;
+        }
+
+        /* ── QR Code overlay responsif ── */
+        #cert-qr-wrap {
+            position: absolute;
+            bottom: 5%;
+            left: 4%;
+            background: white;
+            padding: 0.8cqw !important;
+            border-radius: 0.8cqw !important;
+            box-shadow: 0 0.3cqw 1.2cqw rgba(0,0,0,0.12) !important;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2cqw !important;
+            border: 0.1cqw solid #ddd !important;
+            width: 11cqw !important;
+            height: auto !important;
+        }
+        #cert-qr-canvas {
+            width: 100% !important;
+            height: auto !important;
+            display: block;
+        }
+        #cert-qr-label {
+            font-size: 0.8cqw !important;
+            margin-top: 0.1cqw;
+            color: #7f8c8d;
+            font-family: monospace;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-weight: 700;
         }
 
         /* ── Buttons (sama style dengan admin.php) ── */
@@ -583,43 +621,181 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* === MOBILE RESPONSIVE === */
+        * { box-sizing: border-box; }
+        html, body { overflow-x: hidden; max-width: 100%; }
+        .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1100; background: linear-gradient(135deg, #2C3E50, #1a2632); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 0.75rem; gap: 0.5rem; }
+        .hamburger-btn { display: none; background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 8px; width: 38px; height: 38px; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; }
+        .hamburger-btn:hover { background: rgba(230,126,34,0.6); }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; justify-content: flex-end; }
+        .topbar-username { display: flex; align-items: center; gap: 0.35rem; color: rgba(255,255,255,0.9); font-size: 0.78rem; font-weight: 500; flex: 1; min-width: 0; }
+        .topbar-username i { color: #E67E22; font-size: 1rem; flex-shrink: 0; }
+        .topbar-username .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+        .topbar-logout { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 0.38rem 0.8rem; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; transition: background 0.2s; flex-shrink: 0; }
+        .topbar-logout:hover { background: #c0392b; color: white; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
         @media (max-width: 768px) {
-            .admin-sidebar { width: 0; display: none; }
-            .admin-main { margin-left: 0; }
+            .mobile-topbar { display: block; }
+            .hamburger-btn { display: flex; }
+            .admin-sidebar { position: fixed !important; left: -280px !important; z-index: 1000; transition: left 0.3s ease; width: 280px !important; display: block !important; }
+            .admin-sidebar.open { left: 0 !important; }
+            .admin-main { margin-left: 0 !important; padding: 1rem !important; padding-top: 4.5rem !important; max-width: 100vw; overflow-x: hidden; }
+            .admin-header { flex-direction: column !important; align-items: stretch !important; gap: 0.75rem; margin-bottom: 1.5rem; }
+            .admin-header h1 { font-size: 1.3rem !important; word-break: break-word; }
+            .admin-header .user-info > span, .admin-header .user-info .logout-btn { display: none; }
+            .admin-header .user-info { width: 100%; justify-content: stretch; }
+            .admin-header .user-info .btn { flex: 0 0 100%; text-align: center; padding: 0.65rem 1rem; border-radius: 12px; }
             .template-grid { grid-template-columns: 1fr 1fr; }
+            .step-btn {
+                padding: 0.6rem 0.4rem !important;
+                font-size: 0.72rem !important;
+                gap: 6px !important;
+            }
+            .step-btn .step-num {
+                width: 22px !important;
+                height: 22px !important;
+                font-size: 0.7rem !important;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Mobile Topbar -->
+    <div class="mobile-topbar" id="mobileTopbar">
+        <div class="topbar-inner">
+            <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Toggle Menu">
+                <i class="fas fa-bars" id="hamburgerIcon"></i>
+            </button>
+            <div
+             class="topbar-right">
+                <span class="topbar-username">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="name-text"><?= $this->session->userdata('nama') ?></span>
+                </span>
+                <a href="<?= base_url('login/logout') ?>" class="topbar-logout">
+                    <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
 <div class="admin-wrapper">
 
-    <!-- Sidebar (sama persis dengan admin.php) -->
-    <div class="admin-sidebar">
+    <!-- Sidebar -->
+    <?php if ($this->session->userdata('role') === 'mahasiswa'): ?>
+    <div class="admin-sidebar" id="adminSidebar">
+        <div class="sidebar-header">
+            <h3>Mahasiswa FIK</h3>
+            <p>Cetak Sertifikat</p>
+        </div>
+        <div class="sidebar-menu">
+            <a href="<?= base_url('sertifikat') ?>" class="active">
+                <i class="fas fa-certificate"></i>
+                <span>Cetak Sertifikat</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="<?= base_url('dashboard') ?>">
+                <i class="fas fa-arrow-left"></i>
+                <span>Kembali ke Dashboard</span>
+            </a>
+        </div>
+    </div>
+    <?php else: ?>
+    <div class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
             <h3>Admin FIK</h3>
             <p>Manajemen Sertifikat</p>
         </div>
-
+        
         <div class="sidebar-menu">
-            <a href="<?= base_url('admin/proposal') ?>">
+            <a href="<?= base_url('admin/edit_hero') ?>" class="<?= ($this->uri->segment(2) == 'edit_hero') ? 'active' : '' ?>">
+                <i class="fas fa-desktop"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="<?= base_url('admin/proposal') ?>" class="<?= ($this->uri->segment(2) == 'proposal') ? 'active' : '' ?>">
                 <i class="fas fa-file-alt"></i>
                 <span>Proposal</span>
             </a>
-            <a href="<?= base_url('sertifikat/admin') ?>">
+
+            <a href="<?= base_url('admin/beasiswa') ?>" class="<?= ($this->uri->segment(2) == 'beasiswa') ? 'active' : '' ?>">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Beasiswa</span>
+            </a>
+
+            <a href="<?= base_url('sertifikat/admin') ?>" class="<?= ($this->uri->segment(1) == 'sertifikat' && $this->uri->segment(2) != 'generate' && $this->uri->segment(2) != 'export_excel_canva') ? 'active' : '' ?>">
                 <i class="fas fa-certificate"></i>
                 <span>Sertifikat</span>
             </a>
-            <a href="<?= base_url('sertifikat/generate') ?>" class="active" style="padding-left:2.5rem;font-size:0.85rem;">
+            
+            <?php if ($this->uri->segment(1) == 'sertifikat'): ?>
+            <a href="<?= base_url('sertifikat/generate') ?>" class="<?= ($this->uri->segment(2) == 'generate') ? 'active' : '' ?>" style="padding-left: 2.5rem; font-size: 0.85rem;">
                 <i class="fas fa-magic"></i>
                 <span>Generate Sertifikat</span>
             </a>
-            <a href="<?= base_url('sertifikat/export_excel_canva') ?>" style="padding-left:2.5rem;font-size:0.85rem;">
+            <a href="<?= base_url('sertifikat/export_excel_canva') ?>" class="<?= ($this->uri->segment(2) == 'export_excel_canva') ? 'active' : '' ?>" style="padding-left: 2.5rem; font-size: 0.85rem;">
                 <i class="fas fa-file-excel"></i>
                 <span>Export Excel Canva</span>
             </a>
-            <a href="<?= base_url('berita/admin') ?>">
+            <?php endif; ?>
+
+            <a href="<?= base_url('tak_admin') ?>" class="<?= ($this->uri->segment(1) == 'tak_admin') ? 'active' : '' ?>">
+                <i class="fas fa-file-signature"></i>
+                <span>TAK</span>
+            </a>
+            
+            <a href="<?= base_url('berita/admin') ?>" class="<?= ($this->uri->segment(1) == 'berita') ? 'active' : '' ?>">
                 <i class="fas fa-newspaper"></i>
                 <span>Berita</span>
+            </a>
+            
+            <a href="<?= base_url('admin/organisasi') ?>" class="<?= ($this->uri->segment(2) == 'organisasi') ? 'active' : '' ?>">
+                <i class="fas fa-users"></i>
+                <span>Organisasi</span>
+            </a>
+
+            <a href="<?= base_url('admin/direktorat') ?>" class="<?= ($this->uri->segment(2) == 'direktorat') ? 'active' : '' ?>">
+                <i class="fas fa-building"></i>
+                <span>Direktorat</span>
+            </a>
+
+            <a href="<?= base_url('admin/mitra') ?>" class="<?= ($this->uri->segment(2) == 'mitra') ? 'active' : '' ?>">
+                <i class="fas fa-handshake"></i>
+                <span>Mitra & Recog</span>
+            </a>
+
+            <a href="<?= base_url('admin/testimoni') ?>" class="<?= ($this->uri->segment(2) == 'testimoni') ? 'active' : '' ?>">
+                <i class="fas fa-comments"></i>
+                <span>Testimoni Alumni</span>
+            </a>
+
+            <a href="<?= base_url('admin/tentang_kami') ?>" class="<?= ($this->uri->segment(2) == 'tentang_kami') ? 'active' : '' ?>">
+                <i class="fas fa-info-circle"></i>
+                <span>Tentang Kami</span>
+            </a>
+
+            <div class="menu-divider"></div>
+
+            <a href="<?= base_url('admin/forum_alumni') ?>" class="<?= ($this->uri->segment(2) == 'forum_alumni') ? 'active' : '' ?>">
+                <i class="fas fa-comments"></i>
+                <span>Forum Alumni</span>
+                <?php 
+                $CI =& get_instance();
+                $pending_posts = $CI->db->where('status', 'pending')->count_all_results('forum_alumni_posts');
+                if ($pending_posts > 0): 
+                ?>
+                    <span class="badge bg-danger ms-auto"><?= $pending_posts ?></span>
+                <?php endif; ?>
+            </a>
+
+            <a href="<?= base_url('admin/history_log') ?>" class="<?= ($this->uri->segment(2) == 'history_log') ? 'active' : '' ?>">
+                <i class="fas fa-history"></i>
+                <span>History Log</span>
             </a>
 
             <div class="menu-divider"></div>
@@ -630,6 +806,7 @@
             </a>
         </div>
     </div>
+    <?php endif; ?>
 
     <!-- Main Content -->
     <div class="admin-main">
@@ -696,7 +873,9 @@
                     <table id="mainTable">
                         <thead>
                             <tr>
-                                <th class="radio-col"></th>
+                                <th class="radio-col" style="text-align:center; cursor: pointer;" onclick="toggleSelectAll()">
+                                    <i class="far fa-square select-all-icon" style="font-size:1.15rem;"></i>
+                                </th>
                                 <th>Nama Mahasiswa</th>
                                 <th>NIM / Prodi</th>
                                 <th>Judul Kegiatan</th>
@@ -715,10 +894,10 @@
                             </tr>
                             <?php else: ?>
                             <?php foreach ($sertifikat_list as $s): ?>
-                            <tr onclick="selectRow(this, <?= htmlspecialchars(json_encode($s), ENT_QUOTES) ?>)">
-                                <td class="radio-col">
-                                    <i class="far fa-circle unselected-indicator" style="color:#dee2e6;"></i>
-                                    <i class="fas fa-check-circle selected-indicator"></i>
+                            <tr class="cert-row" data-json="<?= htmlspecialchars(json_encode($s), ENT_QUOTES) ?>" onclick="selectRow(this, <?= htmlspecialchars(json_encode($s), ENT_QUOTES) ?>)">
+                                <td class="radio-col" style="text-align:center;">
+                                    <i class="far fa-square unselected-indicator" style="color:#dee2e6; font-size:1.15rem;"></i>
+                                    <i class="fas fa-check-square selected-indicator" style="color:#27ae60; font-size:1.15rem;"></i>
                                 </td>
                                 <td><strong><?= htmlspecialchars($s['nama_mahasiswa']) ?></strong></td>
                                 <td>
@@ -831,31 +1010,41 @@
 
                 <div class="selected-bar" id="sel-data-bar-3"></div>
 
+                <!-- Selector untuk memilih data yang dipreview -->
+                <div class="preview-selector-wrap mb-4 p-3 bg-light rounded" id="previewSelectorContainer" style="display:none; border: 1px solid #e2e8f0; margin-top: 15px;">
+                    <label for="previewSelector" class="form-label font-weight-bold" style="font-size:0.9rem; color:#2C3E50; font-weight:700;">
+                        <i class="fas fa-users text-warning me-2"></i> Pilih Mahasiswa untuk Preview Sertifikat:
+                    </label>
+                    <select class="form-select mt-1" id="previewSelector" onchange="changePreviewStudent(this.value)" style="border-radius:10px; padding: 0.6rem 1rem; border: 1px solid #cbd5e1; font-weight: 600;">
+                        <!-- Options filled by JS -->
+                    </select>
+                </div>
+
                 <!-- Preview -->
                 <div id="cert-preview-wrap">
                     <div id="cert-canvas-container" style="position:relative;display:inline-block;">
                         <img id="cert-template-img" src="" alt="Template">
                         <div id="cert-text-overlay">
                             <!-- Judul CERTIFICATE di atas -->
-                            <div class="cert-title-main" style="font-size: 5cqw; font-weight: 800; color: #d35400; letter-spacing: 2px; margin-bottom: 2px; text-transform: uppercase;">Certificate</div>
+                            <div class="cert-title-main" style="font-size: 5cqw; font-weight: 800; color: #d35400; letter-spacing: 0.3cqw; margin-bottom: 0.3cqw; text-transform: uppercase;">Certificate</div>
 
                             <!-- Nomor Sertifikat di bawah judul -->
-                            <div class="cert-nomor" id="prev-nomor" style="font-size: 1.6cqw; font-weight: 700; color: #2C3E50; letter-spacing: 1px; margin-bottom: 12px; text-transform: uppercase;">Certificate Number: 020/S-AKD05/IK-DEK/2026</div>
+                            <div class="cert-nomor" id="prev-nomor" style="font-size: 1.6cqw; font-weight: 700; color: #2C3E50; letter-spacing: 0.15cqw; margin-bottom: 1.8cqw; text-transform: uppercase;">Certificate Number: 020/S-AKD05/IK-DEK/2026</div>
 
                             <!-- Kalimat pembuka / partisipasi -->
-                            <div class="cert-intro" style="font-size: 1.75cqw; font-style: italic; color: #7f8c8d; margin-bottom: 6px;">THIS CERTIFICATE IS PRESENT TO</div>
+                            <div class="cert-intro" style="font-size: 1.75cqw; font-style: italic; color: #7f8c8d; margin-bottom: 0.9cqw;">THIS CERTIFICATE IS PRESENT TO</div>
 
                             <!-- Nama Penerima besar dengan garis bawah -->
-                            <div class="cert-name-container" style="border-bottom: 2px solid #E67E22; padding-bottom: 4px; margin-bottom: 12px; min-width: 280px; text-align: center;">
+                            <div class="cert-name-container" style="border-bottom: 0.3cqw solid #E67E22; padding-bottom: 0.6cqw; margin-bottom: 1.8cqw; min-width: 40cqw; text-align: center;">
                                 <div class="cert-name" id="prev-nama" style="font-size: 4cqw; font-weight: 800; color: #2C3E50; font-family: 'Montserrat', sans-serif;">TEGUH AKBAR, ST</div>
                             </div>
 
                             <!-- Keterangan Partisipasi & Kegiatan -->
-                            <div class="cert-desc" id="prev-desc" style="font-size: 1.75cqw; color: #7f8c8d; margin-bottom: 6px;">For the Participation as <strong style="color: #d35400;" id="prev-role">Committee</strong> at :</div>
-                            <div class="cert-event" id="prev-judul" style="font-size: 2.6cqw; font-weight: 700; color: #2C3E50; text-transform: uppercase; margin-bottom: 6px; text-align: center;">BERWARA ADVERTISING EXHIBITION & AWARD</div>
+                            <div class="cert-desc" id="prev-desc" style="font-size: 1.75cqw; color: #7f8c8d; margin-bottom: 0.9cqw;">For the Participation as <strong style="color: #d35400;" id="prev-role">Committee</strong> at :</div>
+                            <div class="cert-event" id="prev-judul" style="font-size: 2.6cqw; font-weight: 700; color: #2C3E50; text-transform: uppercase; margin-bottom: 0.9cqw; text-align: center;">BERWARA ADVERTISING EXHIBITION & AWARD</div>
 
                             <!-- Waktu & Tempat -->
-                            <div class="cert-date" id="prev-tanggal" style="font-size: 1.6cqw; color: #7f8c8d; text-transform: uppercase; font-weight: 600; margin-bottom: 8px;">HELD AT SCHOOL OF CREATIVE INDUSTRIES</div>
+                            <div class="cert-date" id="prev-tanggal" style="font-size: 1.6cqw; color: #7f8c8d; text-transform: uppercase; font-weight: 600; margin-bottom: 1.2cqw;">HELD AT SCHOOL OF CREATIVE INDUSTRIES</div>
 
                             <!-- Tanda tangan Dean of School, di tengah, di bawah tanggal -->
                             <div id="cert-signature-wrap">
@@ -868,15 +1057,9 @@
                             </div>
                         </div>
                         <!-- QR Code di pojok kiri bawah (sesuai layout gambar) -->
-                        <div id="cert-qr-wrap" style="
-                            position:absolute; bottom:5%; left:4%;
-                            background:white; padding:6px; border-radius:6px;
-                            box-shadow:0 3px 12px rgba(0,0,0,0.12);
-                            display:flex; flex-direction:column; align-items:center; gap:2px;
-                            border: 1px solid #ddd;
-                        ">
+                        <div id="cert-qr-wrap" <?php if ($this->session->userdata('role') !== 'mahasiswa') echo 'style="display: none !important;"'; ?>>
                             <canvas id="cert-qr-canvas"></canvas>
-                            <span id="cert-qr-label" style="font-size:4.5px;color:#7f8c8d;font-family:monospace;max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;">verify</span>
+                            <span id="cert-qr-label">verify</span>
                         </div>
                     </div>
                 </div>
@@ -888,6 +1071,18 @@
                         <input type="range" id="posY" min="15" max="85" value="50" style="width:180px;" oninput="adjustText()">
                         <span style="color:#888;font-size:.8rem;" id="posY-val">50%</span>
                     </div>
+                    <?php if ($this->session->userdata('role') === 'mahasiswa'): ?>
+                    <div>
+                        <label>Posisi QR Code (Horizontal X)</label>
+                        <input type="range" id="qrPosX" min="0" max="95" value="4" style="width:180px;" oninput="adjustQrPosition()">
+                        <span style="color:#888;font-size:.8rem;" id="qrPosX-val">4%</span>
+                    </div>
+                    <div>
+                        <label>Posisi QR Code (Vertikal Y)</label>
+                        <input type="range" id="qrPosY" min="0" max="95" value="82" style="width:180px;" oninput="adjustQrPosition()">
+                        <span style="color:#888;font-size:.8rem;" id="qrPosY-val">82%</span>
+                    </div>
+                    <?php endif; ?>
                     <div>
                         <label>Warna Nama</label>
                         <input type="color" id="nameColor" value="#1e3a5f" oninput="adjustText()">
@@ -910,7 +1105,19 @@
                     </div>
                     <div>
                         <label>Gambar Tanda Tangan (opsional)</label>
-                        <input type="file" id="sigImageInput" accept="image/png, image/jpeg" style="font-size:0.78rem;" onchange="handleSignatureImageUpload(this)">
+                        <div class="drag-drop-zone" id="sigDragDropZone" style="border: 2px dashed #E67E22; border-radius: 12px; padding: 1.2rem; text-align: center; background: #fdfaf7; cursor: pointer; transition: all 0.3s ease; margin-top: 5px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                            <div id="sigDragDropPrompt" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                                <i class="fas fa-signature" style="font-size: 1.8rem; color: #E67E22;"></i>
+                                <span style="font-size: 0.8rem; font-weight: 600; color: #2C3E50;">Tarik & Lepas gambar tanda tangan di sini</span>
+                                <span style="font-size: 0.72rem; color: #888;">atau klik untuk pilih berkas (PNG / JPG)</span>
+                            </div>
+                            <div id="sigDragDropPreviewContainer" style="display: none; flex-direction: column; align-items: center; gap: 8px;">
+                                <img id="sigDragDropPreviewImg" src="" style="max-height: 80px; object-fit: contain; border-radius: 8px; border: 1px solid #ddd; padding: 4px; background: white;">
+                                <span style="font-size: 0.75rem; color: #27ae60; font-weight: 600;"><i class="fas fa-check-circle me-1"></i> Tanda tangan berhasil dimuat!</span>
+                                <span style="font-size: 0.7rem; color: #e74c3c; cursor: pointer; text-decoration: underline;" onclick="removeSignaturePreview(event)">Hapus & Ganti</span>
+                            </div>
+                            <input type="file" id="sigImageInput" accept="image/png, image/jpeg" style="display:none;" onchange="handleSignatureImageUpload(this)">
+                        </div>
                     </div>
                 </div>
 
@@ -942,13 +1149,15 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     const BASE_URL = '<?= base_url() ?>';
+    let selectedRows     = [];
     let selectedRow      = null;
     let selectedTemplate = null;   // id template (angka, atau 'custom-<id>')
     let selectedTemplateUrl = null; // url gambar template yang sedang dipakai (kalau custom)
+    let isAllSelected = false;
 
     /* ── Step navigation ── */
     function goStep(n) {
-        if (n === 2 && !selectedRow)      { alert('Pilih data sertifikat terlebih dahulu!'); return; }
+        if (n === 2 && selectedRows.length === 0) { alert('Pilih data sertifikat terlebih dahulu!'); return; }
         if (n === 3 && !selectedTemplate) { alert('Pilih template terlebih dahulu!'); return; }
 
         document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
@@ -967,13 +1176,71 @@
 
     /* ── Pilih baris ── */
     function selectRow(tr, data) {
-        document.querySelectorAll('#mainTable tbody tr').forEach(r => r.classList.remove('selected'));
-        tr.classList.add('selected');
-        selectedRow = data;
-        document.getElementById('sel-info').innerHTML =
-            `<i class="fas fa-check-circle" style="color:#27ae60;margin-right:6px;"></i>
-             Dipilih: <strong>${data.nama_mahasiswa}</strong> — ${data.judul_kegiatan.substring(0,45)}...`;
-        document.getElementById('btn-next-1').disabled = false;
+        tr.classList.toggle('selected');
+        
+        const idx = selectedRows.findIndex(r => r.id === data.id);
+        if (idx > -1) {
+            selectedRows.splice(idx, 1);
+        } else {
+            selectedRows.push(data);
+        }
+        
+        selectedRow = selectedRows.length > 0 ? selectedRows[0] : null;
+        updateSelectionUI();
+    }
+
+    /* ── Select All ── */
+    function toggleSelectAll() {
+        const trs = document.querySelectorAll('#mainTable tbody tr.cert-row');
+        isAllSelected = !isAllSelected;
+        
+        const icon = document.querySelector('.select-all-icon');
+        if (isAllSelected) {
+            icon.className = 'fas fa-check-square select-all-icon';
+            icon.style.color = '#27ae60';
+            
+            selectedRows = [];
+            trs.forEach(tr => {
+                if (tr.style.display !== 'none') {
+                    tr.classList.add('selected');
+                    const data = JSON.parse(tr.getAttribute('data-json'));
+                    selectedRows.push(data);
+                }
+            });
+        } else {
+            icon.className = 'far fa-square select-all-icon';
+            icon.style.color = '';
+            
+            trs.forEach(tr => {
+                tr.classList.remove('selected');
+            });
+            selectedRows = [];
+        }
+        
+        selectedRow = selectedRows.length > 0 ? selectedRows[0] : null;
+        updateSelectionUI();
+    }
+
+    /* ── Update Selection UI ── */
+    function updateSelectionUI() {
+        const btnNext = document.getElementById('btn-next-1');
+        const selInfo = document.getElementById('sel-info');
+        
+        if (selectedRows.length > 0) {
+            selInfo.innerHTML = `<i class="fas fa-check-circle" style="color:#27ae60;margin-right:6px;"></i>
+                                 Dipilih: <strong>${selectedRows.length}</strong> sertifikat`;
+            btnNext.disabled = false;
+        } else {
+            selInfo.innerHTML = `<i class="fas fa-hand-pointer me-1"></i> Belum ada yang dipilih`;
+            btnNext.disabled = true;
+            
+            const icon = document.querySelector('.select-all-icon');
+            if (icon) {
+                icon.className = 'far fa-square select-all-icon';
+                icon.style.color = '';
+                isAllSelected = false;
+            }
+        }
     }
 
     /* ── Pilih template ──
@@ -1058,32 +1325,61 @@
 
     /* ── Render info bar ── */
     function renderSelBar() {
-        const d = selectedRow;
+        if (selectedRows.length === 0) return;
+        const count = selectedRows.length;
+        const names = selectedRows.map(r => r.nama_mahasiswa).slice(0, 3).join(', ') + (count > 3 ? '...' : '');
+        
         const html = `
             <div>
-                <div class="sel-name">${d.nama_mahasiswa}</div>
-                <div class="sel-meta">${d.nim ?? '-'} · ${d.prodi ?? '-'} · ${d.judul_kegiatan.substring(0,55)}</div>
+                <div class="sel-name">Multi-select (${count} Mahasiswa)</div>
+                <div class="sel-meta">${names}</div>
             </div>
-            <span class="badge-nomor">${d.nomor_sertifikat ?? '-'}</span>`;
+            <span class="badge-nomor">${count} Berkas</span>`;
         document.querySelectorAll('#sel-data-bar, #sel-data-bar-3').forEach(el => el.innerHTML = html);
     }
 
     /* ── Render preview ── */
     function renderPreview() {
         renderSelBar();
+        
+        // Populate selector dropdown
+        const container = document.getElementById('previewSelectorContainer');
+        const selector = document.getElementById('previewSelector');
+        
+        if (selectedRows.length > 1) {
+            container.style.display = 'block';
+            selector.innerHTML = '';
+            selectedRows.forEach((r, idx) => {
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `${r.nama_mahasiswa} (${r.nim}) - ${r.nomor_sertifikat}`;
+                selector.appendChild(opt);
+            });
+        } else {
+            container.style.display = 'none';
+        }
+        
         const img = document.getElementById('cert-template-img');
         img.onload = function() { renderQR(); };
 
         img.src = selectedTemplateUrl;
         if (img.complete) renderQR();
 
+        // Default preview the first student
+        changePreviewStudent(0);
+    }
+
+    /* ── Ganti mahasiswa yang dipreview ── */
+    function changePreviewStudent(index) {
+        const idx = parseInt(index);
+        if (isNaN(idx) || idx < 0 || idx >= selectedRows.length) return;
+        
+        selectedRow = selectedRows[idx];
+        
         const d = selectedRow;
         document.getElementById('prev-nama').textContent  = d.nama_mahasiswa;
         document.getElementById('prev-judul').textContent = d.judul_kegiatan;
 
-        // ── Tanggal kegiatan: tampilkan APA ADANYA sesuai data, tidak menerka/menambah rentang tanggal.
-        // Kalau di data ada tanggal_kegiatan_selesai (rentang beberapa hari), baru ditampilkan sebagai range.
-        // Kalau tidak ada, tampilkan tanggal tunggal.
         const months = ['January','February','March','April','May','June','July',
                         'August','September','October','November','December'];
 
@@ -1095,7 +1391,6 @@
         let tanggalStr = '';
         if (d.tanggal_kegiatan) {
             if (d.tanggal_kegiatan_selesai && d.tanggal_kegiatan_selesai !== d.tanggal_kegiatan) {
-                // ada rentang tanggal beneran dari database
                 const start = new Date(d.tanggal_kegiatan);
                 const end   = new Date(d.tanggal_kegiatan_selesai);
                 if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
@@ -1104,7 +1399,6 @@
                     tanggalStr = `FROM ${formatSingleDate(d.tanggal_kegiatan)} TO ${formatSingleDate(d.tanggal_kegiatan_selesai)}`;
                 }
             } else {
-                // hanya satu tanggal → tampilkan sebagai tanggal tunggal, bukan rentang
                 tanggalStr = `ON ${formatSingleDate(d.tanggal_kegiatan)}`;
             }
         }
@@ -1115,14 +1409,12 @@
 
         document.getElementById('prev-nomor').textContent = 'CERTIFICATE NUMBER: ' + (d.nomor_sertifikat ?? '-');
 
-        // Isi deskripsi sesuai role / prodi (Committee/Participant/Presenter)
         const role = d.prodi ? d.prodi : 'Committee';
         const roleCapitalized = role.charAt(0).toUpperCase() + role.slice(1);
         document.getElementById('prev-desc').innerHTML = `For the Participation as <strong style="color: #d35400;" id="prev-role">${roleCapitalized}</strong> at :`;
 
-        // Isi tanda tangan Dean of School (ambil dari field input, atau default dari data kalau ada)
+        renderQR();
         updateSignature();
-
         adjustText();
     }
 
@@ -1139,13 +1431,30 @@
         const size = Math.max(70, Math.round(img.clientWidth * 0.10));
 
         const canvas = document.getElementById('cert-qr-canvas');
-        QRCode.toCanvas(canvas, qrUrl, {
-            width:  size,
-            margin: 1,
-            color: { dark: '#000000', light: '#ffffff' }
-        }, function(err) {
-            if (err) console.error('QR render error:', err);
-        });
+        
+        const isImage = qrUrl.match(/\.(jpeg|jpg|png|gif)$/i) || qrUrl.includes('uploads/');
+        if (isImage) {
+            const qrImg = new Image();
+            qrImg.onload = function() {
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, size, size);
+                ctx.drawImage(qrImg, 0, 0, size, size);
+            };
+            qrImg.onerror = function() {
+                console.error('Failed to load QR image:', qrUrl);
+            };
+            qrImg.src = qrUrl.startsWith('uploads/') ? BASE_URL + qrUrl : qrUrl;
+        } else {
+            QRCode.toCanvas(canvas, qrUrl, {
+                width:  size,
+                margin: 1,
+                color: { dark: '#000000', light: '#ffffff' }
+            }, function(err) {
+                if (err) console.error('QR render error:', err);
+            });
+        }
     }
 
     /* ── Update tanda tangan Dean of School (jabatan + nama + NIP) ── */
@@ -1170,11 +1479,45 @@
 
         const reader = new FileReader();
         reader.onload = function(e) {
+            // Update certificate canvas signature
             const img = document.getElementById('sig-image');
             img.src = e.target.result;
             img.style.display = 'block';
+
+            // Update drag & drop zone preview
+            const prompt = document.getElementById('sigDragDropPrompt');
+            const previewContainer = document.getElementById('sigDragDropPreviewContainer');
+            const previewImg = document.getElementById('sigDragDropPreviewImg');
+            if (prompt && previewContainer && previewImg) {
+                prompt.style.display = 'none';
+                previewContainer.style.display = 'flex';
+                previewImg.src = e.target.result;
+            }
         };
         reader.readAsDataURL(file);
+    }
+
+    /* ── Hapus & Reset Preview Tanda Tangan ── */
+    function removeSignaturePreview(event) {
+        if (event) {
+            event.stopPropagation(); // prevent triggering dropZone click
+        }
+        const sigInput = document.getElementById('sigImageInput');
+        const img = document.getElementById('sig-image');
+        const prompt = document.getElementById('sigDragDropPrompt');
+        const previewContainer = document.getElementById('sigDragDropPreviewContainer');
+        const previewImg = document.getElementById('sigDragDropPreviewImg');
+
+        if (sigInput) sigInput.value = '';
+        if (img) {
+            img.src = '';
+            img.style.display = 'none';
+        }
+        if (prompt && previewContainer && previewImg) {
+            prompt.style.display = 'flex';
+            previewContainer.style.display = 'none';
+            previewImg.src = '';
+        }
     }
 
     /* ── Adjust teks posisi & warna ── */
@@ -1196,6 +1539,107 @@
             .forEach(el => el.style.color = tc);
     }
 
+    /* ── Adjust posisi QR Code ── */
+    function adjustQrPosition() {
+        const sliderX = document.getElementById('qrPosX');
+        const sliderY = document.getElementById('qrPosY');
+        if (!sliderX || !sliderY) return;
+
+        const x = sliderX.value;
+        const y = sliderY.value;
+        
+        const qrWrap = document.getElementById('cert-qr-wrap');
+        if (qrWrap) {
+            qrWrap.style.left = x + '%';
+            qrWrap.style.top = y + '%';
+            qrWrap.style.bottom = 'auto';
+        }
+        
+        document.getElementById('qrPosX-val').textContent = x + '%';
+        document.getElementById('qrPosY-val').textContent = y + '%';
+    }
+
+    /* ── Make QR Code Draggable ── */
+    function makeQrDraggable() {
+        const qrWrap = document.getElementById('cert-qr-wrap');
+        const container = document.getElementById('cert-canvas-container');
+        const sliderX = document.getElementById('qrPosX');
+        const sliderY = document.getElementById('qrPosY');
+        
+        if (!qrWrap || !container || !sliderX || !sliderY) return;
+        
+        let isDragging = false;
+        let startX, startY;
+        let startLeft, startTop;
+        
+        qrWrap.style.cursor = 'move';
+        
+        qrWrap.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+        
+        qrWrap.addEventListener('touchstart', dragStart, { passive: false });
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('touchend', dragEnd);
+        
+        function dragStart(e) {
+            // Get current percentage positions
+            const rect = qrWrap.getBoundingClientRect();
+            const parentRect = container.getBoundingClientRect();
+            
+            startLeft = ((rect.left - parentRect.left) / parentRect.width) * 100;
+            startTop = ((rect.top - parentRect.top) / parentRect.height) * 100;
+
+            if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            } else {
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+            
+            isDragging = true;
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            
+            let clientX, clientY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+            
+            const deltaX = clientX - startX;
+            const deltaY = clientY - startY;
+            
+            const parentRect = container.getBoundingClientRect();
+            
+            const deltaLeftPct = (deltaX / parentRect.width) * 100;
+            const deltaTopPct = (deltaY / parentRect.height) * 100;
+            
+            let newLeft = Math.max(0, Math.min(95, startLeft + deltaLeftPct));
+            let newTop = Math.max(0, Math.min(95, startTop + deltaTopPct));
+            
+            qrWrap.style.left = newLeft.toFixed(1) + '%';
+            qrWrap.style.top = newTop.toFixed(1) + '%';
+            qrWrap.style.bottom = 'auto';
+            
+            sliderX.value = Math.round(newLeft);
+            sliderY.value = Math.round(newTop);
+            
+            document.getElementById('qrPosX-val').textContent = Math.round(newLeft) + '%';
+            document.getElementById('qrPosY-val').textContent = Math.round(newTop) + '%';
+        }
+        
+        function dragEnd() {
+            isDragging = false;
+        }
+    }
+
     /* ── Filter tabel ── */
     function filterTable() {
         const q = document.getElementById('searchInput').value.toLowerCase();
@@ -1207,18 +1651,119 @@
     /* ── Download PDF ── */
     async function downloadPDF() {
         const loading = document.getElementById('download-loading');
-        document.getElementById('loading-text').textContent = 'Sedang membuat PDF, harap tunggu...';
         loading.classList.add('show');
+        
         try {
-            const canvas = await html2canvas(document.getElementById('cert-canvas-container'), {
-                scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#fff', logging: false
-            });
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-            pdf.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0,
-                pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
-            pdf.save('Sertifikat_' + selectedRow.nama_mahasiswa.replace(/\s+/g,'_') +
-                     '_' + (selectedRow.nomor_sertifikat ?? '').replace(/\//g,'-') + '.pdf');
+            
+            for (let i = 0; i < selectedRows.length; i++) {
+                const d = selectedRows[i];
+                document.getElementById('loading-text').textContent = `Sedang memproses PDF (${i + 1}/${selectedRows.length}): ${d.nama_mahasiswa}...`;
+                
+                // 1. Update preview values for this student
+                document.getElementById('prev-nama').textContent  = d.nama_mahasiswa;
+                document.getElementById('prev-judul').textContent = d.judul_kegiatan;
+                
+                // Date formatting
+                const months = ['January','February','March','April','May','June','July',
+                                'August','September','October','November','December'];
+
+                function formatSingleDate(dateStr) {
+                    const dt = new Date(dateStr);
+                    return `${months[dt.getMonth()].toUpperCase()} ${dt.getDate()}, ${dt.getFullYear()}`;
+                }
+
+                let tanggalStr = '';
+                if (d.tanggal_kegiatan) {
+                    if (d.tanggal_kegiatan_selesai && d.tanggal_kegiatan_selesai !== d.tanggal_kegiatan) {
+                        const start = new Date(d.tanggal_kegiatan);
+                        const end   = new Date(d.tanggal_kegiatan_selesai);
+                        if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+                            tanggalStr = `FROM ${months[start.getMonth()].toUpperCase()} ${start.getDate()} – ${end.getDate()}, ${end.getFullYear()}`;
+                        } else {
+                            tanggalStr = `FROM ${formatSingleDate(d.tanggal_kegiatan)} TO ${formatSingleDate(d.tanggal_kegiatan_selesai)}`;
+                        }
+                    } else {
+                        tanggalStr = `ON ${formatSingleDate(d.tanggal_kegiatan)}`;
+                    }
+                }
+
+                const lokasi = d.lokasi_kegiatan ? d.lokasi_kegiatan.toUpperCase() : 'SCHOOL OF CREATIVE INDUSTRIES';
+                document.getElementById('prev-tanggal').textContent =
+                    tanggalStr ? `HELD AT ${lokasi} ${tanggalStr}` : `HELD AT ${lokasi}`;
+
+                document.getElementById('prev-nomor').textContent = 'CERTIFICATE NUMBER: ' + (d.nomor_sertifikat ?? '-');
+
+                // Role/Prodi
+                const role = d.prodi ? d.prodi : 'Committee';
+                const roleCapitalized = role.charAt(0).toUpperCase() + role.slice(1);
+                document.getElementById('prev-desc').innerHTML = `For the Participation as <strong style="color: #d35400;">${roleCapitalized}</strong> at :`;
+
+                // Update QR Code
+                const qrUrl = d.qr_code
+                    ? d.qr_code
+                    : BASE_URL + 'sertifikat/verifikasi/' + encodeURIComponent(d.nomor_sertifikat ?? '');
+                document.getElementById('cert-qr-label').textContent = d.nomor_sertifikat ?? 'verify';
+
+                // Render QR code onto canvas synchronously
+                await new Promise((resolve) => {
+                    const canvas = document.getElementById('cert-qr-canvas');
+                    const img = document.getElementById('cert-template-img');
+                    const size = Math.max(70, Math.round(img.clientWidth * 0.10));
+                    
+                    const isImage = qrUrl.match(/\.(jpeg|jpg|png|gif)$/i) || qrUrl.includes('uploads/');
+                    if (isImage) {
+                        const qrImg = new Image();
+                        qrImg.onload = function() {
+                            canvas.width = size;
+                            canvas.height = size;
+                            const ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, size, size);
+                            ctx.drawImage(qrImg, 0, 0, size, size);
+                            resolve();
+                        };
+                        qrImg.onerror = function() {
+                            console.error('Failed to load QR image:', qrUrl);
+                            resolve();
+                        };
+                        qrImg.src = qrUrl.startsWith('uploads/') ? BASE_URL + qrUrl : qrUrl;
+                    } else {
+                        QRCode.toCanvas(canvas, qrUrl, {
+                            width:  size,
+                            margin: 1,
+                            color: { dark: '#000000', light: '#ffffff' }
+                        }, function(err) {
+                            if (err) console.error('QR render error:', err);
+                            resolve();
+                        });
+                    }
+                });
+
+                // Let the browser paint the DOM updates
+                await new Promise(resolve => setTimeout(resolve, 150));
+
+                // 2. Generate Canvas page
+                const canvas = await html2canvas(document.getElementById('cert-canvas-container'), {
+                    scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#fff', logging: false
+                });
+                
+                if (i > 0) {
+                    pdf.addPage();
+                }
+                
+                pdf.addImage(canvas.toDataURL('image/jpeg', 0.97), 'JPEG', 0, 0,
+                    pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+            }
+            
+            // 3. Save final multi-page PDF
+            document.getElementById('loading-text').textContent = 'Menyimpan file PDF...';
+            pdf.save('Sertifikat_Massal_' + new Date().toISOString().slice(0, 10) + '.pdf');
+            
+            // 4. Restore preview back to current selector choice
+            const currentSelIdx = document.getElementById('previewSelector').value || 0;
+            changePreviewStudent(currentSelIdx);
+            
         } catch(e) {
             alert('Gagal membuat PDF: ' + e.message);
         } finally {
@@ -1226,25 +1771,203 @@
         }
     }
 
-    /* ── Download PNG ── */
+    /* ── Download PNG (ZIP) ── */
     async function downloadPNG() {
         const loading = document.getElementById('download-loading');
-        document.getElementById('loading-text').textContent = 'Sedang membuat gambar...';
         loading.classList.add('show');
+        
         try {
-            const canvas = await html2canvas(document.getElementById('cert-canvas-container'), {
-                scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#fff', logging: false
+            const zip = new JSZip();
+            
+            for (let i = 0; i < selectedRows.length; i++) {
+                const d = selectedRows[i];
+                document.getElementById('loading-text').textContent = `Sedang memproses gambar (${i + 1}/${selectedRows.length}): ${d.nama_mahasiswa}...`;
+                
+                // 1. Update preview values for this student
+                document.getElementById('prev-nama').textContent  = d.nama_mahasiswa;
+                document.getElementById('prev-judul').textContent = d.judul_kegiatan;
+                
+                // Date formatting
+                const months = ['January','February','March','April','May','June','July',
+                                'August','September','October','November','December'];
+
+                function formatSingleDate(dateStr) {
+                    const dt = new Date(dateStr);
+                    return `${months[dt.getMonth()].toUpperCase()} ${dt.getDate()}, ${dt.getFullYear()}`;
+                }
+
+                let tanggalStr = '';
+                if (d.tanggal_kegiatan) {
+                    if (d.tanggal_kegiatan_selesai && d.tanggal_kegiatan_selesai !== d.tanggal_kegiatan) {
+                        const start = new Date(d.tanggal_kegiatan);
+                        const end   = new Date(d.tanggal_kegiatan_selesai);
+                        if (start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear()) {
+                            tanggalStr = `FROM ${months[start.getMonth()].toUpperCase()} ${start.getDate()} – ${end.getDate()}, ${end.getFullYear()}`;
+                        } else {
+                            tanggalStr = `FROM ${formatSingleDate(d.tanggal_kegiatan)} TO ${formatSingleDate(d.tanggal_kegiatan_selesai)}`;
+                        }
+                    } else {
+                        tanggalStr = `ON ${formatSingleDate(d.tanggal_kegiatan)}`;
+                    }
+                }
+
+                const lokasi = d.lokasi_kegiatan ? d.lokasi_kegiatan.toUpperCase() : 'SCHOOL OF CREATIVE INDUSTRIES';
+                document.getElementById('prev-tanggal').textContent =
+                    tanggalStr ? `HELD AT ${lokasi} ${tanggalStr}` : `HELD AT ${lokasi}`;
+
+                document.getElementById('prev-nomor').textContent = 'CERTIFICATE NUMBER: ' + (d.nomor_sertifikat ?? '-');
+
+                const role = d.prodi ? d.prodi : 'Committee';
+                const roleCapitalized = role.charAt(0).toUpperCase() + role.slice(1);
+                document.getElementById('prev-desc').innerHTML = `For the Participation as <strong style="color: #d35400;">${roleCapitalized}</strong> at :`;
+
+                // Update QR Code
+                const qrUrl = d.qr_code
+                    ? d.qr_code
+                    : BASE_URL + 'sertifikat/verifikasi/' + encodeURIComponent(d.nomor_sertifikat ?? '');
+                document.getElementById('cert-qr-label').textContent = d.nomor_sertifikat ?? 'verify';
+
+                await new Promise((resolve) => {
+                    const canvas = document.getElementById('cert-qr-canvas');
+                    const img = document.getElementById('cert-template-img');
+                    const size = Math.max(70, Math.round(img.clientWidth * 0.10));
+                    
+                    const isImage = qrUrl.match(/\.(jpeg|jpg|png|gif)$/i) || qrUrl.includes('uploads/');
+                    if (isImage) {
+                        const qrImg = new Image();
+                        qrImg.onload = function() {
+                            canvas.width = size;
+                            canvas.height = size;
+                            const ctx = canvas.getContext('2d');
+                            ctx.clearRect(0, 0, size, size);
+                            ctx.drawImage(qrImg, 0, 0, size, size);
+                            resolve();
+                        };
+                        qrImg.onerror = function() {
+                            console.error('Failed to load QR image:', qrUrl);
+                            resolve();
+                        };
+                        qrImg.src = qrUrl.startsWith('uploads/') ? BASE_URL + qrUrl : qrUrl;
+                    } else {
+                        QRCode.toCanvas(canvas, qrUrl, {
+                            width:  size,
+                            margin: 1,
+                            color: { dark: '#000000', light: '#ffffff' }
+                        }, function(err) {
+                            if (err) console.error('QR render error:', err);
+                            resolve();
+                        });
+                    }
+                });
+
+                await new Promise(resolve => setTimeout(resolve, 150));
+
+                // 2. Generate PNG image
+                const canvas = await html2canvas(document.getElementById('cert-canvas-container'), {
+                    scale: 3, useCORS: true, allowTaint: true, backgroundColor: '#fff', logging: false
+                });
+                
+                const imgData = canvas.toDataURL('image/png').split(',')[1];
+                const filename = 'Sertifikat_' + d.nama_mahasiswa.replace(/\s+/g,'_') + 
+                                 '_' + (d.nomor_sertifikat ?? '').replace(/[\/\s]/g,'-') + '.png';
+                
+                zip.file(filename, imgData, {base64: true});
+            }
+            
+            // 3. Generate ZIP download
+            document.getElementById('loading-text').textContent = 'Membuat file ZIP sertifikat...';
+            zip.generateAsync({type:"blob"}).then(function(content) {
+                saveAs(content, "Sertifikat_Massal_" + new Date().toISOString().slice(0, 10) + ".zip");
             });
-            const a = document.createElement('a');
-            a.download = 'Sertifikat_' + selectedRow.nama_mahasiswa.replace(/\s+/g,'_') + '.png';
-            a.href = canvas.toDataURL('image/png');
-            a.click();
+            
+            const currentSelIdx = document.getElementById('previewSelector').value || 0;
+            changePreviewStudent(currentSelIdx);
+            
         } catch(e) {
-            alert('Gagal: ' + e.message);
+            alert('Gagal membuat gambar ZIP: ' + e.message);
         } finally {
             loading.classList.remove('show');
         }
     }
+
+    // Mobile Sidebar Toggle
+    function toggleSidebar() {
+        const sidebar = document.getElementById('adminSidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        const icon = document.getElementById('hamburgerIcon');
+        const isOpen = sidebar.classList.toggle('open');
+        overlay.classList.toggle('active', isOpen);
+        if (icon) {
+            icon.className = isOpen ? 'fas fa-times' : 'fas fa-bars';
+        }
+    }
+
+    // Drag & Drop for Signature
+    document.addEventListener('DOMContentLoaded', function() {
+        const dropZone = document.getElementById('sigDragDropZone');
+        const sigInput = document.getElementById('sigImageInput');
+
+        if (dropZone && sigInput) {
+            dropZone.addEventListener('click', () => sigInput.click());
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.background = '#f7ebdf';
+                dropZone.style.borderColor = '#d35400';
+            });
+
+            ['dragleave', 'dragend'].forEach(type => {
+                dropZone.addEventListener(type, () => {
+                    dropZone.style.background = '#fdfaf7';
+                    dropZone.style.borderColor = '#E67E22';
+                });
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.background = '#fdfaf7';
+                dropZone.style.borderColor = '#E67E22';
+                
+                if (e.dataTransfer.files.length) {
+                    sigInput.files = e.dataTransfer.files;
+                    handleSignatureImageUpload(sigInput);
+                }
+            });
+        }
+        
+        // Initialize QR positioning and draggable behavior
+        adjustQrPosition();
+        makeQrDraggable();
+
+        // Auto-select student's approved certificate and template if ?id= is set
+        const urlParams = new URLSearchParams(window.location.search);
+        const certId = urlParams.get('id');
+        if (certId) {
+            const rows = Array.from(document.querySelectorAll('.cert-row'));
+            const matchedRow = rows.find(tr => {
+                const data = JSON.parse(tr.getAttribute('data-json'));
+                return String(data.id) === String(certId);
+            });
+            if (matchedRow) {
+                const data = JSON.parse(matchedRow.getAttribute('data-json'));
+                selectRow(matchedRow, data);
+                
+                // Render Signature
+                if (data.signature_image) {
+                    const sigImg = document.getElementById('sig-image');
+                    if (sigImg) {
+                        sigImg.src = BASE_URL + data.signature_image;
+                        sigImg.style.display = 'block';
+                    }
+                }
+                
+                // Redirect straight to Step 2 (Pilih Template) so student can select it
+                setTimeout(() => {
+                    goStep(2);
+                }, 200);
+            }
+        }
+    });
 </script>
 </body>
 </html>

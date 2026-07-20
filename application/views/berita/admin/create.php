@@ -135,43 +135,65 @@
             box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
         }
 
-        .image-preview {
-            margin-top: 1rem;
-            border-radius: 15px;
-            overflow: hidden;
-            max-width: 300px;
-            border: 2px dashed #ddd;
+        /* ===== Drag & Drop Upload (Sama persis dengan edit_hero.php) ===== */
+        .upload-dropzone {
             position: relative;
-            display: none;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.25s;
+            background: #fafafa;
         }
-
-        .image-preview img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .upload-dropzone:hover {
+            border-color: #E67E22;
+            background: rgba(230, 126, 34, 0.05);
         }
-
-        .image-preview .remove-image {
+        .upload-dropzone.dragover {
+            border-color: #E67E22;
+            background: rgba(230, 126, 34, 0.1);
+            transform: scale(1.01);
+        }
+        .upload-dropzone.has-file {
+            border-style: solid;
+            border-color: #2ecc71;
+            background: rgba(46, 204, 113, 0.05);
+        }
+        .dropzone-content i {
+            color: #E67E22;
+        }
+        .dropzone-content p {
+            margin: 0;
+            color: #555;
+        }
+        .dropzone-filename {
+            font-weight: 600;
+            color: #2C3E50;
+            margin-top: 0.5rem;
+            word-break: break-all;
+        }
+        .dropzone-remove {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 8px;
+            right: 8px;
             background: #e74c3c;
             color: white;
-            width: 30px;
-            height: 30px;
+            border: none;
             border-radius: 50%;
-            display: flex;
+            width: 24px;
+            height: 24px;
+            font-size: 0.75rem;
+            line-height: 24px;
+            display: none;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s ease;
+            z-index: 10;
         }
-
-        .image-preview .remove-image:hover {
-            background: #c0392b;
-            transform: scale(1.1);
+        .upload-dropzone.has-file .dropzone-remove {
+            display: flex;
         }
+        /* ============================================================== */
 
         .btn-save {
             background: #E67E22;
@@ -238,12 +260,37 @@
                 padding: 1.5rem;
             }
         }
+        /* === MOBILE TOPBAR === */
+        * { box-sizing: border-box; } html, body { overflow-x: hidden; max-width: 100%; }
+        .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; z-index: 1100; background: linear-gradient(135deg, #2C3E50, #1a2632); box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        .topbar-inner { display: flex; align-items: center; justify-content: space-between; height: 54px; padding: 0 0.75rem; gap: 0.5rem; }
+        .hamburger-btn { display: none; background: rgba(255,255,255,0.15); color: white; border: none; border-radius: 8px; width: 38px; height: 38px; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; }
+        .hamburger-btn:hover { background: rgba(230,126,34,0.6); }
+        .topbar-right { display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0; justify-content: flex-end; }
+        .topbar-username { display: flex; align-items: center; gap: 0.35rem; color: rgba(255,255,255,0.9); font-size: 0.78rem; font-weight: 500; flex: 1; min-width: 0; }
+        .topbar-username i { color: #E67E22; font-size: 1rem; flex-shrink: 0; }
+        .topbar-username .name-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; min-width: 0; }
+        .topbar-logout { background: #e74c3c; color: white; border: none; border-radius: 8px; padding: 0.38rem 0.8rem; font-size: 0.75rem; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; flex-shrink: 0; }
+        .topbar-logout:hover { background: #c0392b; color: white; }
+        .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; backdrop-filter: blur(2px); }
+        .sidebar-overlay.active { display: block; }
+        @media (max-width: 768px) {
+            .mobile-topbar { display: block; } .hamburger-btn { display: flex; }
+            .admin-sidebar { display: block !important; position: fixed !important; left: -280px !important; z-index: 1000; transition: left 0.3s ease; width: 280px !important; }
+            .admin-sidebar.open { left: 0 !important; }
+            .admin-main { margin-left: 0 !important; padding: 1rem !important; padding-top: 4.5rem !important; max-width: 100vw; overflow-x: hidden; }
+            .admin-header { flex-direction: column !important; align-items: stretch !important; gap: 0.75rem; }
+            .admin-header h1 { font-size: 1.3rem !important; word-break: break-word; }
+            .admin-header .user-info > span, .admin-header .user-info .logout-btn { display: none; }
+        }
     </style>
 </head>
 <body>
+    <div class="mobile-topbar" id="mobileTopbar"><div class="topbar-inner"><button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()"><i class="fas fa-bars" id="hamburgerIcon"></i></button><div class="topbar-right"><span class="topbar-username"><i class="fas fa-user-circle"></i><span class="name-text"><?= $this->session->userdata('nama') ?></span></span><a href="<?= base_url('login/logout') ?>" class="topbar-logout"><i class="fas fa-sign-out-alt"></i>Logout</a></div></div></div>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
     <div class="admin-wrapper">
         <!-- Sidebar -->
-        <div class="admin-sidebar">
+        <div class="admin-sidebar" id="adminSidebar">
             <div class="sidebar-header">
                 <h3>Admin FIK</h3>
                 <p>Manajemen Berita & Konten</p>
@@ -272,6 +319,10 @@
                 <a href="<?= base_url('admin/proposal') ?>">
                     <i class="fas fa-file-alt"></i>
                     <span>Proposal</span>
+                </a>
+                <a href="<?= base_url('admin/beasiswa') ?>">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Beasiswa</span>
                 </a>
                 <a href="<?= base_url('sertifikat/admin') ?>">
                     <i class="fas fa-certificate"></i>
@@ -368,18 +419,32 @@
                         <textarea class="form-control" name="konten" id="konten" rows="15"><?= set_value('konten') ?></textarea>
                     </div>
 
+                    <!-- AREA DRAG AND DROP GAMBAR TERBARU -->
                     <div class="mb-4">
                         <label class="form-label">Gambar Featured</label>
-                        <input type="file" class="form-control" name="gambar" id="gambar" 
-                               accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
-                        <small class="text-muted">Format: JPG, PNG, GIF, WEBP. Maksimal 2MB</small>
-                        
-                        <!-- Image Preview -->
-                        <div class="image-preview" id="imagePreview">
-                            <img src="" alt="Preview" id="previewImg">
-                            <button type="button" class="remove-image" id="removeImage">
-                                <i class="fas fa-times"></i>
-                            </button>
+                        <div class="row mb-2">
+                            <div class="col-md-6">
+                                <div class="upload-dropzone" id="dropZone">
+                                    <button type="button" class="dropzone-remove" id="dropZoneRemove" title="Hapus file">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                    
+                                    <input type="file" class="d-none" name="gambar" id="uploadInput" accept="image/jpeg,image/png,image/jpg,image/gif,image/webp">
+                                    
+                                    <div class="dropzone-content" id="dropZoneContent">
+                                        <i class="fas fa-cloud-upload-alt fa-2x mb-2 d-block"></i>
+                                        <p>Tarik & lepas gambar di sini</p>
+                                        <p class="small">atau <span class="text-primary text-decoration-underline">klik untuk memilih file</span></p>
+                                        <p class="dropzone-filename" id="dropZoneFilename"></p>
+                                    </div>
+                                </div>
+                                <small class="text-muted d-block mt-2">Format: JPG, PNG, GIF, WEBP. Maksimal 2MB</small>
+                            </div>
+                            
+                            <div class="col-md-6 mt-3 mt-md-0">
+                                <label class="form-label">Preview:</label><br>
+                                <img id="previewImg" src="" alt="Preview Gambar" style="max-height: 150px; display: none; background: #eee; border-radius: 10px; padding: 8px; object-fit: contain;">
+                            </div>
                         </div>
                     </div>
 
@@ -438,6 +503,7 @@
     <script>
         // Initialize CKEditor
         CKEDITOR.replace('konten', {
+            versionCheck: false, // Mematikan pesan peringatan CKEditor 4.20.0
             height: 400,
             toolbar: [
                 { name: 'document', items: [ 'Source', '-', 'NewPage', 'Preview', '-', 'Templates' ] },
@@ -469,24 +535,92 @@
             document.getElementById('ringkasanCounter').textContent = this.value.length;
         });
 
-        // Image preview
-        document.getElementById('gambar').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('previewImg').src = e.target.result;
-                    document.getElementById('imagePreview').style.display = 'block';
-                };
-                reader.readAsDataURL(file);
+        // ==========================================
+        // SCRIPT DRAG & DROP GAMBAR
+        // ==========================================
+        const dropZone = document.getElementById('dropZone');
+        const uploadInput = document.getElementById('uploadInput');
+        const dropZoneRemove = document.getElementById('dropZoneRemove');
+        const dropZoneFilename = document.getElementById('dropZoneFilename');
+        const previewImg = document.getElementById('previewImg');
+
+        // Membuka dialog file ketika dropzone diklik
+        dropZone.addEventListener('click', function(e) {
+            // Hindari memicu upload jika yang diklik adalah tombol silang (hapus)
+            if (e.target.closest('#dropZoneRemove')) return;
+            uploadInput.click();
+        });
+
+        // Saat file dipilih dari dialog
+        uploadInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        // Event drag and drop
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropZone.addEventListener(evt, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('dragover');
+            });
+        });
+
+        ['dragleave', 'dragend'].forEach(evt => {
+            dropZone.addEventListener(evt, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('dragover');
+            });
+        });
+
+        // Saat gambar dilepas (drop)
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropZone.classList.remove('dragover');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                uploadInput.files = files; // Sinkronisasi ke form input tersembunyi
+                handleFiles(files);
             }
         });
 
-        document.getElementById('removeImage').addEventListener('click', function() {
-            document.getElementById('gambar').value = '';
-            document.getElementById('imagePreview').style.display = 'none';
-            document.getElementById('previewImg').src = '';
+        // Tombol hapus (X)
+        dropZoneRemove.addEventListener('click', function(e) {
+            e.stopPropagation(); // Stop event bubbling ke dropZone
+            uploadInput.value = '';
+            dropZone.classList.remove('has-file');
+            dropZoneFilename.textContent = '';
+            previewImg.src = '';
+            previewImg.style.display = 'none';
         });
+
+        function handleFiles(files) {
+            const file = files[0];
+            if (!file) return;
+
+            // Validasi format file
+            if (!file.type.match('image.*')) {
+                alert('Harap pilih file berformat gambar (JPG, PNG, GIF, WEBP)');
+                uploadInput.value = '';
+                dropZone.classList.remove('has-file');
+                dropZoneFilename.textContent = '';
+                previewImg.style.display = 'none';
+                return;
+            }
+
+            dropZone.classList.add('has-file');
+            dropZoneFilename.textContent = file.name;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewImg.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        // ==========================================
 
         // Save as draft and publish functions
         function saveAsDraft() {
@@ -545,6 +679,24 @@
                 btnDraft.disabled = true;
             }
         });
+        
+        // Sidebar Toggle Mobile
+        function toggleSidebar(){
+            const s=document.getElementById('adminSidebar'),
+                  o=document.getElementById('sidebarOverlay'),
+                  i=document.getElementById('hamburgerIcon'),
+                  open=s.classList.toggle('open');
+            o.classList.toggle('active',open);
+            i.className=open?'fas fa-times':'fas fa-bars';
+        }
+        
+        document.querySelectorAll('.sidebar-menu a').forEach(l=>l.addEventListener('click',()=>{
+            if(window.innerWidth<=768){
+                document.getElementById('adminSidebar').classList.remove('open');
+                document.getElementById('sidebarOverlay').classList.remove('active');
+                document.getElementById('hamburgerIcon').className='fas fa-bars';
+            }
+        }));
     </script>
 </body>
 </html>
