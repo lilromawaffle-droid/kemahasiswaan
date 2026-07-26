@@ -303,6 +303,72 @@
       letter-spacing: 2px;
     }
 
+    .status-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 8px;
+      border-radius: 16px;
+      text-align: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .status-box:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .status-box.approve {
+      /* background: rgba(34, 197, 94, 0.2); */
+      border-color: rgba(34, 197, 94, 0.4);
+      color: #ffffff;
+    }
+    
+    .status-box.revisi {
+      /* background: rgba(234, 179, 8, 0.2); */
+      border-color: rgba(234, 179, 8, 0.4);
+      color: #ffffff;
+    }
+    
+    .status-box.tolak {
+      /* background: rgba(239, 68, 68, 0.2); */
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #ffffff;
+    }
+
+    .status-num {
+      font-size: 1.5rem;
+      font-weight: 800;
+      line-height: 1.2;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .status-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 480px) {
+      .status-box {
+        padding: 8px 4px;
+        border-radius: 12px;
+      }
+      .status-num {
+        font-size: 1.2rem;
+      }
+      .status-label {
+        font-size: 0.7rem;
+      }
+    }
+
     .winner-avatar {
       width: 70px;
       height: 70px;
@@ -1773,11 +1839,6 @@
               <div><strong><?= htmlspecialchars($hero_text['card2_title'] ?? 'Ikatan Alumni') ?></strong><br><?= htmlspecialchars($hero_text['card2_sub'] ?? 'Jaringan profesional & karir') ?></div>
             </div>
 
-            <a href="<?= base_url('pedoman') ?>" class="floating-card badge-abs-6" style="text-decoration: none; color: inherit; cursor: pointer;">
-              <div class="badge-icon-orange"><i class="fas fa-book"></i></div>
-              <div><strong>PEDOMAN</strong><br>Peraturan &amp; Ketentuan</div>
-            </a>
-
       <div class="floating-card badge-abs-3">
               <div class="badge-icon-orange"><i class="fas fa-sign-in-alt"></i></div>
               <div><strong><?= htmlspecialchars($hero_text['card3_title'] ?? 'Log in') ?></strong><br><?= htmlspecialchars($hero_text['card3_sub'] ?? 'Dashboard interaktif') ?></div>
@@ -1806,9 +1867,15 @@
               <div class="big-number" id="totalProposal">0</div>
               <div style="line-height: 1.3; font-weight: 500; font-size: 1.1rem;">Total<br>Pengajuan</div>
             </div>
-            <div class="d-flex gap-4 mt-3">
-              <div><span class="fw-bold" style="font-size: 1.4rem;" id="approveProposal">0</span><br>Approve</div>
-              <div><span class="fw-bold" style="font-size: 1.4rem;" id="tolakProposal">0</span><br>Tolak</div>
+            <div class="d-flex gap-2 mt-3">
+              <div class="status-box approve">
+                <span class="status-num" id="approveProposal">0</span>
+                <span class="status-label">Approve</span>
+              </div>
+              <div class="status-box tolak">
+                <span class="status-num" id="tolakProposal">0</span>
+                <span class="status-label">Tolak</span>
+              </div>
             </div>
           </div>
           
@@ -1819,10 +1886,19 @@
               <div class="big-number" id="totalTak">0</div>
               <div style="line-height: 1.3; font-weight: 500; font-size: 1.1rem;">Total<br>Pengajuan</div>
             </div>
-            <div class="d-flex gap-4 mt-3">
-              <div><span class="fw-bold" style="font-size: 1.4rem;" id="approveTak">0</span><br>Approve</div>
-              <div><span class="fw-bold" style="font-size: 1.4rem;" id="revisiTak">0</span><br>Revisi</div>
-              <div><span class="fw-bold" style="font-size: 1.4rem;" id="tolakTak">0</span><br>Tolak</div>
+            <div class="d-flex gap-2 mt-3">
+              <div class="status-box approve">
+                <span class="status-num" id="approveTak">0</span>
+                <span class="status-label">Approve</span>
+              </div>
+              <div class="status-box revisi">
+                <span class="status-num" id="revisiTak">0</span>
+                <span class="status-label">Revisi</span>
+              </div>
+              <div class="status-box tolak">
+                <span class="status-num" id="tolakTak">0</span>
+                <span class="status-label">Tolak</span>
+              </div>
             </div>
           </div>
           
@@ -1833,9 +1909,15 @@
               <div class="big-number" id="totalSertifikat">0</div>
               <div style="line-height: 1.3; font-weight: 500; font-size: 1.1rem;">Total<br>Pengajuan</div>
             </div>
-            <div class="d-flex gap-4 mt-3">
-              <div><span class="fw-bold" style="font-size: 1.4rem;" id="approveSertifikat">0</span><br>Approve</div>
-              <div><span class="fw-bold" style="font-size: 1.4rem;" id="tolakSertifikat">0</span><br>Tolak</div>
+            <div class="d-flex gap-2 mt-3">
+              <div class="status-box approve">
+                <span class="status-num" id="approveSertifikat">0</span>
+                <span class="status-label">Approve</span>
+              </div>
+              <div class="status-box tolak">
+                <span class="status-num" id="tolakSertifikat">0</span>
+                <span class="status-label">Tolak</span>
+              </div>
             </div>
           </div>
         </div>

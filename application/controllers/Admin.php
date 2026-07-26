@@ -1633,13 +1633,19 @@ class Admin extends CI_Controller {
             redirect('admin/pedoman');
         }
 
+        $urutan = (int)$this->input->post('urutan');
+        if ($this->Pedoman_model->is_urutan_exist($urutan)) {
+            $this->session->set_flashdata('error', 'Urutan tampil sudah digunakan oleh peraturan lain. Harap gunakan urutan yang berbeda.');
+            redirect('admin/pedoman');
+        }
+
         $isi = $this->input->post('isi');
         // Allow HTML (Summernote output)
         $save = [
             'judul'     => $judul,
             'deskripsi' => trim($this->input->post('deskripsi')),
             'isi'       => $isi,
-            'urutan'    => (int)$this->input->post('urutan'),
+            'urutan'    => $urutan,
             'aktif'     => $this->input->post('aktif') ? (int)$this->input->post('aktif') : 1,
         ];
 
@@ -1688,11 +1694,17 @@ class Admin extends CI_Controller {
             redirect('admin/pedoman_edit/' . $id);
         }
 
+        $urutan = (int)$this->input->post('urutan');
+        if ($this->Pedoman_model->is_urutan_exist($urutan, $id)) {
+            $this->session->set_flashdata('error', 'Urutan tampil sudah digunakan oleh peraturan lain. Harap gunakan urutan yang berbeda.');
+            redirect('admin/pedoman_edit/' . $id);
+        }
+
         $save = [
             'judul'     => $judul,
             'deskripsi' => trim($this->input->post('deskripsi')),
             'isi'       => $this->input->post('isi'),
-            'urutan'    => (int)$this->input->post('urutan'),
+            'urutan'    => $urutan,
             'aktif'     => (int)$this->input->post('aktif'),
         ];
 

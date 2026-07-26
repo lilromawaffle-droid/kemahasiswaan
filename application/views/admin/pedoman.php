@@ -82,7 +82,9 @@
         .btn-sm-action {
             font-size: .75rem; padding: .35rem .8rem; border-radius: 20px;
             font-weight: 600; border: none; cursor: pointer; transition: all .2s; text-decoration: none;
-            display: inline-flex; align-items: center; gap: .3rem;
+            display: inline-flex; align-items: center; justify-content: center; gap: .3rem;
+            width: 90px;
+            text-align: center;
         }
         .btn-edit   { background: #3498db; color: white; }
         .btn-edit:hover   { background: #2980b9; color: white; }
@@ -192,9 +194,28 @@
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label>Urutan Tampil</label>
-                                <input type="number" name="urutan" class="form-ctrl" min="0" max="999"
-                                       placeholder="0"
-                                       value="<?= isset($edit_item) ? (int)$edit_item->urutan : 0 ?>">
+                                <?php
+                                $used_urutan = [];
+                                if (!empty($pedoman_list)) {
+                                    foreach ($pedoman_list as $p) {
+                                        $used_urutan[] = (int)$p->urutan;
+                                    }
+                                }
+                                $current_urutan = isset($edit_item) ? (int)$edit_item->urutan : null;
+                                ?>
+                                <select name="urutan" class="form-ctrl" required>
+                                    <?php
+                                    $max_options = max(100, !empty($used_urutan) ? max($used_urutan) + 10 : 100);
+                                    // Start from 0 if current urutan is 0, else start from 1
+                                    $start_num = ($current_urutan === 0) ? 0 : 1;
+                                    for ($num = $start_num; $num <= $max_options; $num++) {
+                                        if (!in_array($num, $used_urutan) || $num === $current_urutan) {
+                                            $selected = ($num === $current_urutan) ? 'selected' : '';
+                                            echo "<option value=\"$num\" $selected>$num</option>";
+                                        }
+                                    }
+                                    ?>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -272,7 +293,7 @@
                                 <th>Deskripsi</th>
                                 <!-- <th width="80">PDF</th> -->
                                 <th width="80">Status</th>
-                                <th width="180">Aksi</th>
+                                <th width="120">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -308,7 +329,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="d-flex gap-1 flex-wrap">
+                                    <div class="d-flex flex-column gap-1 align-items-center">
                                         <a href="<?= base_url('admin/pedoman_edit/' . $p->id) ?>" class="btn-sm-action btn-edit">
                                             <i class="fas fa-edit"></i> Edit
                                         </a>

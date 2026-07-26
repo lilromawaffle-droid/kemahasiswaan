@@ -81,4 +81,13 @@ class Pedoman_model extends CI_Model {
         $new_status = $item->aktif ? 0 : 1;
         return $this->update($id, ['aktif' => $new_status]);
     }
+
+    public function is_urutan_exist($urutan, $exclude_id = null) {
+        $this->db->where('urutan', (int)$urutan);
+        if ($exclude_id !== null) {
+            $this->db->where('id !=', $exclude_id);
+        }
+        $query = $this->db->get('pedoman');
+        return $query->num_rows() > 0;
+    }
 }
