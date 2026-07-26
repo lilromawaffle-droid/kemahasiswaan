@@ -323,19 +323,19 @@
     }
 
     .status-box.approve {
-      /* background: rgba(34, 197, 94, 0.2); */
+      background: rgba(34, 197, 94, 0.4);
       border-color: rgba(34, 197, 94, 0.4);
       color: #ffffff;
     }
     
     .status-box.revisi {
-      /* background: rgba(234, 179, 8, 0.2); */
+      background: rgba(234, 179, 8, 0.4);
       border-color: rgba(234, 179, 8, 0.4);
       color: #ffffff;
     }
     
     .status-box.tolak {
-      /* background: rgba(239, 68, 68, 0.2); */
+      background: rgba(239, 68, 68, 0.4);
       border-color: rgba(239, 68, 68, 0.4);
       color: #ffffff;
     }
